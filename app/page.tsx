@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { journeys } from "@/lib/assets";
+
 export default function Home() {
   return (
     <>
@@ -27,7 +30,7 @@ export default function Home() {
             Browse by product journey, content type, or use case, then request a
             tailored download bundle delivered straight to your inbox.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-4 mt-4">
             <a
               href="#products"
               className="inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-bold shadow-md transition hover:shadow-lg"
@@ -51,7 +54,10 @@ export default function Home() {
       </section>
 
       {/* Browse by product journey */}
-      <section id="products" className="py-16 border-t border-black/5 bg-white">
+      <section
+        id="products"
+        className="py-16 border-t border-black/5 bg-gradient-to-b from-white via-[#f7f6f2] to-[#f0fbfa]"
+      >
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <div>
@@ -85,40 +91,22 @@ export default function Home() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                label: "Build a Brand",
-                description:
-                  "Domains, logo design, and business email assets to help customers look credible from day one."
-              },
-              {
-                label: "Get Online",
-                description:
-                  "SSL, hosting, and website solutions – everything you need to put small businesses on the map."
-              },
-              {
-                label: "Get Found",
-                description:
-                  "Directories, SEO, and reputation management content to drive visibility and reviews."
-              },
-              {
-                label: "Grow their Business",
-                description:
-                  "Ecommerce, custom sites, and Online Fax to deepen relationships and unlock new revenue."
-              }
-            ].map((journey) => (
-              <button
+            {journeys.map((journey) => (
+              <Link
                 key={journey.label}
-                className="group text-left rounded-2xl border border-black/5 bg-[#f7f6f2] p-6 hover:-translate-y-1 hover:shadow-lg transition-all duration-200"
+                href={`/assets/journey/${journey.slug}`}
+                className="group relative overflow-hidden text-left rounded-2xl border border-black/5 bg-[#f7f6f2] p-6 hover:-translate-y-1 hover:shadow-lg transition-all duration-200"
               >
+                <div className="absolute -top-6 -right-4 w-16 h-16 rounded-full bg-gradient-to-br from-[#2CADB2]/10 via-[#F8CF41]/20 to-transparent" />
                 <div
-                  className="text-xs font-semibold tracking-[0.18em] uppercase mb-3 text-gray-500"
+                  className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.18em] uppercase mb-3 text-gray-500"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  Journey
+                  <span className="text-xs">◎</span>
+                  <span>Journey</span>
                 </div>
                 <div
-                  className="font-black mb-3"
+                  className="font-black mb-2"
                   style={{
                     fontFamily: "Montserrat, sans-serif",
                     fontSize: "1.2rem"
@@ -130,9 +118,9 @@ export default function Home() {
                   className="text-sm text-gray-600"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  {journey.description}
+                  Tap to see assets aligned to this step of the customer journey.
                 </p>
-              </button>
+              </Link>
             ))}
           </div>
         </div>

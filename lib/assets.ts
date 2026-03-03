@@ -45,6 +45,120 @@ export interface Asset {
   lastUpdated: string; // ISO date
 }
 
+export const journeys: { label: ProductJourney; slug: string }[] = [
+  { label: "Build a Brand", slug: "build-a-brand" },
+  { label: "Get Online", slug: "get-online" },
+  { label: "Get Found", slug: "get-found" },
+  { label: "Grow their Business", slug: "grow-their-business" }
+];
+
+export function journeyFromSlug(slug: string): ProductJourney | undefined {
+  const match = journeys.find((j) => j.slug === slug);
+  return match?.label;
+}
+
+export const journeyProducts: {
+  journey: ProductJourney;
+  label: string;
+  slug: string;
+  category: ProductCategory;
+  description: string;
+}[] = [
+  // Build a Brand
+  {
+    journey: "Build a Brand",
+    label: "Domains",
+    slug: "domains",
+    category: "Domains",
+    description: "Domain naming and registration assets for first conversations."
+  },
+  {
+    journey: "Build a Brand",
+    label: "Logo Design",
+    slug: "logo",
+    category: "Logo",
+    description: "Logo design decks, playbooks, and discovery guides."
+  },
+  {
+    journey: "Build a Brand",
+    label: "Business Email",
+    slug: "email",
+    category: "Email",
+    description: "Business email positioning, training, and launch materials."
+  },
+  // Get Online
+  {
+    journey: "Get Online",
+    label: "SSL",
+    slug: "ssl",
+    category: "SSL",
+    description: "SSL value stories, objection handling, and quick-reference docs."
+  },
+  {
+    journey: "Get Online",
+    label: "Hosting",
+    slug: "hosting",
+    category: "Website",
+    description: "Hosting overviews, technical one-pagers, and SLAs."
+  },
+  {
+    journey: "Get Online",
+    label: "Website Builder & Design",
+    slug: "website",
+    category: "Website",
+    description: "Website builder demos, design examples, and sales enablement."
+  },
+  // Get Found
+  {
+    journey: "Get Found",
+    label: "Directory Listings",
+    slug: "directory-listings",
+    category: "Directory Listings",
+    description: "Listings coverage maps, value props, and sales tools."
+  },
+  {
+    journey: "Get Found",
+    label: "SEO",
+    slug: "seo",
+    category: "Website",
+    description: "SEO positioning, playbooks, and campaign assets."
+  },
+  {
+    journey: "Get Found",
+    label: "Reputation Management",
+    slug: "reputation-management",
+    category: "Reputation Management",
+    description: "Reviews, ratings, and reputation playbooks and case studies."
+  },
+  // Grow their Business
+  {
+    journey: "Grow their Business",
+    label: "Ecommerce",
+    slug: "ecommerce",
+    category: "Ecommerce",
+    description: "Ecommerce demos, ROI stories, and upsell frameworks."
+  },
+  {
+    journey: "Grow their Business",
+    label: "Custom Website Development",
+    slug: "custom-website-development",
+    category: "Website",
+    description: "Custom design proposals, scoping guides, and success stories."
+  },
+  {
+    journey: "Grow their Business",
+    label: "Online Fax",
+    slug: "online-fax",
+    category: "Online Fax",
+    description: "Online Fax use cases, training, and sales tools."
+  }
+];
+
+export function getAssetsByProductCategory(category: ProductCategory): Asset[] {
+  return sampleAssets.filter((asset) => asset.productCategory === category);
+}
+
+
 // Initial sample catalog to drive UI prototypes.
 export const sampleAssets: Asset[] = [
   {

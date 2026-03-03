@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import "./globals.css";
 
 export const metadata = {
@@ -14,29 +15,36 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <div className="min-h-screen bg-[#f7f6f2] text-[#24282B] flex flex-col">
           {/* Top navigation */}
           <header className="border-b border-black/5 bg-white/80 backdrop-blur-sm sticky top-0 z-20">
-            <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-[#2CADB2] via-[#F8CF41] to-[#2CADB2]" />
+            <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-6">
               <Link href="/" className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#2CADB2] flex items-center justify-center text-xs font-black text-white">
-                  HC
+                <div className="relative w-[120px] h-8">
+                  <Image
+                    src="/logo.png"
+                    alt="Hostopia logo"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
                 </div>
-                <div className="flex flex-col leading-tight">
+                <div className="hidden sm:flex flex-col leading-tight">
                   <span
-                    className="text-sm font-black tracking-wide uppercase"
-                    style={{ fontFamily: "Montserrat, sans-serif" }}
-                  >
-                    Hostopia Connects
-                  </span>
-                  <span
-                    className="text-[11px] text-gray-500"
+                    className="text-[11px] font-semibold tracking-[0.18em] uppercase text-gray-500"
                     style={{ fontFamily: "Raleway, sans-serif" }}
                   >
-                    Sales &amp; marketing enablement portal
+                    Connects Portal
+                  </span>
+                  <span
+                    className="text-xs text-gray-600"
+                    style={{ fontFamily: "Raleway, sans-serif" }}
+                  >
+                    Sales &amp; marketing enablement
                   </span>
                 </div>
               </Link>
 
               <nav
-                className="hidden md:flex items-center gap-6 text-sm"
+                className="hidden md:flex items-center gap-6 text-xs"
                 style={{ fontFamily: "Montserrat, sans-serif" }}
               >
                 <Link href="/" className="hover:text-[#2CADB2] transition-colors">
