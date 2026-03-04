@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAssetBySlug } from "@/lib/assets";
+import { AddToCartButton } from "@/components/AddToCartButton";
 
 interface AssetDetailPageProps {
   params: { slug: string };
@@ -76,16 +77,7 @@ export default function AssetDetailPage({ params }: AssetDetailPageProps) {
 
         {/* Actions */}
         <div className="flex flex-wrap gap-3 mb-8">
-          <button
-            className="inline-flex items-center justify-center rounded-full px-6 py-2 text-sm font-bold shadow-md transition hover:shadow-lg"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              backgroundColor: "#F8CF41",
-              color: "#24282B"
-            }}
-          >
-            Add to Download Cart
-          </button>
+          <AddToCartButton assetId={asset.id} />
           <button
             className="inline-flex items-center justify-center rounded-full px-6 py-2 text-sm font-semibold border border-[#24282B]/20 bg-white transition hover:bg-[#f7f6f2]"
             style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}

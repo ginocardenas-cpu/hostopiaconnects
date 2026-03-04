@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import "./globals.css";
+import { CartLayoutClient } from "@/components/CartLayoutClient";
+import { CartNav } from "@/components/CartNav";
 
 export const metadata = {
   title: "Hostopia Connects",
@@ -43,32 +45,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 </div>
               </Link>
 
-              <nav
-                className="hidden md:flex items-center gap-6 text-xs"
-                style={{ fontFamily: "Montserrat, sans-serif" }}
-              >
-                <Link href="/" className="hover:text-[#2CADB2] transition-colors">
-                  Home
-                </Link>
-                <a href="#products" className="hover:text-[#2CADB2] transition-colors">
-                  Products
-                </a>
-                <a href="#browse-type" className="hover:text-[#2CADB2] transition-colors">
-                  Browse by Type
-                </a>
-                <a href="#browse-use-case" className="hover:text-[#2CADB2] transition-colors">
-                  Browse by Use Case
-                </a>
-                <a href="#download-cart" className="hover:text-[#2CADB2] transition-colors">
-                  Download Cart
-                </a>
-              </nav>
+              <CartNav />
             </div>
           </header>
 
-          <main className="flex-1">
-            {children}
-          </main>
+          <CartLayoutClient>
+            <main className="flex-1">
+              {children}
+            </main>
+          </CartLayoutClient>
 
           <footer className="border-t border-black/5 py-6 text-center text-xs text-gray-500">
             <span style={{ fontFamily: "Raleway, sans-serif" }}>
