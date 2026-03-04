@@ -139,7 +139,7 @@ export default function AssetDetailPage({ params }: AssetDetailPageProps) {
               How to use it
             </h2>
             <p
-              className="text-sm md:text-base text-gray-800"
+              className="text-sm md:text-base text-gray-800 whitespace-pre-line"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
               {asset.summaryHow}

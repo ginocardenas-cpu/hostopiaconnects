@@ -4,10 +4,11 @@ Use this flow to add real documents and videos so you can test browse, preview, 
 
 ## 1. Put files in `public/assets/`
 
-- **Documents:** PDF, DOCX, etc. → e.g. `public/assets/my-sales-deck.pdf`
+- **Documents:** PDF, Word (DOCX), etc. → e.g. `public/assets/my-doc.pdf`, `public/assets/playbook.docx`
+- **Presentations:** PowerPoint (PPT, PPTX) → e.g. `public/assets/sales-deck.pptx`
 - **Videos:** MP4, WebM, etc. → e.g. `public/assets/product-demo.mp4`
 
-The site will serve them at `/assets/your-filename.pdf` (or `.mp4`).
+The site will serve them at `/assets/your-filename` (e.g. `/assets/playbook.docx`). Use URL encoding for spaces: `My Report.docx` → `fileUrl: "/assets/My%20Report.docx"`.
 
 ## 2. Add (or edit) entries in the catalog
 
@@ -53,6 +54,56 @@ Edit **`lib/assets.ts`** and add an object to the **`sampleAssets`** array. Each
   gated: true,
   internalOnly: false,
   fileUrl: "/assets/my-sales-deck.pdf",
+  lastUpdated: "2026-03-10",
+  viewCount: 0,
+  downloadCount: 0
+}
+```
+
+## Example: a Word document
+
+```ts
+{
+  id: "logo-playbook-doc",
+  slug: "logo-playbook-doc",
+  title: "Logo Design Playbook",
+  journey: "Build a Brand",
+  productCategory: "Logo",
+  contentType: "Document",
+  useCases: ["Sales", "Training & Onboarding"],
+  summaryWhat: "Step-by-step playbook for logo design conversations.",
+  summaryWhy: "Keeps reps consistent and confident in discovery.",
+  summaryHow: "Use as a reference during calls and in training.",
+  language: "English",
+  region: "Global",
+  gated: false,
+  internalOnly: false,
+  fileUrl: "/assets/logo-playbook.docx",
+  lastUpdated: "2026-03-10",
+  viewCount: 0,
+  downloadCount: 0
+}
+```
+
+## Example: a PowerPoint deck
+
+```ts
+{
+  id: "hosting-overview-ppt",
+  slug: "hosting-overview-ppt",
+  title: "Hosting Overview Deck",
+  journey: "Get Online",
+  productCategory: "Website",
+  contentType: "Presentation",
+  useCases: ["Sales", "Marketing"],
+  summaryWhat: "Sales-ready PowerPoint overview of hosting and uptime.",
+  summaryWhy: "Supports first conversations and proposal follow-ups.",
+  summaryHow: "Present in calls or send as a leave-behind.",
+  language: "English",
+  region: "Global",
+  gated: true,
+  internalOnly: false,
+  fileUrl: "/assets/hosting-overview.pptx",
   lastUpdated: "2026-03-10",
   viewCount: 0,
   downloadCount: 0

@@ -290,6 +290,29 @@ export const sampleAssets: Asset[] = [
     lastUpdated: "2026-03-10",
     viewCount: 0,
     downloadCount: 0
+  },
+  {
+    id: "domain-registration-overview",
+    slug: "domain-registration-overview",
+    title: "Domain Registration Overview",
+    journey: "Build a Brand",
+    productCategory: "Domains",
+    contentType: "Document",
+    useCases: ["Sales", "Training & Onboarding"],
+    summaryWhat:
+      "A concise overview of our Domain Registration service—highlighting the key features and benefits of securing your online address.",
+    summaryWhy:
+      "Your domain is the foundation of your online presence. It protects your brand, powers your website and email, and helps secure your information with features like multi-TLD registration and Domain Privacy.",
+    summaryHow:
+      "Sales tool: Quickly position the value of domain registration.\n\nInternal reference: Covers transfers, management, auto-renew, 24/7 support, privacy, and hosting options.\n\nProduct snapshot: Explains TLD selection and bundling with hosting or an Online Presence Builder.",
+    language: "English",
+    region: "Global",
+    gated: false,
+    internalOnly: false,
+    fileUrl: "/assets/domain-registration-overview.docx",
+    lastUpdated: "2026-03-10",
+    viewCount: 0,
+    downloadCount: 0
   }
 ];
 
