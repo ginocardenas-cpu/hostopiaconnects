@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Home, Compass, FileText, Target, HelpCircle, ShoppingCart } from "lucide-react";
+import { Home, Compass, HelpCircle, ShoppingCart } from "lucide-react";
 import { useCart } from "./CartProvider";
 import { BrowseWizard } from "./BrowseWizard";
+import { useBrowse } from "./BrowseProvider";
 
 export function CartNav() {
   const { assets } = useCart();
+  const { unseenCount } = useBrowse();
   const count = assets.length;
   const [browseOpen, setBrowseOpen] = useState(false);
 
@@ -24,10 +26,15 @@ export function CartNav() {
       <button
         type="button"
         onClick={() => setBrowseOpen(true)}
-        className="inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors"
+        className="inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors relative"
       >
         <Compass size={16} />
         <span>Browse by</span>
+        {unseenCount > 0 && (
+          <span className="absolute -top-2 -right-3 inline-flex items-center justify-center rounded-full bg-[#2CADB2] text-white text-[10px] px-2 py-[1px]">
+            {unseenCount}
+          </span>
+        )}
       </button>
 
       <Link href="/how-it-works" className="inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors">

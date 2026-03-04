@@ -13,9 +13,11 @@ const defaultMessage = {
 };
 
 export function TickerBar() {
+  const [mounted, setMounted] = useState(false);
   const [dismissed, setDismissed] = useState(true);
 
   useEffect(() => {
+    setMounted(true);
     const stored = sessionStorage.getItem(TICKER_STORAGE_KEY);
     setDismissed(stored === "1");
   }, []);
@@ -25,7 +27,7 @@ export function TickerBar() {
     setDismissed(true);
   };
 
-  if (dismissed) return null;
+  if (!mounted || dismissed) return null;
 
   const { label, text, date, href } = defaultMessage;
 

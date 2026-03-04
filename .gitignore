@@ -1,0 +1,18 @@
+# Dependencies
+node_modules
+.next
+out
+
+# Large media (GitHub 100MB limit) – keep README and .gitkeep
+public/assets/*.mp4
+public/assets/*.mov
+public/assets/*.webm
+
+# Env
+.env*.local
+.env
+
+# Misc
+.DS_Store
+*.pem
+.vercel

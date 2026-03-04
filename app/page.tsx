@@ -11,21 +11,38 @@ export default function Home() {
       <section className="min-h-[70vh] flex flex-col justify-center items-center px-6 py-16">
         <div className="max-w-4xl text-center">
           <p
-            className="uppercase tracking-[0.2em] text-xs mb-4"
-            style={{ fontFamily: "Raleway, sans-serif", color: "#2CADB2" }}
+            className="uppercase mb-1"
+            style={{
+              fontFamily: "Montserrat, sans-serif",
+              fontSize: "0.7rem",
+              fontWeight: 700,
+              letterSpacing: "0.2em",
+              color: "#2CADB2"
+            }}
           >
             Welcome
+          </p>
+          <p
+            className="uppercase mb-4"
+            style={{
+              fontFamily: "Montserrat, sans-serif",
+              fontSize: "0.7rem",
+              fontWeight: 700,
+              letterSpacing: "0.2em",
+              color: "#2CADB2"
+            }}
+          >
+            to
           </p>
           <h1
             className="font-black leading-tight mb-6"
             style={{
               fontFamily: "Montserrat, sans-serif",
-              fontSize: "clamp(3.5rem, 8vw, 7.5rem)",
-              color: "#24282B"
+              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+              color: "#2CADB2"
             }}
           >
-            Welcome to{" "}
-            <span style={{ color: "#2CADB2" }}>HostopiaConnects</span>.
+            HostopiaConnects.
           </h1>
           <p
             className="font-black leading-tight mb-4"
@@ -39,13 +56,17 @@ export default function Home() {
             <AnimatedRotatingWord /> Hostopia products.
           </p>
           <p
-            className="text-base md:text-lg leading-relaxed mb-6"
-            style={{ fontFamily: "Raleway, sans-serif", color: "#6b7280" }}
+            className="text-lg max-w-2xl mx-auto mb-10"
+            style={{
+              fontFamily: "Raleway, sans-serif",
+              color: "#555A5E",
+              lineHeight: 1.625
+            }}
           >
             A modern portal for Hostopia product, sales, and training content –
             all in one place.
           </p>
-          <div className="max-w-2xl mx-auto mb-8">
+          <div className="max-w-2xl mx-auto mb-10">
             <input
               type="search"
               placeholder="Search for a product, asset, or use case"
@@ -107,8 +128,12 @@ export default function Home() {
               </h2>
             </div>
             <p
-              className="text-sm md:text-base max-w-md"
-              style={{ fontFamily: "Raleway, sans-serif", color: "#6b7280" }}
+              className="text-lg max-w-2xl mb-10"
+              style={{
+                fontFamily: "Raleway, sans-serif",
+                color: "#555A5E",
+                lineHeight: 1.625
+              }}
             >
               Organized around the same journeys as your Hostopia product
               navigation – so sales decks, playbooks, and training always match
@@ -141,8 +166,12 @@ export default function Home() {
                   {journey.label}
                 </div>
                 <p
-                  className="text-sm text-gray-600"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
+                  className="text-lg"
+                  style={{
+                    fontFamily: "Raleway, sans-serif",
+                    color: "#555A5E",
+                    lineHeight: 1.625
+                  }}
                 >
                   Tap to see assets aligned to this step of the customer journey.
                 </p>
@@ -172,8 +201,12 @@ export default function Home() {
                 Browse by content type.
               </h3>
               <p
-                className="text-sm md:text-base mb-6"
-                style={{ fontFamily: "Raleway, sans-serif", color: "#6b7280" }}
+                className="text-lg max-w-2xl mb-10"
+                style={{
+                  fontFamily: "Raleway, sans-serif",
+                  color: "#555A5E",
+                  lineHeight: 1.625
+                }}
               >
                 Quickly jump to the exact kind of asset you need – decks,
                 documents, videos, or full campaign kits.
@@ -192,8 +225,12 @@ export default function Home() {
                         {type}
                       </span>
                       <span
-                        className="block text-xs text-gray-600"
-                        style={{ fontFamily: "Raleway, sans-serif" }}
+                        className="block text-lg"
+                        style={{
+                          fontFamily: "Raleway, sans-serif",
+                          color: "#555A5E",
+                          lineHeight: 1.625
+                        }}
                       >
                         Coming soon – filterable libraries for each content
                         type.
@@ -217,8 +254,12 @@ export default function Home() {
                 Browse by use case.
               </h3>
               <p
-                className="text-sm md:text-base mb-6"
-                style={{ fontFamily: "Raleway, sans-serif", color: "#6b7280" }}
+                className="text-lg max-w-2xl mb-10"
+                style={{
+                  fontFamily: "Raleway, sans-serif",
+                  color: "#555A5E",
+                  lineHeight: 1.625
+                }}
               >
                 Or start from what you&apos;re trying to do – train new reps,
                 launch a campaign, or support existing customers.
@@ -237,8 +278,12 @@ export default function Home() {
                         {useCase}
                       </span>
                       <span
-                        className="block text-xs text-gray-600"
-                        style={{ fontFamily: "Raleway, sans-serif" }}
+                        className="block text-lg"
+                        style={{
+                          fontFamily: "Raleway, sans-serif",
+                          color: "#555A5E",
+                          lineHeight: 1.625
+                        }}
                       >
                         Coming soon – curated asset collections for this
                         workflow.

@@ -161,7 +161,7 @@ export function getAssetsByProductCategory(category: ProductCategory): Asset[] {
 }
 
 
-// Initial sample catalog to drive UI prototypes.
+/** Live catalog: add your docs/videos in public/assets/, then add entries here. See ADDING-CONTENT.md. */
 export const sampleAssets: Asset[] = [
   {
     id: "logo-build-a-brand-overview-deck",
@@ -250,6 +250,46 @@ export const sampleAssets: Asset[] = [
     lastUpdated: "2026-02-15",
     viewCount: 510,
     downloadCount: 310
+  },
+  {
+    id: "online-fax-video",
+    slug: "online-fax-video",
+    title: "Online Fax",
+    journey: "Grow their Business",
+    productCategory: "Online Fax",
+    contentType: "Video",
+    useCases: ["Sales", "Training & Onboarding", "Support"],
+    summaryWhat: "Video overview of Hostopia Online Fax for small business.",
+    summaryWhy: "Helps reps and partners explain and demo Online Fax to prospects.",
+    summaryHow: "Use in training, on discovery calls, or as a leave-behind link.",
+    language: "English",
+    region: "Global",
+    gated: false,
+    internalOnly: false,
+    fileUrl: "/assets/Online%20Fax.mp4",
+    lastUpdated: "2026-03-10",
+    viewCount: 0,
+    downloadCount: 0
+  },
+  {
+    id: "ecommerce-video",
+    slug: "ecommerce-video",
+    title: "Ecommerce",
+    journey: "Grow their Business",
+    productCategory: "Ecommerce",
+    contentType: "Video",
+    useCases: ["Sales", "Marketing", "Training & Onboarding"],
+    summaryWhat: "Video overview of Hostopia ecommerce solutions for small business.",
+    summaryWhy: "Supports ecommerce upsell and cross-sell conversations.",
+    summaryHow: "Share with prospects or use in training and enablement.",
+    language: "English",
+    region: "Global",
+    gated: false,
+    internalOnly: false,
+    fileUrl: "/assets/eCommerce.mp4",
+    lastUpdated: "2026-03-10",
+    viewCount: 0,
+    downloadCount: 0
   }
 ];
 

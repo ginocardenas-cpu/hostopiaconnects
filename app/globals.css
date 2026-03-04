@@ -9,6 +9,14 @@ body {
   color: #24282b;
 }
 
+/* Corporate body copy: Raleway, #555A5E, 1.625 line-height, text-lg */
+.body-copy {
+  font-family: Raleway, sans-serif;
+  color: #555A5E;
+  line-height: 1.625;
+  font-size: 1.125rem;
+}
+
 a {
   color: inherit;
   text-decoration: none;

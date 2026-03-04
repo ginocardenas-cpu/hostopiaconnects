@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   journeys,
   journeyProducts,
@@ -12,6 +13,7 @@ import {
 } from "@/lib/assets";
 import { X, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import { useBrowse } from "./BrowseProvider";
 
 type Step = 1 | 2 | 3;
 
@@ -21,8 +23,9 @@ interface BrowseWizardProps {
 }
 
 export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
+  const { seenSlugs, setResultsFromAssets, markSeen, clearResults } = useBrowse();
   const [step, setStep] = useState<Step>(1);
-  const [journey, setJourney] = useState<ProductJourney | null>(null);
+  const [journeysSelected, setJourneysSelected] = useState<ProductJourney[]>([]);
   const [productCategories, setProductCategories] = useState<ProductCategory[]>([]);
   const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
   const [useCases, setUseCases] = useState<UseCase[]>([]);
@@ -30,25 +33,27 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
 
   const reset = () => {
     setStep(1);
-    setJourney(null);
+    setJourneysSelected([]);
     setProductCategories([]);
     setContentTypes([]);
     setUseCases([]);
     setShowResults(false);
+    clearResults();
   };
 
   const handleClose = () => {
-    reset();
     onClose();
   };
 
-  const journeyProductsForSelection = journey
-    ? journeyProducts.filter((p) => p.journey === journey)
-    : [];
+  const journeyProductsForSelection =
+    journeysSelected.length > 0
+      ? journeyProducts.filter((p) => journeysSelected.includes(p.journey))
+      : [];
 
   const filteredAssets = useMemo(() => {
     return sampleAssets.filter((asset) => {
-      if (journey && asset.journey !== journey) return false;
+      if (journeysSelected.length > 0 && !journeysSelected.includes(asset.journey))
+        return false;
       if (
         productCategories.length > 0 &&
         !productCategories.includes(asset.productCategory)
@@ -66,7 +71,7 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
         return false;
       return true;
     });
-  }, [journey, productCategories, contentTypes, useCases]);
+  }, [journeysSelected, productCategories, contentTypes, useCases]);
 
   if (!open) return null;
 
@@ -94,14 +99,15 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
   };
 
   const pathChips: string[] = [];
-  if (journey) pathChips.push(`Journey: ${journey}`);
+  if (journeysSelected.length > 0)
+    pathChips.push(`Journey: ${journeysSelected.join(", ")}`);
   if (productCategories.length)
     pathChips.push(`Products: ${productCategories.join(", ")}`);
   if (contentTypes.length)
     pathChips.push(`Content: ${contentTypes.join(", ")}`);
   if (useCases.length) pathChips.push(`Use case: ${useCases.join(", ")}`);
 
-  return (
+  const modal = (
     <div className="fixed inset-0 z-40 flex items-start justify-center bg-black/40 backdrop-blur-sm overflow-y-auto">
       <div className="mt-20 mb-10 w-full max-w-5xl rounded-3xl bg-white shadow-2xl border border-black/10 overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-black/5">
@@ -205,18 +211,22 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                 className="text-xs text-gray-600"
                 style={{ fontFamily: "Raleway, sans-serif" }}
               >
-                Step 1: Select the journey that best matches where your customer
+                Step 1: Select one or more journeys that match where your customer
                 is today.
               </p>
               <div className="grid sm:grid-cols-2 gap-3">
                 {journeys.map((j) => {
-                  const selected = journey === j.label;
+                  const selected = journeysSelected.includes(j.label);
                   return (
                     <button
                       key={j.slug}
                       type="button"
                       onClick={() => {
-                        setJourney(j.label);
+                        setJourneysSelected((prev) =>
+                          prev.includes(j.label)
+                            ? prev.filter((x) => x !== j.label)
+                            : [...prev, j.label]
+                        );
                         setProductCategories([]);
                         setContentTypes([]);
                         setUseCases([]);
@@ -248,7 +258,7 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  disabled={!journey}
+                  disabled={journeysSelected.length === 0}
                   className="inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-[11px] font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed bg-[#2CADB2] text-white"
                   style={{ fontFamily: "Montserrat, sans-serif" }}
                 >
@@ -411,7 +421,10 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowResults(true)}
+                  onClick={() => {
+                    setResultsFromAssets(filteredAssets);
+                    setShowResults(true);
+                  }}
                   className="inline-flex items-center gap-1 rounded-full bg-[#2CADB2] text-white px-4 py-1.5 text-[11px] font-semibold"
                   style={{ fontFamily: "Montserrat, sans-serif" }}
                 >
@@ -446,7 +459,15 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                   <Link
                     key={asset.id}
                     href={`/assets/${asset.slug}`}
-                    className="block rounded-xl bg-white border border-black/5 px-3 py-2 hover:border-[#2CADB2]/60 hover:shadow-sm transition"
+                    onClick={() => {
+                      markSeen(asset.slug);
+                      onClose();
+                    }}
+                    className={`block rounded-xl border px-3 py-2 hover:border-[#2CADB2]/60 hover:shadow-sm transition ${
+                      seenSlugs.includes(asset.slug)
+                        ? "bg-gray-100 border-dashed opacity-75"
+                        : "bg-white border-black/5"
+                    }`}
                   >
                     <p
                       className="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-1"
@@ -475,5 +496,8 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
       </div>
     </div>
   );
+
+  if (typeof document === "undefined") return null;
+  return createPortal(modal, document.body);
 }
 
