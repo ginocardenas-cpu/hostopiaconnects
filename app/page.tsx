@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Compass, FileStack, Target } from "lucide-react";
 import { journeys } from "@/lib/assets";
 import { HomeHighlights } from "@/components/HomeHighlights";
+import { AnimatedRotatingWord } from "@/components/AnimatedRotatingWord";
 
 export default function Home() {
   return (
@@ -13,28 +14,45 @@ export default function Home() {
             className="uppercase tracking-[0.2em] text-xs mb-4"
             style={{ fontFamily: "Raleway, sans-serif", color: "#2CADB2" }}
           >
-            Hostopia Connects
+            Welcome
           </p>
           <h1
             className="font-black leading-tight mb-6"
             style={{
               fontFamily: "Montserrat, sans-serif",
-              fontSize: "clamp(3rem, 6vw, 5.5rem)",
+              fontSize: "clamp(3.5rem, 8vw, 7.5rem)",
               color: "#24282B"
             }}
           >
-            Everything your teams need to{" "}
-            <span style={{ color: "#2CADB2" }}>sell, train, and launch</span>{" "}
-            Hostopia products.
+            Welcome to{" "}
+            <span style={{ color: "#2CADB2" }}>HostopiaConnects</span>.
           </h1>
           <p
-            className="text-base md:text-lg leading-relaxed mb-10"
+            className="font-black leading-tight mb-4"
+            style={{
+              fontFamily: "Montserrat, sans-serif",
+              fontSize: "clamp(1.5rem, 3vw, 2.25rem)",
+              color: "#24282B"
+            }}
+          >
+            Everything you need to
+            <AnimatedRotatingWord /> Hostopia products.
+          </p>
+          <p
+            className="text-base md:text-lg leading-relaxed mb-6"
             style={{ fontFamily: "Raleway, sans-serif", color: "#6b7280" }}
           >
-            A modern, public-facing portal for sales and marketing enablement.
-            Browse by product journey, content type, or use case, then request a
-            tailored download bundle delivered straight to your inbox.
+            A modern portal for Hostopia product, sales, and training content –
+            all in one place.
           </p>
+          <div className="max-w-2xl mx-auto mb-8">
+            <input
+              type="search"
+              placeholder="Search for a product, asset, or use case"
+              className="w-full rounded-full border border-black/10 bg-white/90 px-5 py-3 text-sm outline-none shadow-sm focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2]"
+              style={{ fontFamily: "Raleway, sans-serif" }}
+            />
+          </div>
           <div className="flex flex-wrap justify-center gap-4 mt-4">
             <a
               href="#products"
