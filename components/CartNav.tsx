@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Home, Compass, FileText, Target, HelpCircle, ShoppingCart } from "lucide-react";
 import { useCart } from "./CartProvider";
+import { BrowseWizard } from "./BrowseWizard";
 
 export function CartNav() {
   const { assets } = useCart();
@@ -22,7 +23,7 @@ export function CartNav() {
 
       <button
         type="button"
-        onClick={() => setBrowseOpen((o) => !o)}
+        onClick={() => setBrowseOpen(true)}
         className="inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors"
       >
         <Compass size={16} />
@@ -46,78 +47,7 @@ export function CartNav() {
           </span>
         )}
       </Link>
-
-      {browseOpen && (
-        <div className="absolute right-0 top-full mt-3 w-[520px] rounded-2xl border border-black/10 bg-white shadow-xl p-5 z-30">
-          <div
-            className="grid grid-cols-3 gap-4 text-xs"
-            style={{ fontFamily: "Raleway, sans-serif" }}
-          >
-            <div>
-              <p className="font-semibold mb-2 text-gray-900 uppercase tracking-[0.18em] text-[11px]">
-                Journey
-              </p>
-              <ul className="space-y-1.5 text-gray-700">
-                <li>
-                  <Link href="/assets/journey/build-a-brand" className="hover:text-[#2CADB2]">
-                    Build a Brand
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/assets/journey/get-online" className="hover:text-[#2CADB2]">
-                    Get Online
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/assets/journey/get-found" className="hover:text-[#2CADB2]">
-                    Get Found
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/assets/journey/grow-their-business" className="hover:text-[#2CADB2]">
-                    Grow their Business
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <p className="font-semibold mb-2 text-gray-900 uppercase tracking-[0.18em] text-[11px]">
-                Use Case
-              </p>
-              <ul className="space-y-1.5 text-gray-700">
-                <li className="flex items-center gap-1.5">
-                  <Target size={12} /> Sales
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Target size={12} /> Marketing
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Target size={12} /> Training &amp; Onboarding
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Target size={12} /> Support
-                </li>
-              </ul>
-            </div>
-            <div>
-              <p className="font-semibold mb-2 text-gray-900 uppercase tracking-[0.18em] text-[11px]">
-                Content Type
-              </p>
-              <ul className="space-y-1.5 text-gray-700">
-                <li className="flex items-center gap-1.5">
-                  <FileText size={12} /> Decks &amp; Presentations
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <FileText size={12} /> One-pagers &amp; Playbooks
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <FileText size={12} /> Videos &amp; Training
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
+      <BrowseWizard open={browseOpen} onClose={() => setBrowseOpen(false)} />
     </nav>
   );
 }
