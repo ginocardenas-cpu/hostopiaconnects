@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Compass, FileStack, Target } from "lucide-react";
-import { journeys } from "@/lib/assets";
+import { Compass, FileStack, Target, Sparkles, ArrowRight } from "lucide-react";
+import { journeys, getLatestAssets } from "@/lib/assets";
 
 export default function Home() {
   return (
@@ -53,6 +53,94 @@ export default function Home() {
             >
               How Hostopia Connects Works
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured & What's New */}
+      <section
+        id="featured"
+        className="py-16 border-t border-black/5 bg-white"
+      >
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <span
+                  className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em]"
+                  style={{ fontFamily: "Raleway, sans-serif", color: "#2CADB2" }}
+                >
+                  <Sparkles size={14} />
+                  Latest &amp; Featured
+                </span>
+              </div>
+              <h2
+                className="font-black leading-tight mb-2"
+                style={{
+                  fontFamily: "Montserrat, sans-serif",
+                  fontSize: "clamp(2rem, 4vw, 3rem)",
+                  color: "#24282B"
+                }}
+              >
+                What&apos;s New
+              </h2>
+              <p
+                className="text-sm md:text-base max-w-xl"
+                style={{ fontFamily: "Raleway, sans-serif", color: "#6b7280" }}
+              >
+                Recently added and updated assets. Preview or add to your Download Cart.
+              </p>
+            </div>
+            <Link
+              href="/featured"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[#2CADB2] hover:underline shrink-0"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
+              View all featured
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {getLatestAssets(4).map((asset) => (
+              <Link
+                key={asset.id}
+                href={`/assets/${asset.slug}`}
+                className="group relative overflow-hidden rounded-2xl border border-black/5 bg-[#f7f6f2] p-5 hover:-translate-y-1 hover:shadow-lg transition-all duration-200"
+              >
+                <div className="absolute -top-6 -right-4 w-16 h-16 rounded-full bg-gradient-to-br from-[#2CADB2]/10 via-[#F8CF41]/15 to-transparent" />
+                <div className="relative">
+                  <span
+                    className="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-gray-600 border border-black/5"
+                    style={{ fontFamily: "Raleway, sans-serif" }}
+                  >
+                    {asset.contentType}
+                  </span>
+                  <h3
+                    className="font-black mt-3 mb-2 line-clamp-2"
+                    style={{
+                      fontFamily: "Montserrat, sans-serif",
+                      fontSize: "1rem"
+                    }}
+                  >
+                    {asset.title}
+                  </h3>
+                  <p
+                    className="text-xs text-gray-500"
+                    style={{ fontFamily: "Raleway, sans-serif" }}
+                  >
+                    Updated {new Date(asset.lastUpdated).toLocaleDateString()} · {asset.productCategory}
+                  </p>
+                  <span
+                    className="inline-flex items-center gap-1 mt-3 text-xs font-semibold text-[#2CADB2]"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                  >
+                    View details
+                    <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                  </span>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>

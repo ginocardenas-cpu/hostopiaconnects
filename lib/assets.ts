@@ -259,3 +259,10 @@ export function getAssetsByUseCase(useCase: UseCase): Asset[] {
   return sampleAssets.filter((asset) => asset.useCases.includes(useCase));
 }
 
+/** Latest assets by lastUpdated (newest first), for "What's New" / Featured. */
+export function getLatestAssets(limit = 8): Asset[] {
+  return [...sampleAssets]
+    .sort((a, b) => (b.lastUpdated > a.lastUpdated ? 1 : -1))
+    .slice(0, limit);
+}
+

@@ -4,6 +4,7 @@ import Image from "next/image";
 import "./globals.css";
 import { CartLayoutClient } from "@/components/CartLayoutClient";
 import { CartNav } from "@/components/CartNav";
+import { TickerBar } from "@/components/TickerBar";
 
 export const metadata = {
   title: "Hostopia Connects",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <CartLayoutClient>
           <div className="min-h-screen bg-[#f7f6f2] text-[#24282B] flex flex-col">
+            <TickerBar />
             {/* Top navigation */}
             <header className="border-b border-black/5 bg-white/80 backdrop-blur-sm sticky top-0 z-20">
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-[#2CADB2] via-[#F8CF41] to-[#2CADB2]" />
