@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { FileText } from "lucide-react";
 import { getAssetBySlug } from "@/lib/assets";
 import { AddToCartButton } from "@/components/AddToCartButton";
+import { AssetFeedback } from "@/components/AssetFeedback";
+import { CopyLinkButton } from "@/components/CopyLinkButton";
 
 interface AssetDetailPageProps {
   params: { slug: string };
@@ -76,14 +79,22 @@ export default function AssetDetailPage({ params }: AssetDetailPageProps) {
         </p>
 
         {/* Actions */}
-        <div className="flex flex-wrap gap-3 mb-8">
+        <div className="flex flex-wrap items-center gap-3 mb-4">
           <AddToCartButton assetId={asset.id} />
-          <button
-            className="inline-flex items-center justify-center rounded-full px-6 py-2 text-sm font-semibold border border-[#24282B]/20 bg-white transition hover:bg-[#f7f6f2]"
+          <a
+            href={asset.fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full px-6 py-2 text-sm font-semibold border border-[#24282B]/20 bg-white transition hover:bg-[#f7f6f2] hover:border-[#2CADB2]"
             style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}
           >
-            Copy Link
-          </button>
+            <FileText size={16} />
+            Preview
+          </a>
+          <CopyLinkButton />
+        </div>
+        <div className="mb-8">
+          <AssetFeedback assetId={asset.id} />
         </div>
       </div>
 
@@ -171,9 +182,9 @@ export default function AssetDetailPage({ params }: AssetDetailPageProps) {
 
           <div className="rounded-2xl border border-dashed border-[#2CADB2]/50 bg-[#f0fbfa] p-4 text-xs text-gray-700">
             <p style={{ fontFamily: "Raleway, sans-serif" }}>
-              When the Download Cart is fully implemented, this page will also
-              show a preview of the file and any related assets (e.g., training
-              modules or case studies) to keep sales flows tight.
+              Use <strong>Preview</strong> to open the file in a new tab before
+              adding to your Download Cart. Your thumbs up/down helps us improve
+              materials.
             </p>
           </div>
         </aside>

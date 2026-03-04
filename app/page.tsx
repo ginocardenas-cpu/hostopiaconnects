@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Compass, FileStack, Target } from "lucide-react";
 import { journeys } from "@/lib/assets";
 
 export default function Home() {
@@ -7,14 +8,17 @@ export default function Home() {
       {/* Hero */}
       <section className="min-h-[70vh] flex flex-col justify-center items-center px-6 py-16">
         <div className="max-w-4xl text-center">
-          <p className="uppercase tracking-[0.2em] text-xs mb-4 text-gray-500">
+          <p
+            className="uppercase tracking-[0.2em] text-xs mb-4"
+            style={{ fontFamily: "Raleway, sans-serif", color: "#2CADB2" }}
+          >
             Hostopia Connects
           </p>
           <h1
             className="font-black leading-tight mb-6"
             style={{
               fontFamily: "Montserrat, sans-serif",
-              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+              fontSize: "clamp(3rem, 6vw, 5.5rem)",
               color: "#24282B"
             }}
           >
@@ -42,13 +46,13 @@ export default function Home() {
             >
               Start Browsing by Product
             </a>
-            <a
-              href="#how-it-works"
-              className="inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold border border-[#24282B]/20 transition hover:bg-white"
+            <Link
+              href="/how-it-works"
+              className="inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold border-2 border-[#24282B]/20 transition hover:bg-white hover:border-[#2CADB2]"
               style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}
             >
               How Hostopia Connects Works
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -64,9 +68,10 @@ export default function Home() {
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-px" style={{ backgroundColor: "#F8CF41" }} />
                 <span
-                  className="section-label text-xs uppercase tracking-[0.2em] text-gray-500"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
+                  className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em]"
+                  style={{ fontFamily: "Raleway, sans-serif", color: "#2CADB2" }}
                 >
+                  <Compass size={14} />
                   Browse by Product Journey
                 </span>
               </div>
@@ -74,7 +79,8 @@ export default function Home() {
                 className="font-black leading-tight"
                 style={{
                   fontFamily: "Montserrat, sans-serif",
-                  fontSize: "clamp(1.75rem, 3vw, 2.5rem)"
+                  fontSize: "clamp(2rem, 4vw, 3rem)",
+                  color: "#24282B"
                 }}
               >
                 Start where your customer is.
@@ -135,12 +141,14 @@ export default function Home() {
           <div className="grid gap-12 md:grid-cols-2">
             <div>
               <h3
-                className="font-black mb-4"
+                className="font-black mb-4 inline-flex items-center gap-2"
                 style={{
                   fontFamily: "Montserrat, sans-serif",
-                  fontSize: "1.5rem"
+                  fontSize: "clamp(1.35rem, 2.5vw, 1.75rem)",
+                  color: "#24282B"
                 }}
               >
+                <FileStack size={22} className="text-[#2CADB2]" />
                 Browse by content type.
               </h3>
               <p
@@ -178,12 +186,14 @@ export default function Home() {
 
             <div id="browse-use-case">
               <h3
-                className="font-black mb-4"
+                className="font-black mb-4 inline-flex items-center gap-2"
                 style={{
                   fontFamily: "Montserrat, sans-serif",
-                  fontSize: "1.5rem"
+                  fontSize: "clamp(1.35rem, 2.5vw, 1.75rem)",
+                  color: "#24282B"
                 }}
               >
+                <Target size={22} className="text-[#2CADB2]" />
                 Browse by use case.
               </h3>
               <p
@@ -222,92 +232,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it works + Download Cart placeholder */}
-      <section
-        id="how-it-works"
-        className="py-16 border-t border-black/5 bg-white"
-      >
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid gap-10 md:grid-cols-[1.4fr_minmax(0,1fr)] items-start">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-8 h-px" style={{ backgroundColor: "#2CADB2" }} />
-                <span
-                  className="text-xs uppercase tracking-[0.2em] text-gray-500"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
-                >
-                  How Hostopia Connects Works
-                </span>
-              </div>
-              <h2
-                className="font-black mb-4"
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontSize: "clamp(1.75rem, 3vw, 2.4rem)"
-                }}
-              >
-                Add assets to your cart, then get a single download bundle in
-                your inbox.
-              </h2>
-              <p
-                className="text-sm md:text-base mb-6"
-                style={{ fontFamily: "Raleway, sans-serif", color: "#6b7280" }}
-              >
-                Hostopia Connects is public to browse. When you&apos;re ready
-                to download, you&apos;ll add assets to a Download Cart and
-                request them in one step. We&apos;ll capture just three fields –
-                name, company, and email – then email you secure, time-limited
-                links for everything in your bundle.
-              </p>
-              <ol
-                className="space-y-3 text-sm"
-                style={{ fontFamily: "Raleway, sans-serif", color: "#4b5563" }}
-              >
-                <li>
-                  <span className="font-semibold">1. Browse</span> by product
-                  journey, content type, or use case.
-                </li>
-                <li>
-                  <span className="font-semibold">2. Add to cart</span> on any
-                  asset detail page you want to download.
-                </li>
-                <li>
-                  <span className="font-semibold">3. Request your bundle</span>{" "}
-                  once, then grab all assets from the email you receive.
-                </li>
-              </ol>
-            </div>
-
-            <div
-              id="download-cart"
-              className="rounded-2xl border border-dashed border-[#2CADB2]/50 bg-[#f7fefc] p-6"
-            >
-              <h3
-                className="font-black mb-2"
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontSize: "1.2rem"
-                }}
-              >
-                Download Cart (coming next)
-              </h3>
-              <p
-                className="text-sm mb-4"
-                style={{ fontFamily: "Raleway, sans-serif", color: "#4b5563" }}
-              >
-                This is where users will review selected assets and submit the
-                lead form (Name, Company, Email) before we send the consolidated
-                download email and push details into Zoho CRM.
-              </p>
-              <div className="text-xs text-gray-500">
-                We&apos;ll implement this as a dedicated `/cart` page and header
-                icon, backed by a lightweight API route for email delivery and
-                CRM sync.
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </>
   );
 }
