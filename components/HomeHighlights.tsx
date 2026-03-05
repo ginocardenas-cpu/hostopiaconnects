@@ -20,9 +20,9 @@ const tabs: { key: TabKey; label: string; icon: React.ComponentType<any> }[] = [
 export function HomeHighlights() {
   const [active, setActive] = useState<TabKey>("new");
 
-  const latest = getLatestAssets(4);
-  const popular = getMostViewedAssets(4);
-  const downloaded = getMostDownloadedAssets(4);
+  const latest = getLatestAssets(3);
+  const popular = getMostViewedAssets(3);
+  const downloaded = getMostDownloadedAssets(3);
 
   const list =
     active === "new" ? latest : active === "popular" ? popular : downloaded;
@@ -69,54 +69,61 @@ export function HomeHighlights() {
               </div>
 
               <div className="space-y-3">
-                {list.map((asset) => (
+                {list.map((asset, index) => (
                   <Link
                     key={asset.id}
                     href={`/assets/${asset.slug}`}
-                    className="flex items-start justify-between gap-3 rounded-xl px-3 py-2 hover:bg-[#f7f6f2] transition"
+                    className="flex items-start justify-between gap-3 rounded-xl px-3 py-2 hover:bg-[#f7f6f2] transition group"
                   >
-                    <div className="min-w-0">
-                      <p
-                        className="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-1"
-                        style={{ fontFamily: "Raleway, sans-serif" }}
-                      >
-                        {asset.productCategory} · {asset.contentType}
-                      </p>
-                      <p
-                        className="text-sm font-semibold text-gray-900 truncate"
+                    <div className="flex items-start gap-3 min-w-0">
+                      <span
+                        className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold bg-[#2CADB2]/10 text-[#2CADB2] group-hover:bg-[#2CADB2] group-hover:text-white transition-colors"
                         style={{ fontFamily: "Montserrat, sans-serif" }}
                       >
-                        {asset.title}
-                      </p>
-                      <p
-                        className="text-[11px] text-gray-500 truncate"
-                        style={{ fontFamily: "Raleway, sans-serif" }}
-                      >
-                        {active === "new" &&
-                          `Updated ${new Date(
-                            asset.lastUpdated
-                          ).toLocaleDateString()}`}
-                        {active === "popular" &&
-                          `${asset.viewCount.toLocaleString()} views`}
-                        {active === "downloaded" &&
-                          `${asset.downloadCount.toLocaleString()} downloads`}
-                      </p>
+                        {index + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <p
+                          className="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-1"
+                          style={{ fontFamily: "Raleway, sans-serif" }}
+                        >
+                          {asset.productCategory} · {asset.contentType}
+                        </p>
+                        <p
+                          className="text-sm font-semibold text-gray-900 truncate"
+                          style={{ fontFamily: "Montserrat, sans-serif" }}
+                        >
+                          {asset.title}
+                        </p>
+                        <p
+                          className="text-[11px] text-gray-500 truncate"
+                          style={{ fontFamily: "Raleway, sans-serif" }}
+                        >
+                          {active === "new" &&
+                            `Updated ${new Date(
+                              asset.lastUpdated
+                            ).toLocaleDateString()}`}
+                          {active === "popular" &&
+                            `${asset.viewCount.toLocaleString()} views`}
+                          {active === "downloaded" &&
+                            `${asset.downloadCount.toLocaleString()} downloads`}
+                        </p>
+                      </div>
                     </div>
                     <ArrowRight
                       size={14}
-                      className="mt-1 text-gray-300 group-hover:text-[#2CADB2]"
+                      className="mt-1 text-gray-300 group-hover:text-[#2CADB2] flex-shrink-0"
                     />
                   </Link>
                 ))}
               </div>
             </div>
 
-            {/* Right: featured asset with graphic */}
-            <div className="relative p-6 md:p-8 bg-gradient-to-br from-[#111827] via-[#020617] to-[#1f2937] text-white">
-              <div className="absolute inset-0 opacity-30 mix-blend-screen pointer-events-none" />
+            {/* Right: featured asset — site-aligned palette */}
+            <div className="relative p-6 md:p-8 bg-gradient-to-br from-[#f0fbfa] via-[#f7f6f2] to-[#e8f7f7] border-l border-[#2CADB2]/20">
               <div className="relative">
                 <p
-                  className="text-[11px] uppercase tracking-[0.18em] mb-2 text-[#F8CF41]"
+                  className="text-[11px] uppercase tracking-[0.18em] mb-2 text-[#2CADB2]"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
                   Featured Asset
@@ -124,7 +131,7 @@ export function HomeHighlights() {
                 {featured && (
                   <>
                     <h2
-                      className="font-black mb-3"
+                      className="font-black mb-3 text-[#24282B]"
                       style={{
                         fontFamily: "Montserrat, sans-serif",
                         fontSize: "1.4rem"
@@ -133,35 +140,33 @@ export function HomeHighlights() {
                       {featured.title}
                     </h2>
                     <p
-                      className="text-xs text-gray-200 mb-4 line-clamp-3"
-                      style={{ fontFamily: "Raleway, sans-serif" }}
+                      className="text-sm text-[#555A5E] mb-4 line-clamp-3"
+                      style={{ fontFamily: "Raleway, sans-serif", lineHeight: 1.625 }}
                     >
                       {featured.summaryWhat}
                     </p>
-                    <div className="relative mb-4 h-32 rounded-xl bg-gradient-to-r from-[#2CADB2] via-[#38bdf8] to-[#6366f1] overflow-hidden flex items-center justify-center">
-                      <div className="flex items-center gap-3">
-                        <div className="rounded-full bg-white/10 p-3">
-                          <FileText size={26} className="text-white" />
-                        </div>
-                        <div className="text-left">
-                          <p
-                            className="text-xs uppercase tracking-[0.18em] text-white/70"
-                            style={{ fontFamily: "Raleway, sans-serif" }}
-                          >
-                            {featured.contentType}
-                          </p>
-                          <p
-                            className="text-sm font-semibold"
-                            style={{ fontFamily: "Montserrat, sans-serif" }}
-                          >
-                            {featured.productCategory}
-                          </p>
-                        </div>
+                    <div className="relative mb-4 p-4 rounded-xl bg-white/80 border border-[#2CADB2]/15 shadow-sm flex items-center gap-4">
+                      <div className="rounded-xl bg-[#2CADB2]/10 p-3 flex-shrink-0">
+                        <FileText size={28} className="text-[#2CADB2]" />
+                      </div>
+                      <div>
+                        <p
+                          className="text-[11px] uppercase tracking-[0.18em] text-[#2CADB2]"
+                          style={{ fontFamily: "Raleway, sans-serif" }}
+                        >
+                          {featured.contentType}
+                        </p>
+                        <p
+                          className="text-sm font-semibold text-[#24282B]"
+                          style={{ fontFamily: "Montserrat, sans-serif" }}
+                        >
+                          {featured.productCategory}
+                        </p>
                       </div>
                     </div>
                     <Link
                       href={`/assets/${featured.slug}`}
-                      className="inline-flex items-center gap-2 rounded-full bg-white text-[#111827] px-5 py-2 text-xs font-bold shadow-md hover:shadow-lg transition"
+                      className="inline-flex items-center gap-2 rounded-full bg-[#2CADB2] text-white px-5 py-2 text-xs font-bold shadow-md hover:bg-[#2CADB2]/90 hover:shadow-lg transition"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
                       View asset

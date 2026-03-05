@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Compass, FileStack, Target } from "lucide-react";
 import { journeys } from "@/lib/assets";
 import { HomeHighlights } from "@/components/HomeHighlights";
-import { AnimatedRotatingWord } from "@/components/AnimatedRotatingWord";
 
 export default function Home() {
   return (
@@ -35,7 +34,7 @@ export default function Home() {
             to
           </p>
           <h1
-            className="font-black leading-tight mb-6"
+            className="font-black leading-tight mb-10"
             style={{
               fontFamily: "Montserrat, sans-serif",
               fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
@@ -45,17 +44,6 @@ export default function Home() {
             HostopiaConnects.
           </h1>
           <p
-            className="font-black leading-tight mb-4"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontSize: "clamp(1.5rem, 3vw, 2.25rem)",
-              color: "#24282B"
-            }}
-          >
-            Everything you need to
-            <AnimatedRotatingWord /> Hostopia products.
-          </p>
-          <p
             className="text-lg max-w-2xl mx-auto mb-10"
             style={{
               fontFamily: "Raleway, sans-serif",
@@ -63,7 +51,7 @@ export default function Home() {
               lineHeight: 1.625
             }}
           >
-            A modern portal for Hostopia product, sales, and training content –
+            A portal for Hostopia product, sales, and training content –
             all in one place.
           </p>
           <div className="max-w-2xl mx-auto mb-10">
