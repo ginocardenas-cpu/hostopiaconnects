@@ -37,10 +37,10 @@ export default function Home() {
             style={{
               fontFamily: "Montserrat, sans-serif",
               fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-              color: "#2CADB2"
+              color: "#000000"
             }}
           >
-            HostopiaConnects.
+            HostopiaConnects
           </h1>
           <p
             className="text-lg max-w-2xl mx-auto mb-10"
