@@ -13,7 +13,7 @@ type TabKey = "new" | "popular" | "downloaded";
 
 const tabs: { key: TabKey; label: string; icon: React.ComponentType<any> }[] = [
   { key: "new", label: "What's New", icon: Star },
-  { key: "popular", label: "Most Viewed", icon: Flame },
+  { key: "popular", label: "Most Popular", icon: Flame },
   { key: "downloaded", label: "Most Downloaded", icon: Download }
 ];
 

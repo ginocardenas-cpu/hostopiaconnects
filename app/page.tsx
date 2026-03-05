@@ -2,15 +2,101 @@ import Link from "next/link";
 import { Compass, FileStack, Target } from "lucide-react";
 import { journeys } from "@/lib/assets";
 import { HomeHighlights } from "@/components/HomeHighlights";
-import { ConnectsHero } from "@/components/ConnectsHero";
+import { AnimatedRotatingWord } from "@/components/AnimatedRotatingWord";
 
 export default function Home() {
   return (
     <>
-      <ConnectsHero />
-      <section id="highlights" className="scroll-mt-6">
-        <HomeHighlights />
+      {/* Hero */}
+      <section className="min-h-[70vh] flex flex-col justify-center items-center px-6 py-16">
+        <div className="max-w-4xl text-center">
+          <p
+            className="uppercase mb-1"
+            style={{
+              fontFamily: "Montserrat, sans-serif",
+              fontSize: "0.7rem",
+              fontWeight: 700,
+              letterSpacing: "0.2em",
+              color: "#2CADB2"
+            }}
+          >
+            Welcome
+          </p>
+          <p
+            className="uppercase mb-4"
+            style={{
+              fontFamily: "Montserrat, sans-serif",
+              fontSize: "0.7rem",
+              fontWeight: 700,
+              letterSpacing: "0.2em",
+              color: "#2CADB2"
+            }}
+          >
+            to
+          </p>
+          <h1
+            className="font-black leading-tight mb-6"
+            style={{
+              fontFamily: "Montserrat, sans-serif",
+              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+              color: "#2CADB2"
+            }}
+          >
+            HostopiaConnects.
+          </h1>
+          <p
+            className="font-black leading-tight mb-4"
+            style={{
+              fontFamily: "Montserrat, sans-serif",
+              fontSize: "clamp(1.5rem, 3vw, 2.25rem)",
+              color: "#24282B"
+            }}
+          >
+            Everything you need to
+            <AnimatedRotatingWord /> Hostopia products.
+          </p>
+          <p
+            className="text-lg max-w-2xl mx-auto mb-10"
+            style={{
+              fontFamily: "Raleway, sans-serif",
+              color: "#555A5E",
+              lineHeight: 1.625
+            }}
+          >
+            A modern portal for Hostopia product, sales, and training content –
+            all in one place.
+          </p>
+          <div className="max-w-2xl mx-auto mb-10">
+            <input
+              type="search"
+              placeholder="Search for a product, asset, or use case"
+              className="w-full rounded-full border border-black/10 bg-white/90 px-5 py-3 text-sm outline-none shadow-sm focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2]"
+              style={{ fontFamily: "Raleway, sans-serif" }}
+            />
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 mt-4">
+            <a
+              href="#products"
+              className="inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-bold shadow-md transition hover:shadow-lg"
+              style={{
+                fontFamily: "Montserrat, sans-serif",
+                backgroundColor: "#F8CF41",
+                color: "#24282B"
+              }}
+            >
+              Start Browsing by Product
+            </a>
+            <Link
+              href="/how-it-works"
+              className="inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold border-2 border-[#24282B]/20 transition hover:bg-white hover:border-[#2CADB2]"
+              style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}
+            >
+              How Hostopia Connects Works
+            </Link>
+          </div>
+        </div>
       </section>
+      <HomeHighlights />
 
       {/* Browse by product journey */}
       <section
