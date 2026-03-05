@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Compass, FileStack, Target } from "lucide-react";
 import { journeys } from "@/lib/assets";
 import { HomeHighlights } from "@/components/HomeHighlights";
+import { UniqueAccordion } from "@/components/ui/interactive-accordion";
 
 export default function Home() {
   return (
@@ -85,6 +86,44 @@ export default function Home() {
         </div>
       </section>
       <HomeHighlights />
+
+      {/* How do you want to browse? */}
+      <section className="py-10 border-t border-black/5 bg-[#f7f6f2]">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row md:items-start gap-10">
+          <div className="md:w-1/2 space-y-3">
+            <p
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em]"
+              style={{ fontFamily: "Raleway, sans-serif", color: "#2CADB2" }}
+            >
+              Browse options
+            </p>
+            <h2
+              className="font-black leading-tight"
+              style={{
+                fontFamily: "Montserrat, sans-serif",
+                fontSize: "clamp(1.75rem, 3vw, 2.25rem)",
+                color: "#24282B"
+              }}
+            >
+              Choose how you want to find assets.
+            </h2>
+            <p
+              className="text-base max-w-xl"
+              style={{
+                fontFamily: "Raleway, sans-serif",
+                color: "#555A5E",
+                lineHeight: 1.625
+              }}
+            >
+              Start from a customer journey, a content format, or a workflow. Use the options on the right to explore
+              the approach that matches how you work today.
+            </p>
+          </div>
+          <div className="md:w-1/2 flex justify-center md:justify-end">
+            <UniqueAccordion />
+          </div>
+        </div>
+      </section>
 
       {/* Browse by product journey */}
       <section
