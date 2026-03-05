@@ -272,32 +272,51 @@ export default function Home() {
                 launch a campaign, or support existing customers.
               </p>
               <div className="grid gap-4 sm:grid-cols-2">
-                {["Sales", "Marketing", "Training & Onboarding", "Support"].map(
-                  (useCase) => (
-                    <button
-                      key={useCase}
-                      className="rounded-xl border border-black/5 bg-white px-4 py-3 text-left hover:border-[#2CADB2] hover:shadow-md transition-all duration-150"
+                {[
+                  {
+                    label: "Sales",
+                    description:
+                      "Pitch decks, product materials, and tools designed to help your teams sell."
+                  },
+                  {
+                    label: "Marketing",
+                    description:
+                      "Marketing assets, messaging frameworks, and promotional assets to drive demand."
+                  },
+                  {
+                    label: "Training",
+                    description:
+                      "Materials that help onboard new team members and keep teams up to speed."
+                  },
+                  {
+                    label: "Support",
+                    description:
+                      "Documentation and support materials to help your customers succeed with our solutions."
+                  }
+                ].map(({ label, description }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    className="rounded-xl border border-black/5 bg-white px-4 py-3 text-left hover:border-[#2CADB2] hover:shadow-md transition-all duration-150"
+                  >
+                    <span
+                      className="block text-sm font-semibold mb-1"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
-                      <span
-                        className="block text-sm font-semibold mb-1"
-                        style={{ fontFamily: "Montserrat, sans-serif" }}
-                      >
-                        {useCase}
-                      </span>
-                      <span
-                        className="block text-lg"
-                        style={{
-                          fontFamily: "Raleway, sans-serif",
-                          color: "#555A5E",
-                          lineHeight: 1.625
-                        }}
-                      >
-                        Coming soon – curated asset collections for this
-                        workflow.
-                      </span>
-                    </button>
-                  )
-                )}
+                      {label}
+                    </span>
+                    <span
+                      className="block text-sm"
+                      style={{
+                        fontFamily: "Raleway, sans-serif",
+                        color: "#555A5E",
+                        lineHeight: 1.625
+                      }}
+                    >
+                      {description}
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
           </div>
