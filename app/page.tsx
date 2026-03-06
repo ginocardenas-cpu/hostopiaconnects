@@ -75,16 +75,10 @@ export default function Home() {
       </section>
       <HomeHighlights />
 
-      {/* Browse options – title, sub copy, then accordion with content blocks below */}
+      {/* Let us help you find – title, sub copy, then accordion (Begin) */}
       <section id="browse-options" className="py-10 border-t border-black/5 bg-[#f7f6f2] scroll-mt-6">
         <div className="max-w-6xl mx-auto px-6">
           <div className="space-y-3 mb-10">
-            <p
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em]"
-              style={{ fontFamily: "Raleway, sans-serif", color: "#2CADB2" }}
-            >
-              Browse options
-            </p>
             <h2
               className="font-black leading-tight"
               style={{
@@ -93,7 +87,7 @@ export default function Home() {
                 color: "#24282B"
               }}
             >
-              Choose how you want to find assets.
+              Let Us Help You Find What You&apos;re Looking For
             </h2>
             <p
               className="text-base max-w-2xl"
@@ -103,8 +97,7 @@ export default function Home() {
                 lineHeight: 1.625
               }}
             >
-              Start from a customer journey, a content format, or a workflow. Use the options below to explore
-              the approach that matches how you work today.
+              Start your browsing journey here. Explore assets by journey, content format, workflow, or product to quickly find the materials that support your work.
             </p>
           </div>
           <UniqueAccordion />

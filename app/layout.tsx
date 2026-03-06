@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import "./globals.css";
 import { CartLayoutClient } from "@/components/CartLayoutClient";
 import { CartNav } from "@/components/CartNav";
@@ -19,7 +21,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {/* Top navigation */}
             <header className="border-b border-black/5 bg-white/80 backdrop-blur-sm sticky top-0 z-20">
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-[#2CADB2] via-[#F8CF41] to-[#2CADB2]" />
-              <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-end gap-6">
+              <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-6">
+                <Link href="/" className="flex-shrink-0" aria-label="Hostopia Connects home">
+                  <Image
+                    src="/logo-hostopia-nav.png"
+                    alt="Hostopia - A HostPapa Company"
+                    width={160}
+                    height={48}
+                    className="h-10 w-auto object-contain"
+                    priority
+                  />
+                </Link>
                 <CartNav />
               </div>
             </header>

@@ -42,8 +42,8 @@ interface AccordionItem {
 const items: AccordionItem[] = [
   {
     id: "journey",
-    number: "01",
-    title: "Browse by journey",
+    number: "",
+    title: "Begin",
     content:
       "Start from where your customer is in their lifecycle and see assets organized by product journey.",
   },
@@ -172,32 +172,34 @@ export function UniqueAccordion() {
                 type="button"
               >
                 <div className="flex items-center gap-6 py-4 px-1">
-                  <div className="relative flex items-center justify-center w-10 h-10">
-                    <motion.div
-                      className="absolute inset-0 rounded-full bg-foreground"
-                      initial={false}
-                      animate={{
-                        scale: isActive ? 1 : isHovered ? 0.85 : 0,
-                        opacity: isActive ? 1 : isHovered ? 0.1 : 0,
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 25,
-                      }}
-                    />
-                    <motion.span
-                      className="relative z-10 text-sm font-medium tracking-wide"
-                      animate={{
-                        color: isActive
-                          ? "var(--primary-foreground)"
-                          : "var(--muted-foreground)",
-                      }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {item.number}
-                    </motion.span>
-                  </div>
+                  {item.number ? (
+                    <div className="relative flex items-center justify-center w-10 h-10">
+                      <motion.div
+                        className="absolute inset-0 rounded-full bg-foreground"
+                        initial={false}
+                        animate={{
+                          scale: isActive ? 1 : isHovered ? 0.85 : 0,
+                          opacity: isActive ? 1 : isHovered ? 0.1 : 0,
+                        }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 25,
+                        }}
+                      />
+                      <motion.span
+                        className="relative z-10 text-sm font-medium tracking-wide"
+                        animate={{
+                          color: isActive
+                            ? "var(--primary-foreground)"
+                            : "var(--muted-foreground)",
+                        }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {item.number}
+                      </motion.span>
+                    </div>
+                  ) : null}
 
                   <motion.h3
                     className="text-lg md:text-xl font-semibold tracking-tight"
