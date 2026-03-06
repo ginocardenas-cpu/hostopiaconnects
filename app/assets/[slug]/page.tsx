@@ -3,6 +3,7 @@ import { FileText } from "lucide-react";
 import { getAssetBySlug } from "@/lib/assets";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { AssetFeedback } from "@/components/AssetFeedback";
+import { AssetMarkSeen } from "@/components/AssetMarkSeen";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 
 interface AssetDetailPageProps {
@@ -30,6 +31,7 @@ export default function AssetDetailPage({ params }: AssetDetailPageProps) {
 
   return (
     <section className="max-w-6xl mx-auto px-6 py-16">
+      <AssetMarkSeen slug={params.slug} />
       {/* Header */}
       <div className="mb-10">
         <div className="flex flex-wrap items-center gap-2 mb-3 text-[11px]">

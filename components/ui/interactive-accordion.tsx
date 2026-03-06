@@ -12,6 +12,7 @@ import {
   type ContentType,
   type UseCase,
 } from "@/lib/assets";
+import { useBrowse } from "@/components/BrowseProvider";
 
 interface AccordionItem {
   id: string;
@@ -67,6 +68,7 @@ const cardStyle = {
 export function UniqueAccordion() {
   const [activeId, setActiveId] = useState<string | null>("journey");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const { setResultsFromAssets, seenSlugs, markSeen } = useBrowse();
   // Multi-step wizard state (when "Browse by journey" is expanded)
   const [wizardStep, setWizardStep] = useState<1 | 2 | 3 | 4>(1);
   const [selectedJourneys, setSelectedJourneys] = useState<ProductJourney[]>([]);
@@ -370,7 +372,10 @@ export function UniqueAccordion() {
                                 <button type="button" onClick={() => setWizardStep(2)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← Back</button>
                                 <button
                                   type="button"
-                                  onClick={() => setWizardStep(4)}
+                                  onClick={() => {
+                                    setResultsFromAssets(filteredAssets);
+                                    setWizardStep(4);
+                                  }}
                                   className="rounded-full px-6 py-2 text-sm font-bold shadow-md"
                                   style={{ fontFamily: "Montserrat, sans-serif", backgroundColor: "#2CADB2", color: "white" }}
                                 >
@@ -389,19 +394,31 @@ export function UniqueAccordion() {
                                 {filteredAssets.length === 0 ? (
                                   <p className="text-sm py-4" style={cardStyle}>No assets match. Try fewer or different filters.</p>
                                 ) : (
-                                  filteredAssets.map((asset) => (
-                                    <Link
-                                      key={asset.id}
-                                      href={`/assets/${asset.slug}`}
-                                      className="flex items-center justify-between gap-4 rounded-xl border border-black/5 bg-white px-4 py-3 hover:border-[#2CADB2] hover:shadow-md transition-all"
-                                    >
-                                      <div>
-                                        <span className="block text-sm font-semibold" style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}>{asset.title}</span>
-                                        <span className="text-xs" style={cardStyle}>{asset.contentType} · {asset.productCategory}</span>
-                                      </div>
-                                      <span className="text-xs text-[#2CADB2] font-medium">View →</span>
-                                    </Link>
-                                  ))
+                                  filteredAssets.map((asset) => {
+                                    const viewed = seenSlugs.includes(asset.slug);
+                                    return (
+                                      <Link
+                                        key={asset.id}
+                                        href={`/assets/${asset.slug}`}
+                                        onClick={() => markSeen(asset.slug)}
+                                        className={`flex items-center justify-between gap-4 rounded-xl border px-4 py-3 transition-all ${
+                                          viewed
+                                            ? "border-black/5 bg-gray-100/80 opacity-75 hover:opacity-90"
+                                            : "border-black/5 bg-white hover:border-[#2CADB2] hover:shadow-md"
+                                        }`}
+                                      >
+                                        <div>
+                                          <span className="block text-sm font-semibold" style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}>{asset.title}</span>
+                                          <span className="text-xs" style={cardStyle}>{asset.contentType} · {asset.productCategory}</span>
+                                        </div>
+                                        {viewed ? (
+                                          <span className="text-xs text-gray-500 font-medium">Viewed</span>
+                                        ) : (
+                                          <span className="text-xs text-[#2CADB2] font-medium">View →</span>
+                                        )}
+                                      </Link>
+                                    );
+                                  })
                                 )}
                               </div>
                               <div className="flex justify-between pt-2">

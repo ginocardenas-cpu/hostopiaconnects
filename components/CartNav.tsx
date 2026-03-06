@@ -1,17 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Home, Compass, HelpCircle, Briefcase } from "lucide-react";
+import { Home, HelpCircle, Briefcase, FileSearch } from "lucide-react";
 import { useCart } from "./CartProvider";
-import { BrowseWizard } from "./BrowseWizard";
 import { useBrowse } from "./BrowseProvider";
 
 export function CartNav() {
   const { assets } = useCart();
-  const { unseenCount } = useBrowse();
+  const { resultSlugs, unseenCount } = useBrowse();
   const count = assets.length;
-  const [browseOpen, setBrowseOpen] = useState(false);
+  const hasSearchResults = resultSlugs.length > 0;
 
   return (
     <nav
@@ -23,19 +21,20 @@ export function CartNav() {
         <span>Home</span>
       </Link>
 
-      <button
-        type="button"
-        onClick={() => setBrowseOpen(true)}
-        className="inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors relative"
-      >
-        <Compass size={16} />
-        <span>Browse by</span>
-        {unseenCount > 0 && (
-          <span className="absolute -top-2 -right-3 inline-flex items-center justify-center rounded-full bg-[#2CADB2] text-white text-[10px] px-2 py-[1px]">
-            {unseenCount}
-          </span>
-        )}
-      </button>
+      {hasSearchResults && (
+        <Link
+          href="/#browse-options"
+          className="relative inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors"
+        >
+          <FileSearch size={16} />
+          <span>{unseenCount > 0 ? `${unseenCount} to view` : "Search results"}</span>
+          {unseenCount > 0 && (
+            <span className="inline-flex items-center justify-center rounded-full bg-[#2CADB2] text-white text-[10px] px-2 py-[2px]">
+              {unseenCount}
+            </span>
+          )}
+        </Link>
+      )}
 
       <Link href="/how-it-works" className="inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors">
         <HelpCircle size={16} />
@@ -54,7 +53,6 @@ export function CartNav() {
           </span>
         )}
       </Link>
-      <BrowseWizard open={browseOpen} onClose={() => setBrowseOpen(false)} />
     </nav>
   );
 }
