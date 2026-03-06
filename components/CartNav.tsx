@@ -47,7 +47,7 @@ export function CartNav() {
         className="relative inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors"
       >
         <ShoppingCart size={16} />
-        <span>Download Cart</span>
+        <span>My Resources</span>
         {count > 0 && (
           <span className="inline-flex items-center justify-center rounded-full bg-[#2CADB2] text-white text-[10px] px-2 py-[2px]">
             {count}

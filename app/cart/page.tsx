@@ -29,7 +29,7 @@ export default function CartPage() {
               className="uppercase tracking-[0.18em] text-xs text-gray-500 mb-3"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              Download Cart
+              My Resources
             </p>
             <h1
               className="font-black leading-tight mb-2"
@@ -46,15 +46,15 @@ export default function CartPage() {
             >
               This is your one place to bundle decks, documents, and videos. When
               you submit the form on the right, you&apos;ll receive a single
-              email with secure, time-limited links for everything in your cart.
+              email with secure, time-limited links for everything in My Resources.
             </p>
           </div>
 
           {!hasItems ? (
             <div className="rounded-2xl border border-dashed border-[#2CADB2]/40 bg-[#f0fbfa] p-6 text-sm text-gray-700">
               <p style={{ fontFamily: "Raleway, sans-serif" }}>
-                Your Download Cart is empty. Browse journeys and products first,
-                then use the <span className="font-semibold">Add to Download Cart</span>{" "}
+                My Resources is empty. Browse journeys and products first,
+                then use the <span className="font-semibold">Add to My Resources</span>{" "}
                 button on any asset detail page to see items here.
               </p>
               <Link
@@ -209,7 +209,7 @@ export default function CartPage() {
                   className="text-[11px] text-gray-500 mt-1"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  Add at least one asset to your cart before requesting a bundle.
+                  Add at least one asset to My Resources before requesting a bundle.
                 </p>
               )}
             </form>

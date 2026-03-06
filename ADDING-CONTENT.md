@@ -1,6 +1,8 @@
 # Adding your docs and videos to Hostopia Connects
 
-Use this flow to add real documents and videos so you can test browse, preview, and download.
+**Hundreds of assets?** Use the **bulk import** flow: see **[BULK-IMPORT.md](./BULK-IMPORT.md)** (CSV + one command + one push).
+
+For a few assets, use the flow below.
 
 ## 1. Put files in `public/assets/`
 
@@ -138,7 +140,7 @@ Edit **`lib/assets.ts`** and add an object to the **`sampleAssets`** array. Each
 ## 3. Check that it works
 
 - **Browse:** Use **Browse by** in the nav → pick journey/product/content type/use case → **Show matching assets**. Your new asset should appear if it matches the filters.
-- **Detail:** Open `/assets/your-slug` (e.g. `/assets/my-sales-deck`). Preview opens `fileUrl` in a new tab; Add to Cart adds it to the Download Cart.
+- **Detail:** Open `/assets/your-slug` (e.g. `/assets/my-sales-deck`). Preview opens `fileUrl` in a new tab; Add to My Resources adds it to My Resources.
 - **Home:** “What’s New” / “Most Popular” / “Most Downloaded” pull from the same `sampleAssets` list.
 
 Once your files are in `public/assets/` and their entries are in `sampleAssets`, the portal will use them for browse, preview, and download flows.

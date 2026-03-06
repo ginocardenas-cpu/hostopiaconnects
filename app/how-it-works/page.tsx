@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const metadata = {
   title: "How Hostopia Connects Works",
-  description: "Add assets to your cart, then get a single download bundle in your inbox."
+  description: "Add assets to My Resources, then get a single download bundle in your inbox."
 };
 
 export default function HowItWorksPage() {
@@ -24,7 +24,7 @@ export default function HowItWorksPage() {
               color: "#24282B"
             }}
           >
-            Add assets to your cart, then get a single{" "}
+            Add assets to My Resources, then get a single{" "}
             <span style={{ color: "#2CADB2" }}>download bundle</span> in your inbox.
           </h1>
           <p
@@ -32,7 +32,7 @@ export default function HowItWorksPage() {
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
             Hostopia Connects is public to browse. When you&apos;re ready to download,
-            you&apos;ll add assets to a Download Cart and request them in one step.
+            you&apos;ll add assets to My Resources and request them in one step.
           </p>
         </div>
         <Link
@@ -49,12 +49,12 @@ export default function HowItWorksPage() {
           {
             step: "1",
             title: "Browse",
-            description: "Explore by product journey, content type, or use case. Preview documents when available before adding to your cart."
+            description: "Explore by product journey, content type, or use case. Preview documents when available before adding to My Resources."
           },
           {
             step: "2",
-            title: "Add to cart",
-            description: "On any asset detail page, add the items you want. Review your selection on the Download Cart page."
+            title: "Add to My Resources",
+            description: "On any asset detail page, add the items you want. Review your selection on the My Resources page."
           },
           {
             step: "3",
@@ -120,7 +120,7 @@ export default function HowItWorksPage() {
             color: "#24282B"
           }}
         >
-          Go to Download Cart
+          Go to My Resources
         </Link>
       </div>
     </section>

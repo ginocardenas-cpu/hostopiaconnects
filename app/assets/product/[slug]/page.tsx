@@ -66,7 +66,7 @@ export default function ProductAssetsPage({ params }: ProductAssetsPageProps) {
         <div className="text-xs text-gray-500 space-y-1">
           <p style={{ fontFamily: "Raleway, sans-serif" }}>
             Assets below are filtered to this product. From here, reps can open
-            individual assets or add them to a Download Cart (coming next).
+            individual assets or add them to My Resources (coming next).
           </p>
           <Link
             href={`/assets/journey/${journeyProducts.find((p) => p.slug === params.slug)?.journey

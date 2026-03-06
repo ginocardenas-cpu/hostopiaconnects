@@ -26,7 +26,7 @@ export function AddToCartButton({ assetId }: AddToCartButtonProps) {
       }}
       disabled={inCart}
     >
-      {inCart ? "Added to Download Cart" : "Add to Download Cart"}
+      {inCart ? "Added to My Resources" : "Add to My Resources"}
     </button>
   );
 }

@@ -5,29 +5,31 @@ import { UniqueAccordion } from "@/components/ui/interactive-accordion";
 export default function Home() {
   return (
     <>
-      {/* Hero */}
-      <section className="min-h-[70vh] flex flex-col justify-center items-center px-6 py-16">
-        <div className="max-w-4xl text-center">
+      {/* Hero with background image */}
+      <section
+        className="relative min-h-[70vh] flex flex-col justify-center items-center px-6 py-16 bg-cover bg-center"
+        style={{ backgroundImage: "url('/hero-hands.png')" }}
+      >
+        <div className="absolute inset-0 bg-[#24282B]/70" aria-hidden />
+        <div className="relative z-10 max-w-4xl text-center">
           <p
-            className="uppercase mb-1"
+            className="uppercase mb-1 text-white"
             style={{
               fontFamily: "Montserrat, sans-serif",
               fontSize: "0.7rem",
               fontWeight: 700,
-              letterSpacing: "0.2em",
-              color: "#2CADB2"
+              letterSpacing: "0.2em"
             }}
           >
             Welcome
           </p>
           <p
-            className="uppercase mb-4"
+            className="uppercase mb-4 text-white"
             style={{
               fontFamily: "Montserrat, sans-serif",
               fontSize: "0.7rem",
               fontWeight: 700,
-              letterSpacing: "0.2em",
-              color: "#2CADB2"
+              letterSpacing: "0.2em"
             }}
           >
             to
@@ -36,17 +38,16 @@ export default function Home() {
             className="font-black leading-tight mb-10"
             style={{
               fontFamily: "Montserrat, sans-serif",
-              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-              color: "#000000"
+              fontSize: "clamp(2.5rem, 5vw, 4.5rem)"
             }}
           >
-            HostopiaConnects
+            <span style={{ color: "#2CADB2" }}>Hostopia</span>
+            <span className="text-white">Connects</span>
           </h1>
           <p
-            className="text-lg max-w-2xl mx-auto mb-10"
+            className="text-lg max-w-2xl mx-auto mb-10 text-white"
             style={{
               fontFamily: "Raleway, sans-serif",
-              color: "#555A5E",
               lineHeight: 1.625
             }}
           >
@@ -57,7 +58,7 @@ export default function Home() {
             <input
               type="search"
               placeholder="Search for a product, asset, or use case"
-              className="w-full rounded-full border border-black/10 bg-white/90 px-5 py-3 text-sm outline-none shadow-sm focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2]"
+              className="w-full rounded-full border border-white/30 bg-white/95 px-5 py-3 text-sm outline-none shadow-sm focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2] text-[#24282B]"
               style={{ fontFamily: "Raleway, sans-serif" }}
             />
           </div>
@@ -75,8 +76,8 @@ export default function Home() {
             </a>
             <Link
               href="/how-it-works"
-              className="inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold border-2 border-[#24282B]/20 transition hover:bg-white hover:border-[#2CADB2]"
-              style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}
+              className="inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold border-2 border-white/60 text-white transition hover:bg-white/10 hover:border-white"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
             >
               How Hostopia Connects Works
             </Link>

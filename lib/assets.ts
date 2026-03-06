@@ -161,160 +161,9 @@ export function getAssetsByProductCategory(category: ProductCategory): Asset[] {
 }
 
 
-/** Live catalog: add your docs/videos in public/assets/, then add entries here. See ADDING-CONTENT.md. */
-export const sampleAssets: Asset[] = [
-  {
-    id: "logo-build-a-brand-overview-deck",
-    slug: "logo-build-a-brand-overview-deck",
-    title: "Logo Design: Build a Brand Overview Deck",
-    journey: "Build a Brand",
-    productCategory: "Logo",
-    contentType: "Presentation",
-    useCases: ["Sales", "Training & Onboarding"],
-    summaryWhat: "A sales-ready overview deck for Hostopia logo design services.",
-    summaryWhy:
-      "Helps reps position logo design as the first step in building a credible small business brand.",
-    summaryHow:
-      "Use on discovery and first-presentations calls with SMB prospects focused on brand and identity.",
-    language: "English",
-    region: "Global",
-    gated: true,
-    internalOnly: false,
-    fileUrl: "/assets/logo-build-a-brand-overview-deck.pdf",
-    lastUpdated: "2026-03-03",
-    viewCount: 245,
-    downloadCount: 120
-  },
-  {
-    id: "hosting-get-online-technical-one-pager",
-    slug: "hosting-get-online-technical-one-pager",
-    title: "Hosting: Get Online Technical One-Pager",
-    journey: "Get Online",
-    productCategory: "Website",
-    contentType: "Document",
-    useCases: ["Sales", "Support"],
-    summaryWhat: "A one-page technical overview of Hostopia hosting and uptime guarantees.",
-    summaryWhy:
-      "Gives sales and support a concise reference for key platform differentiators in hosting conversations.",
-    summaryHow:
-      "Attach to proposals or use as a leave-behind for technically-minded SMB buyers and IT advisors.",
-    language: "English",
-    region: "North America",
-    gated: true,
-    internalOnly: false,
-    fileUrl: "/assets/hosting-get-online-technical-one-pager.pdf",
-    lastUpdated: "2026-03-01",
-    viewCount: 320,
-    downloadCount: 210
-  },
-  {
-    id: "reputation-get-found-playbook",
-    slug: "reputation-get-found-playbook",
-    title: "Reputation Management: Get Found Sales Playbook",
-    journey: "Get Found",
-    productCategory: "Reputation Management",
-    contentType: "Playbook",
-    useCases: ["Sales", "Marketing"],
-    summaryWhat: "Step-by-step sales playbook for selling reputation management to small businesses.",
-    summaryWhy:
-      "Aligns messaging, discovery questions, and objection handling around reviews and local search.",
-    summaryHow:
-      "Use for onboarding new reps and as a reference in deal strategy sessions with frontline teams.",
-    language: "English",
-    region: "Global",
-    gated: true,
-    internalOnly: false,
-    fileUrl: "/assets/reputation-get-found-playbook.pdf",
-    lastUpdated: "2026-02-20",
-    viewCount: 400,
-    downloadCount: 260
-  },
-  {
-    id: "ecommerce-grow-business-demo-video",
-    slug: "ecommerce-grow-business-demo-video",
-    title: "Ecommerce: Grow their Business Demo Video",
-    journey: "Grow their Business",
-    productCategory: "Ecommerce",
-    contentType: "Video",
-    useCases: ["Sales", "Training & Onboarding"],
-    summaryWhat: "A short ecommerce product demo focused on upsell and cross-sell scenarios.",
-    summaryWhy:
-      "Shows how partners can deepen relationships and unlock new ARPU with ecommerce add-ons.",
-    summaryHow:
-      "Use in training sessions and as pre-call viewing for reps before pitching ecommerce solutions.",
-    language: "English",
-    region: "Global",
-    gated: true,
-    internalOnly: false,
-    fileUrl: "/assets/ecommerce-grow-business-demo-video.mp4",
-    lastUpdated: "2026-02-15",
-    viewCount: 510,
-    downloadCount: 310
-  },
-  {
-    id: "online-fax-video",
-    slug: "online-fax-video",
-    title: "Online Fax",
-    journey: "Grow their Business",
-    productCategory: "Online Fax",
-    contentType: "Video",
-    useCases: ["Sales", "Training & Onboarding", "Support"],
-    summaryWhat: "Video overview of Hostopia Online Fax for small business.",
-    summaryWhy: "Helps reps and partners explain and demo Online Fax to prospects.",
-    summaryHow: "Use in training, on discovery calls, or as a leave-behind link.",
-    language: "English",
-    region: "Global",
-    gated: false,
-    internalOnly: false,
-    fileUrl: "/assets/Online%20Fax.mp4",
-    lastUpdated: "2026-03-10",
-    viewCount: 0,
-    downloadCount: 0
-  },
-  {
-    id: "ecommerce-video",
-    slug: "ecommerce-video",
-    title: "Ecommerce",
-    journey: "Grow their Business",
-    productCategory: "Ecommerce",
-    contentType: "Video",
-    useCases: ["Sales", "Marketing", "Training & Onboarding"],
-    summaryWhat: "Video overview of Hostopia ecommerce solutions for small business.",
-    summaryWhy: "Supports ecommerce upsell and cross-sell conversations.",
-    summaryHow: "Share with prospects or use in training and enablement.",
-    language: "English",
-    region: "Global",
-    gated: false,
-    internalOnly: false,
-    fileUrl: "/assets/eCommerce.mp4",
-    lastUpdated: "2026-03-10",
-    viewCount: 0,
-    downloadCount: 0
-  },
-  {
-    id: "domain-registration-overview",
-    slug: "domain-registration-overview",
-    title: "Domain Registration Overview",
-    journey: "Build a Brand",
-    productCategory: "Domains",
-    contentType: "Document",
-    useCases: ["Sales", "Training & Onboarding"],
-    summaryWhat:
-      "A concise overview of our Domain Registration service—highlighting the key features and benefits of securing your online address.",
-    summaryWhy:
-      "Your domain is the foundation of your online presence. It protects your brand, powers your website and email, and helps secure your information with features like multi-TLD registration and Domain Privacy.",
-    summaryHow:
-      "Sales tool: Quickly position the value of domain registration.\n\nInternal reference: Covers transfers, management, auto-renew, 24/7 support, privacy, and hosting options.\n\nProduct snapshot: Explains TLD selection and bundling with hosting or an Online Presence Builder.",
-    language: "English",
-    region: "Global",
-    gated: false,
-    internalOnly: false,
-    fileUrl: "/assets/domain-registration-overview.docx",
-    lastUpdated: "2026-03-10",
-    viewCount: 0,
-    downloadCount: 0
-  }
-];
+/** Catalog loaded from assets.data.json (generated by npm run assets:import from data/assets.csv). See ADDING-CONTENT.md and data/assets-template.csv. */
+import assetsData from "./assets.data.json";
+export const sampleAssets: Asset[] = assetsData as Asset[];
 
 export function getAssetBySlug(slug: string): Asset | undefined {
   return sampleAssets.find((asset) => asset.slug === slug);
@@ -330,6 +179,23 @@ export function getAssetsByContentType(type: ContentType): Asset[] {
 
 export function getAssetsByUseCase(useCase: UseCase): Asset[] {
   return sampleAssets.filter((asset) => asset.useCases.includes(useCase));
+}
+
+/** Filter assets by multiple criteria (drill-down). Empty arrays = no filter on that dimension. */
+export function filterAssets(filters: {
+  journeys?: ProductJourney[];
+  productCategories?: ProductCategory[];
+  contentTypes?: ContentType[];
+  useCases?: UseCase[];
+}): Asset[] {
+  const { journeys = [], productCategories = [], contentTypes = [], useCases = [] } = filters;
+  return sampleAssets.filter((asset) => {
+    if (journeys.length && !journeys.includes(asset.journey)) return false;
+    if (productCategories.length && !productCategories.includes(asset.productCategory)) return false;
+    if (contentTypes.length && !contentTypes.includes(asset.contentType)) return false;
+    if (useCases.length && !asset.useCases.some((u) => useCases.includes(u))) return false;
+    return true;
+  });
 }
 
 /** Latest assets by lastUpdated (newest first), for "What's New" / Featured. */

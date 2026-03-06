@@ -82,7 +82,7 @@ export function ConnectsHero() {
                 className="cursor-pointer relative group hover:text-primary transition-colors"
                 asChild
               >
-                <Link href="/cart" aria-label="Cart">
+                <Link href="/cart" aria-label="My Resources">
                   <ShoppingBasket className="w-5 h-5" />
                 </Link>
               </Button>
@@ -144,7 +144,7 @@ export function ConnectsHero() {
                   >
                     <Link href="/cart">
                       <ShoppingBasket className="w-4 h-4" />
-                      Cart
+                      My Resources
                     </Link>
                   </Button>
                 </div>

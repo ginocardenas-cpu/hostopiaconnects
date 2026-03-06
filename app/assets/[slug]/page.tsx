@@ -183,7 +183,7 @@ export default function AssetDetailPage({ params }: AssetDetailPageProps) {
           <div className="rounded-2xl border border-dashed border-[#2CADB2]/50 bg-[#f0fbfa] p-4 text-xs text-gray-700">
             <p style={{ fontFamily: "Raleway, sans-serif" }}>
               Use <strong>Preview</strong> to open the file in a new tab before
-              adding to your Download Cart. Your thumbs up/down helps us improve
+              adding to My Resources. Your thumbs up/down helps us improve
               materials.
             </p>
           </div>

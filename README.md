@@ -4,7 +4,7 @@ This is a separate Next.js app that powers the **public-facing Hostopia Connects
 
 - Modern UX for sales and partner enablement
 - Structured content by product journey, content type, and use case
-- Lead-gated download cart with CRM integration
+- Lead-gated My Resources (bundle downloads) with CRM integration
 
 ## Getting started
 
