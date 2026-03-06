@@ -13,17 +13,6 @@ export default function Home() {
         <div className="absolute inset-0 bg-[#24282B]/70" aria-hidden />
         <div className="relative z-10 max-w-4xl text-center">
           <p
-            className="uppercase mb-1 text-white"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontSize: "0.7rem",
-              fontWeight: 700,
-              letterSpacing: "0.2em"
-            }}
-          >
-            Welcome
-          </p>
-          <p
             className="uppercase mb-4 text-white"
             style={{
               fontFamily: "Montserrat, sans-serif",
@@ -32,7 +21,7 @@ export default function Home() {
               letterSpacing: "0.2em"
             }}
           >
-            to
+            Welcome to
           </p>
           <h1
             className="font-black leading-tight mb-10"

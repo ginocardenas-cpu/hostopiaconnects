@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Home, Compass, HelpCircle, ShoppingCart } from "lucide-react";
+import { Home, Compass, HelpCircle, Briefcase } from "lucide-react";
 import { useCart } from "./CartProvider";
 import { BrowseWizard } from "./BrowseWizard";
 import { useBrowse } from "./BrowseProvider";
@@ -46,7 +46,7 @@ export function CartNav() {
         href="/cart"
         className="relative inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors"
       >
-        <ShoppingCart size={16} />
+        <Briefcase size={16} />
         <span>My Resources</span>
         {count > 0 && (
           <span className="inline-flex items-center justify-center rounded-full bg-[#2CADB2] text-white text-[10px] px-2 py-[2px]">

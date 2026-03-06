@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, Menu, Search, ShoppingBasket, Sparkles, Download, Eye } from "lucide-react";
+import { ArrowUpRight, Menu, Search, Briefcase, Sparkles, Download, Eye } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -83,7 +83,7 @@ export function ConnectsHero() {
                 asChild
               >
                 <Link href="/cart" aria-label="My Resources">
-                  <ShoppingBasket className="w-5 h-5" />
+                  <Briefcase className="w-5 h-5" />
                 </Link>
               </Button>
             </nav>
@@ -143,7 +143,7 @@ export function ConnectsHero() {
                     asChild
                   >
                     <Link href="/cart">
-                      <ShoppingBasket className="w-4 h-4" />
+                      <Briefcase className="w-4 h-4" />
                       My Resources
                     </Link>
                   </Button>
