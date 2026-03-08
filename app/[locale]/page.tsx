@@ -53,17 +53,6 @@ export default async function Home() {
             />
           </div>
           <div className="flex flex-wrap justify-center gap-4 mt-4">
-            <a
-              href="#browse-options"
-              className="inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-bold shadow-md transition hover:shadow-lg"
-              style={{
-                fontFamily: "Montserrat, sans-serif",
-                backgroundColor: "#F8CF41",
-                color: "#24282B"
-              }}
-            >
-              {t("startBrowsing")}
-            </a>
             <Link
               href="/how-it-works"
               className="inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold border-2 border-white/60 text-white transition hover:bg-white/10 hover:border-white"

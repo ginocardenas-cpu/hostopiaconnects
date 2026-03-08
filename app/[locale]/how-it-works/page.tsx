@@ -36,9 +36,7 @@ export default async function HowItWorksPage() {
               color: "#24282B"
             }}
           >
-            {t("headline")}{" "}
-            <span style={{ color: "#2CADB2" }}>{t("downloadBundle")}</span>{" "}
-            {t("headlineSuffix")}
+            {t("headline")}
           </h1>
           <p
             className="text-base md:text-lg text-gray-600 max-w-xl"
