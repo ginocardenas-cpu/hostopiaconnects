@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import {
   journeyFromSlug,
@@ -5,15 +6,11 @@ import {
   type ProductJourney
 } from "@/lib/assets";
 
-const journeyDescriptions: Record<ProductJourney, string> = {
-  "Build a Brand":
-    "Domains, logo design, and business email assets to help customers look credible from day one.",
-  "Get Online":
-    "SSL, hosting, and website solutions – everything you need to put small businesses on the map.",
-  "Get Found":
-    "Directories, SEO, and reputation management content to drive visibility and reviews.",
-  "Grow their Business":
-    "Ecommerce, custom sites, and Online Fax to deepen relationships and unlock new revenue."
+const journeyDescriptionKeys: Record<ProductJourney, string> = {
+  "Build a Brand": "journeyBuildABrand",
+  "Get Online": "journeyGetOnline",
+  "Get Found": "journeyGetFound",
+  "Grow their Business": "journeyGrowTheirBusiness",
 };
 
 interface JourneyPageProps {
@@ -22,6 +19,7 @@ interface JourneyPageProps {
 
 export default async function JourneyPage({ params }: JourneyPageProps) {
   const { slug } = await params;
+  const t = await getTranslations("journeyList");
   const journey = journeyFromSlug(slug);
 
   if (!journey) {
@@ -31,9 +29,9 @@ export default async function JourneyPage({ params }: JourneyPageProps) {
           className="text-sm text-gray-600"
           style={{ fontFamily: "Raleway, sans-serif" }}
         >
-          We couldn&apos;t find that product journey.{" "}
+          {t("notFound")}{" "}
           <Link href="/" className="text-[#2CADB2] underline">
-            Go back to Hostopia Connects home.
+            {t("goBackHome")}
           </Link>
         </p>
       </section>
@@ -41,6 +39,7 @@ export default async function JourneyPage({ params }: JourneyPageProps) {
   }
 
   const products = journeyProducts.filter((p) => p.journey === journey);
+  const descriptionKey = journeyDescriptionKeys[journey];
 
   return (
     <section className="max-w-6xl mx-auto px-6 py-16">
@@ -50,7 +49,7 @@ export default async function JourneyPage({ params }: JourneyPageProps) {
             className="uppercase tracking-[0.18em] text-xs text-gray-500 mb-3"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
-            Product Journey
+            {t("productJourney")}
           </p>
           <h1
             className="font-black leading-tight mb-3"
@@ -65,20 +64,20 @@ export default async function JourneyPage({ params }: JourneyPageProps) {
             className="text-sm md:text-base text-gray-600 max-w-xl"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
-            {journeyDescriptions[journey]}
+            {t(descriptionKey)}
           </p>
         </div>
 
         <div className="text-xs text-gray-500 space-y-1">
           <p style={{ fontFamily: "Raleway, sans-serif" }}>
-            Choose a product under this journey to see its enablement assets.
+            {t("chooseProduct")}
           </p>
           <Link
             href="/"
             className="inline-flex items-center gap-1 text-[#2CADB2] hover:underline"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
-            ← Back to all journeys
+            {t("backToJourneys")}
           </Link>
         </div>
       </div>
@@ -88,7 +87,7 @@ export default async function JourneyPage({ params }: JourneyPageProps) {
           className="text-sm text-gray-600"
           style={{ fontFamily: "Raleway, sans-serif" }}
         >
-          We don&apos;t have any products wired up for this journey yet.
+          {t("noProducts")}
         </p>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -106,7 +105,7 @@ export default async function JourneyPage({ params }: JourneyPageProps) {
                     style={{ fontFamily: "Raleway, sans-serif" }}
                   >
                     <span>◆</span>
-                    <span>Product</span>
+                    <span>{t("product")}</span>
                   </span>
                   <span
                     className="text-[11px] text-gray-500"
@@ -134,7 +133,7 @@ export default async function JourneyPage({ params }: JourneyPageProps) {
                   className="inline-flex items-center gap-1 text-xs font-semibold text-[#2CADB2]"
                   style={{ fontFamily: "Montserrat, sans-serif" }}
                 >
-                  View assets for this product
+                  {t("viewAssetsForProduct")}
                   <span>↗</span>
                 </span>
               </div>

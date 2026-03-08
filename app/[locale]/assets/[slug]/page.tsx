@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { FileText } from "lucide-react";
 import { getAssetBySlug } from "@/lib/assets";
@@ -12,6 +13,7 @@ interface AssetDetailPageProps {
 
 export default async function AssetDetailPage({ params }: AssetDetailPageProps) {
   const { slug } = await params;
+  const t = await getTranslations("asset");
   const asset = getAssetBySlug(slug);
 
   if (!asset) {
@@ -21,9 +23,9 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
           className="text-sm text-gray-600"
           style={{ fontFamily: "Raleway, sans-serif" }}
         >
-          We couldn&apos;t find that asset.{" "}
+          {t("notFound")}{" "}
           <Link href="/" className="text-[#2CADB2] underline">
-            Go back to Hostopia Connects home.
+            {t("goBackHome")}
           </Link>
         </p>
       </section>
@@ -76,8 +78,8 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
           className="text-xs text-gray-500 mb-6"
           style={{ fontFamily: "Raleway, sans-serif" }}
         >
-          Last updated {new Date(asset.lastUpdated).toLocaleDateString()} ·{" "}
-          {asset.gated ? "Gated download" : "Direct download"}
+          {t("lastUpdated")} {new Date(asset.lastUpdated).toLocaleDateString()} ·{" "}
+          {asset.gated ? t("gatedDownload") : t("directDownload")}
         </p>
 
         <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -90,7 +92,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
             style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}
           >
             <FileText size={16} />
-            Preview
+            {t("preview")}
           </a>
           <CopyLinkButton />
         </div>
@@ -106,7 +108,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
               className="text-sm font-semibold uppercase tracking-[0.18em] mb-2 text-gray-600"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              What it is
+              {t("whatItIs")}
             </h2>
             <p
               className="text-sm md:text-base text-gray-800"
@@ -121,7 +123,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
               className="text-sm font-semibold uppercase tracking-[0.18em] mb-2 text-gray-600"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              Why it&apos;s important
+              {t("whyImportant")}
             </h2>
             <p
               className="text-sm md:text-base text-gray-800"
@@ -136,7 +138,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
               className="text-sm font-semibold uppercase tracking-[0.18em] mb-2 text-gray-600"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              How to use it
+              {t("howToUse")}
             </h2>
             <p
               className="text-sm md:text-base text-gray-800 whitespace-pre-line"
@@ -153,27 +155,27 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
               className="text-xs font-semibold uppercase tracking-[0.18em] mb-3 text-gray-600"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              At a glance
+              {t("atAGlance")}
             </h3>
             <dl
               className="space-y-2 text-xs text-gray-700"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
               <div className="flex justify-between gap-4">
-                <dt className="text-gray-500">Primary use cases</dt>
+                <dt className="text-gray-500">{t("primaryUseCases")}</dt>
                 <dd className="text-right">{asset.useCases.join(" · ")}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-gray-500">Language / region</dt>
+                <dt className="text-gray-500">{t("languageRegion")}</dt>
                 <dd className="text-right">
                   {asset.language} ·{" "}
                   {asset.region === "Global" ? "Global" : asset.region}
                 </dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-gray-500">Download type</dt>
+                <dt className="text-gray-500">{t("downloadType")}</dt>
                 <dd className="text-right">
-                  {asset.gated ? "Lead-gated bundle" : "Direct file download"}
+                  {asset.gated ? t("leadGatedBundle") : t("directFileDownload")}
                 </dd>
               </div>
             </dl>
@@ -181,9 +183,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
 
           <div className="rounded-2xl border border-dashed border-[#2CADB2]/50 bg-[#f0fbfa] p-4 text-xs text-gray-700">
             <p style={{ fontFamily: "Raleway, sans-serif" }}>
-              Use <strong>Preview</strong> to open the file in a new tab before
-              adding to My Resources. Your thumbs up/down helps us improve
-              materials.
+              {t("previewHint")}
             </p>
           </div>
         </aside>

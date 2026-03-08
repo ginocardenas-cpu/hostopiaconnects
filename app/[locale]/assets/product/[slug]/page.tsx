@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import {
   getAssetsByProductCategory,
@@ -16,6 +17,7 @@ function productCategoryFromSlug(slug: string): ProductCategory | undefined {
 
 export default async function ProductAssetsPage({ params }: ProductAssetsPageProps) {
   const { slug } = await params;
+  const t = await getTranslations("productList");
   const productMeta = journeyProducts.find((p) => p.slug === slug);
   const category = productCategoryFromSlug(slug);
 
@@ -26,9 +28,9 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
           className="text-sm text-gray-600"
           style={{ fontFamily: "Raleway, sans-serif" }}
         >
-          We couldn&apos;t find that product.{" "}
+          {t("notFound")}{" "}
           <Link href="/" className="text-[#2CADB2] underline">
-            Go back to Hostopia Connects home.
+            {t("goBackHome")}
           </Link>
         </p>
       </section>
@@ -69,15 +71,14 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
 
         <div className="text-xs text-gray-500 space-y-1">
           <p style={{ fontFamily: "Raleway, sans-serif" }}>
-            Assets below are filtered to this product. From here, reps can open
-            individual assets or add them to My Resources (coming next).
+            {t("filteredIntro")}
           </p>
           <Link
             href={`/assets/journey/${journeySlug}`}
             className="inline-flex items-center gap-1 text-[#2CADB2] hover:underline"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
-            ← Back to journey
+            {t("backToJourney")}
           </Link>
         </div>
       </div>
@@ -87,7 +88,7 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
           className="text-sm text-gray-600"
           style={{ fontFamily: "Raleway, sans-serif" }}
         >
-          We don&apos;t have any sample assets wired up for this product yet.
+          {t("noAssets")}
         </p>
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
@@ -134,7 +135,7 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
                   className="inline-flex items-center gap-1 text-xs font-semibold text-[#2CADB2]"
                   style={{ fontFamily: "Montserrat, sans-serif" }}
                 >
-                  View asset details
+                  {t("viewAssetDetails")}
                   <span>↗</span>
                 </span>
               </div>

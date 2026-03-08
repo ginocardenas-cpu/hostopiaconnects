@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import { Flame, Star, Download, ArrowRight, FileText } from "lucide-react";
 import {
   getLatestAssets,
@@ -11,14 +12,15 @@ import {
 
 type TabKey = "new" | "popular" | "downloaded";
 
-const tabs: { key: TabKey; label: string; icon: React.ComponentType<any> }[] = [
-  { key: "new", label: "What's New", icon: Star },
-  { key: "popular", label: "Most Popular", icon: Flame },
-  { key: "downloaded", label: "Most Downloaded", icon: Download }
-];
-
 export function HomeHighlights() {
+  const t = useTranslations("highlights");
   const [active, setActive] = useState<TabKey>("new");
+
+  const tabs: { key: TabKey; labelKey: "whatsNew" | "mostPopular" | "mostDownloaded"; icon: React.ComponentType<any> }[] = [
+    { key: "new", labelKey: "whatsNew", icon: Star },
+    { key: "popular", labelKey: "mostPopular", icon: Flame },
+    { key: "downloaded", labelKey: "mostDownloaded", icon: Download }
+  ];
 
   const latest = getLatestAssets(3);
   const popular = getMostViewedAssets(3);
@@ -37,7 +39,7 @@ export function HomeHighlights() {
             {/* Left: tabs + list */}
             <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-black/5">
               <div className="flex flex-wrap items-center gap-2 mb-4">
-                {tabs.map(({ key, label, icon: Icon }) => {
+                {tabs.map(({ key, labelKey, icon: Icon }) => {
                   const selected = active === key;
                   return (
                     <button
@@ -52,7 +54,7 @@ export function HomeHighlights() {
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
                       <Icon size={14} />
-                      <span>{label}</span>
+                      <span>{t(labelKey)}</span>
                     </button>
                   );
                 })}
@@ -62,10 +64,9 @@ export function HomeHighlights() {
                 className="mb-4 text-xs text-gray-500"
                 style={{ fontFamily: "Raleway, sans-serif" }}
               >
-                {active === "new" && "Newest assets across Connects."}
-                {active === "popular" && "Most viewed assets in the last period."}
-                {active === "downloaded" &&
-                  "Assets downloaded most frequently."}
+                {active === "new" && t("newDesc")}
+                {active === "popular" && t("popularDesc")}
+                {active === "downloaded" && t("downloadedDesc")}
               </div>
 
               <div className="space-y-3">
@@ -100,13 +101,13 @@ export function HomeHighlights() {
                           style={{ fontFamily: "Raleway, sans-serif" }}
                         >
                           {active === "new" &&
-                            `Updated ${new Date(
+                            `${t("updated")} ${new Date(
                               asset.lastUpdated
                             ).toLocaleDateString()}`}
                           {active === "popular" &&
-                            `${asset.viewCount.toLocaleString()} views`}
+                            `${asset.viewCount.toLocaleString()} ${t("views")}`}
                           {active === "downloaded" &&
-                            `${asset.downloadCount.toLocaleString()} downloads`}
+                            `${asset.downloadCount.toLocaleString()} ${t("downloads")}`}
                         </p>
                       </div>
                     </div>
@@ -126,7 +127,7 @@ export function HomeHighlights() {
                   className="text-[11px] uppercase tracking-[0.18em] mb-2 text-[#2CADB2]"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  Featured Asset
+                  {t("featuredAsset")}
                 </p>
                 {featured && (
                   <>
@@ -169,7 +170,7 @@ export function HomeHighlights() {
                       className="inline-flex items-center gap-2 rounded-full bg-[#2CADB2] text-white px-5 py-2 text-xs font-bold shadow-md hover:bg-[#2CADB2]/90 hover:shadow-lg transition"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
-                      View asset
+                      {t("viewAsset")}
                       <ArrowRight size={14} />
                     </Link>
                   </>

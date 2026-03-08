@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Palette,
@@ -110,6 +111,7 @@ interface UniqueAccordionProps {
 }
 
 export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
+  const t = useTranslations("browse");
   const { setResultsFromAssets, seenSlugs, markSeen, clearResults } = useBrowse();
   const [wizardStep, setWizardStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [selectedJourneys, setSelectedJourneys] = useState<ProductJourney[]>([]);
@@ -157,7 +159,7 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
         {/* Your selection – clickable steps; Start over at bottom */}
         <div className="lg:w-56 flex-shrink-0 space-y-4">
           <h4 className="text-xs font-bold uppercase tracking-wider text-[#2CADB2]" style={{ fontFamily: "Montserrat, sans-serif" }}>
-            Your selection
+            {t("yourSelection")}
           </h4>
           <div className="space-y-3 text-sm">
                               <button
@@ -165,9 +167,9 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                 onClick={() => setWizardStep(1)}
                                 className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-[#2CADB2]/10 transition-colors border border-transparent hover:border-[#2CADB2]/20"
                               >
-                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>01 – Customer Stage</span>
+                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step1Title")}</span>
                                 {selectedJourneys.length === 0 ? (
-                                  <span className="block text-xs text-gray-400 mt-0.5">None</span>
+                                  <span className="block text-xs text-gray-400 mt-0.5">{t("none")}</span>
                                 ) : (
                                   <ul className="space-y-0.5 mt-1">
                                     {selectedJourneys.map((j) => (
@@ -184,9 +186,9 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                 onClick={() => setWizardStep(2)}
                                 className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-[#2CADB2]/10 transition-colors border border-transparent hover:border-[#2CADB2]/20"
                               >
-                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>02 – Products</span>
+                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step2Title")}</span>
                                 {selectedProductCategories.length === 0 ? (
-                                  <span className="block text-xs text-gray-400 mt-0.5">None</span>
+                                  <span className="block text-xs text-gray-400 mt-0.5">{t("none")}</span>
                                 ) : (
                                   <ul className="space-y-0.5 mt-1">
                                     {productsForJourneys
@@ -206,9 +208,9 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                 onClick={() => setWizardStep(3)}
                                 className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-[#2CADB2]/10 transition-colors border border-transparent hover:border-[#2CADB2]/20"
                               >
-                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>03 – Content Type</span>
+                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step3Title")}</span>
                                 {selectedContentTypes.length === 0 ? (
-                                  <span className="block text-xs text-gray-400 mt-0.5">None</span>
+                                  <span className="block text-xs text-gray-400 mt-0.5">{t("none")}</span>
                                 ) : (
                                   <ul className="space-y-0.5 mt-1">
                                     {contentTypesWithType.filter((c) => selectedContentTypes.includes(c.type)).map((c) => (
@@ -225,9 +227,9 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                 onClick={() => setWizardStep(4)}
                                 className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-[#2CADB2]/10 transition-colors border border-transparent hover:border-[#2CADB2]/20"
                               >
-                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>04 – Workflow</span>
+                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step4Title")}</span>
                                 {selectedUseCases.length === 0 ? (
-                                  <span className="block text-xs text-gray-400 mt-0.5">None</span>
+                                  <span className="block text-xs text-gray-400 mt-0.5">{t("none")}</span>
                                 ) : (
                                   <ul className="space-y-0.5 mt-1">
                                     {useCasesWithType.filter((u) => selectedUseCases.includes(u.type)).map((u) => (
@@ -247,7 +249,7 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                               style={{ fontFamily: "Montserrat, sans-serif" }}
                             >
                               <RotateCcw className="w-3.5 h-3.5" />
-                              Start over
+                              {t("startOver")}
                             </button>
                           </div>
 
@@ -255,8 +257,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                             {wizardStep === 1 && (
                               <>
                                 <div className="mb-4 text-center">
-                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>01 – Customer Stage</h3>
-                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>Start from where your customer is in their lifecycle. Explore assets designed to support awareness, evaluation, purchase, and growth.</p>
+                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step1Title")}</h3>
+                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>{t("step1Copy")}</p>
                                 </div>
                                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                   {journeys.map((journey, i) => {
@@ -266,7 +268,7 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                         key={journey.label}
                                         icon={Icon}
                                         title={journey.label}
-                                        description="Tap to select. Then click Next."
+                                        description={t("tapToSelect")}
                                         selected={selectedJourneys.includes(journey.label)}
                                         onClick={() => toggleJourney(journey.label)}
                                         index={i}
@@ -275,8 +277,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                   })}
                                   <SelectionTile
                                     icon={CircleSlash}
-                                    title="None"
-                                    description="Skip this filter; show assets from any stage."
+                                    title={t("none")}
+                                    description={t("noneDescStage")}
                                     selected={false}
                                     onClick={() => setSelectedJourneys([])}
                                     index={journeys.length}
@@ -291,7 +293,7 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                     whileHover={{ scale: 1.03 }}
                                     whileTap={{ scale: 0.98 }}
                                   >
-                                    Next <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+                                    {t("next")} <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
                                   </motion.button>
                                 </div>
                               </>
@@ -300,8 +302,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                             {wizardStep === 2 && (
                               <>
                                 <div className="mb-4 text-center">
-                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>02 – Products</h3>
-                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>Explore materials organized by product to quickly access the resources tied to specific solutions.</p>
+                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step2Title")}</h3>
+                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>{t("step2Copy")}</p>
                                 </div>
                                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                   {productsForJourneys.map((p, i) => {
@@ -320,15 +322,15 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                   })}
                                   <SelectionTile
                                     icon={CircleSlash}
-                                    title="None"
-                                    description="Skip this filter; show assets for any product."
+                                    title={t("none")}
+                                    description={t("noneDescProduct")}
                                     selected={false}
                                     onClick={() => setSelectedProductCategories([])}
                                     index={productsForJourneys.length}
                                   />
                                 </div>
                                 <div className="flex justify-between">
-                                  <button type="button" onClick={() => setWizardStep(1)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← Back</button>
+                                  <button type="button" onClick={() => setWizardStep(1)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← {t("back")}</button>
                                   <motion.button
                                     type="button"
                                     onClick={() => setWizardStep(3)}
@@ -337,7 +339,7 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                     whileHover={{ scale: 1.03 }}
                                     whileTap={{ scale: 0.98 }}
                                   >
-                                    Next <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+                                    {t("next")} <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
                                   </motion.button>
                                 </div>
                               </>
@@ -346,8 +348,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                             {wizardStep === 3 && (
                               <>
                                 <div className="mb-4 text-center">
-                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>03 – Content Type</h3>
-                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>Quickly jump to the format you need—presentations, documents, videos, or campaign kits.</p>
+                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step3Title")}</h3>
+                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>{t("step3Copy")}</p>
                                 </div>
                                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                   {contentTypesWithType.map(({ label, description, type, Icon }, i) => (
@@ -363,15 +365,15 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                   ))}
                                   <SelectionTile
                                     icon={CircleSlash}
-                                    title="None"
-                                    description="Skip this filter; show any content format."
+                                    title={t("none")}
+                                    description={t("noneDescContent")}
                                     selected={false}
                                     onClick={() => setSelectedContentTypes([])}
                                     index={contentTypesWithType.length}
                                   />
                                 </div>
                                 <div className="flex justify-between">
-                                  <button type="button" onClick={() => setWizardStep(2)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← Back</button>
+                                  <button type="button" onClick={() => setWizardStep(2)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← {t("back")}</button>
                                   <motion.button
                                     type="button"
                                     onClick={() => setWizardStep(4)}
@@ -380,7 +382,7 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                     whileHover={{ scale: 1.03 }}
                                     whileTap={{ scale: 0.98 }}
                                   >
-                                    Next <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+                                    {t("next")} <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
                                   </motion.button>
                                 </div>
                               </>
@@ -389,8 +391,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                             {wizardStep === 4 && (
                               <>
                                 <div className="mb-4 text-center">
-                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>04 – Workflow</h3>
-                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>Find assets based on the task you&apos;re trying to complete, from launching campaigns to supporting sales conversations.</p>
+                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step4Title")}</h3>
+                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>{t("step4Copy")}</p>
                                 </div>
                                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                   {useCasesWithType.map(({ label, description, type, Icon }, i) => (
@@ -406,15 +408,15 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                   ))}
                                   <SelectionTile
                                     icon={CircleSlash}
-                                    title="None"
-                                    description="Skip this filter; show assets for any workflow."
+                                    title={t("none")}
+                                    description={t("noneDescWorkflow")}
                                     selected={false}
                                     onClick={() => setSelectedUseCases([])}
                                     index={useCasesWithType.length}
                                   />
                                 </div>
                                 <div className="flex justify-between">
-                                  <button type="button" onClick={() => setWizardStep(3)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← Back</button>
+                                  <button type="button" onClick={() => setWizardStep(3)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← {t("back")}</button>
                                   <motion.button
                                     type="button"
                                     onClick={() => {
@@ -427,7 +429,7 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                     whileHover={{ scale: 1.03 }}
                                     whileTap={{ scale: 0.98 }}
                                   >
-                                    Next — see assets <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
+                                    {t("nextSeeAssets")} <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
                                   </motion.button>
                                 </div>
                               </>
@@ -436,12 +438,12 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                             {wizardStep === 5 && (
                               <>
                                 <div className="mb-4">
-                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>View Your Results</h3>
-                                  <p className="text-sm mt-1" style={cardStyle}>See all matching assets, review them online, download them, or refine your filters to narrow the results.</p>
+                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("viewYourResults")}</h3>
+                                  <p className="text-sm mt-1" style={cardStyle}>{t("viewYourResultsDesc")}</p>
                                 </div>
                                 <div className="space-y-2 max-h-[280px] overflow-y-auto">
                                   {filteredAssets.length === 0 ? (
-                                    <p className="text-sm py-4" style={cardStyle}>No assets match. Try fewer or different filters.</p>
+                                    <p className="text-sm py-4" style={cardStyle}>{t("noAssetsMatch")}</p>
                                   ) : (
                                     filteredAssets.map((asset) => {
                                       const viewed = seenSlugs.includes(asset.slug);
@@ -469,9 +471,9 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                             <span className="text-xs" style={cardStyle}>{asset.contentType} · {asset.productCategory}</span>
                                           </div>
                                           {viewed ? (
-                                            <span className="text-xs text-gray-500 font-medium">Viewed</span>
+                                            <span className="text-xs text-gray-500 font-medium">{t("viewed")}</span>
                                           ) : (
-                                            <span className="text-xs text-[#2CADB2] font-medium">View</span>
+                                            <span className="text-xs text-[#2CADB2] font-medium">{t("view")}</span>
                                           )}
                                         </motion.button>
                                       );
@@ -479,7 +481,7 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                   )}
                                 </div>
                                 <div className="flex justify-between pt-2">
-                                <button type="button" onClick={() => setWizardStep(4)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← Back</button>
+                                <button type="button" onClick={() => setWizardStep(4)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← {t("back")}</button>
                               </div>
 
                                 <AnimatePresence mode="wait">
@@ -501,7 +503,7 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                       className="text-sm text-gray-400 py-6 text-center"
                                       style={{ fontFamily: "Raleway, sans-serif" }}
                                     >
-                                      Click an asset above to view its details here.
+                                      {t("clickAssetToView")}
                                     </motion.p>
                                   )}
                                 </AnimatePresence>

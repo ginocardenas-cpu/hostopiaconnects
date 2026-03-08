@@ -1,13 +1,18 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { Sparkles, ArrowRight, FileText } from "lucide-react";
 import { getLatestAssets } from "@/lib/assets";
 
-export const metadata = {
-  title: "Featured & What's New",
-  description: "Latest and featured assets on Hostopia Connects.",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("featured");
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
 
-export default function FeaturedPage() {
+export default async function FeaturedPage() {
+  const t = await getTranslations("featured");
   const assets = getLatestAssets(12);
 
   return (
@@ -19,7 +24,7 @@ export default function FeaturedPage() {
             style={{ fontFamily: "Raleway, sans-serif", color: "#2CADB2" }}
           >
             <Sparkles size={14} />
-            Featured Assets
+            {t("featuredAssets")}
           </span>
         </div>
         <h1
@@ -30,14 +35,13 @@ export default function FeaturedPage() {
             color: "#24282B"
           }}
         >
-          What&apos;s New
+          {t("whatsNew")}
         </h1>
         <p
           className="text-base text-gray-600 max-w-xl"
           style={{ fontFamily: "Raleway, sans-serif" }}
         >
-          The latest and most relevant product, sales, and marketing content.
-          Sorted by most recently updated.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -84,13 +88,13 @@ export default function FeaturedPage() {
                 className="text-xs text-gray-500 mb-3"
                 style={{ fontFamily: "Raleway, sans-serif" }}
               >
-                Updated {new Date(asset.lastUpdated).toLocaleDateString()}
+                {t("updated")} {new Date(asset.lastUpdated).toLocaleDateString()}
               </p>
               <span
                 className="inline-flex items-center gap-1 text-xs font-semibold text-[#2CADB2]"
                 style={{ fontFamily: "Montserrat, sans-serif" }}
               >
-                View &amp; download
+                {t("viewDownload")}
                 <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
               </span>
             </div>
@@ -104,7 +108,7 @@ export default function FeaturedPage() {
           className="inline-flex items-center gap-2 text-sm font-semibold text-[#2CADB2] hover:underline"
           style={{ fontFamily: "Montserrat, sans-serif" }}
         >
-          ← Back to home
+          {t("backToHome")}
         </Link>
       </div>
     </section>

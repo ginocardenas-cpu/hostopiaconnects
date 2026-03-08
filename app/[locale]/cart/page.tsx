@@ -12,9 +12,7 @@ export default function CartPage() {
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     clear();
-    alert(
-      "Request received. In the full implementation, this would send a single email with secure links to all selected assets."
-    );
+    alert(t("requestReceived"));
   };
 
   return (
@@ -35,31 +33,29 @@ export default function CartPage() {
                 fontSize: "clamp(1.8rem, 3vw, 2.3rem)"
               }}
             >
-              Review your selected assets.
+              {t("reviewTitle")}
             </h1>
             <p
               className="text-sm text-gray-600"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              This is your one place to bundle decks, documents, and videos. When
-              you submit the form on the right, you&apos;ll receive a single
-              email with secure, time-limited links for everything in My Resources.
+              {t("reviewIntro")}
             </p>
           </div>
 
           {!hasItems ? (
             <div className="rounded-2xl border border-dashed border-[#2CADB2]/40 bg-[#f0fbfa] p-6 text-sm text-gray-700">
               <p style={{ fontFamily: "Raleway, sans-serif" }}>
-                {t("empty")}. Browse journeys and products first,
-                then use the <span className="font-semibold">Add to My Resources</span>{" "}
-                button on any asset detail page to see items here.
+                {t("empty")}. {t("emptyHint")}{" "}
+                <span className="font-semibold">{t("addToMyResourcesBtn")}</span>{" "}
+                {t("emptyHintSuffix")}
               </p>
               <Link
                 href="/"
                 className="inline-flex items-center gap-1 mt-4 text-xs text-[#2CADB2] hover:underline"
                 style={{ fontFamily: "Raleway, sans-serif" }}
               >
-                ← Back to Hostopia Connects home
+                {t("backToHome")}
               </Link>
             </div>
           ) : (
@@ -96,7 +92,7 @@ export default function CartPage() {
                     className="text-[11px] text-gray-500 hover:text-red-600"
                     style={{ fontFamily: "Raleway, sans-serif" }}
                   >
-                    Remove
+                    {t("remove")}
                   </button>
                 </div>
               ))}
@@ -113,14 +109,13 @@ export default function CartPage() {
                 fontSize: "1.1rem"
               }}
             >
-              Request your download bundle
+              {t("requestBundleTitle")}
             </h2>
             <p
               className="text-xs text-gray-600 mb-4"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              We only ask for what we need to send your bundle and understand
-              which companies are engaging with Hostopia Connects.
+              {t("requestBundleIntro")}
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -130,7 +125,7 @@ export default function CartPage() {
                   className="block text-xs font-semibold mb-1 text-gray-700"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  Full Name *
+                  {t("fullName")}
                 </label>
                 <input
                   id="fullName"
@@ -145,7 +140,7 @@ export default function CartPage() {
                   className="block text-xs font-semibold mb-1 text-gray-700"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  Company *
+                  {t("company")}
                 </label>
                 <input
                   id="company"
@@ -160,7 +155,7 @@ export default function CartPage() {
                   className="block text-xs font-semibold mb-1 text-gray-700"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  Email Address *
+                  {t("emailAddress")}
                 </label>
                 <input
                   id="email"
@@ -183,7 +178,7 @@ export default function CartPage() {
                   className="text-[11px] text-gray-600"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  Subscribe to our marketing updates and product news.
+                  {t("optInLabel")}
                 </label>
               </div>
 
@@ -197,7 +192,7 @@ export default function CartPage() {
                   color: "#24282B"
                 }}
               >
-                Request Your Download Bundle
+                {t("submitButton")}
               </button>
 
               {!hasItems && (
@@ -205,7 +200,7 @@ export default function CartPage() {
                   className="text-[11px] text-gray-500 mt-1"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  Add at least one asset to My Resources before requesting a bundle.
+                  {t("submitHint")}
                 </p>
               )}
             </form>
