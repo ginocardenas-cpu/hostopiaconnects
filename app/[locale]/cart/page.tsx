@@ -1,20 +1,17 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { useCart } from "@/components/CartProvider";
 
 export default function CartPage() {
+  const t = useTranslations("cart");
   const { assets, removeItem, clear } = useCart();
-
   const hasItems = assets.length > 0;
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    // For now, we just clear the cart and show a simple success state.
     clear();
-    // In a later phase, this will call an API route to:
-    // 1) Send the consolidated download email
-    // 2) Push the lead into Zoho CRM
     alert(
       "Request received. In the full implementation, this would send a single email with secure links to all selected assets."
     );
@@ -29,7 +26,7 @@ export default function CartPage() {
               className="uppercase tracking-[0.18em] text-xs text-gray-500 mb-3"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              My Resources
+              {t("title")}
             </p>
             <h1
               className="font-black leading-tight mb-2"
@@ -53,7 +50,7 @@ export default function CartPage() {
           {!hasItems ? (
             <div className="rounded-2xl border border-dashed border-[#2CADB2]/40 bg-[#f0fbfa] p-6 text-sm text-gray-700">
               <p style={{ fontFamily: "Raleway, sans-serif" }}>
-                My Resources is empty. Browse journeys and products first,
+                {t("empty")}. Browse journeys and products first,
                 then use the <span className="font-semibold">Add to My Resources</span>{" "}
                 button on any asset detail page to see items here.
               </p>
@@ -107,7 +104,6 @@ export default function CartPage() {
           )}
         </div>
 
-        {/* Lead form */}
         <aside className="w-full md:w-[360px]">
           <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
             <h2
@@ -219,4 +215,3 @@ export default function CartPage() {
     </section>
   );
 }
-

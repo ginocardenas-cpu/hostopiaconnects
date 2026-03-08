@@ -1,10 +1,10 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Sparkles, ArrowRight, FileText } from "lucide-react";
 import { getLatestAssets } from "@/lib/assets";
 
 export const metadata = {
   title: "Featured & What's New",
-  description: "Latest and featured assets on Hostopia Connects."
+  description: "Latest and featured assets on Hostopia Connects.",
 };
 
 export default function FeaturedPage() {

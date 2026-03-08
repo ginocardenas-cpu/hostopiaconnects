@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { FileText } from "lucide-react";
 import { getAssetBySlug } from "@/lib/assets";
 import { AddToCartButton } from "@/components/AddToCartButton";
@@ -7,11 +7,12 @@ import { AssetMarkSeen } from "@/components/AssetMarkSeen";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 
 interface AssetDetailPageProps {
-  params: { slug: string };
+  params: Promise<{ locale: string; slug: string }>;
 }
 
-export default function AssetDetailPage({ params }: AssetDetailPageProps) {
-  const asset = getAssetBySlug(params.slug);
+export default async function AssetDetailPage({ params }: AssetDetailPageProps) {
+  const { slug } = await params;
+  const asset = getAssetBySlug(slug);
 
   if (!asset) {
     return (
@@ -31,8 +32,7 @@ export default function AssetDetailPage({ params }: AssetDetailPageProps) {
 
   return (
     <section className="max-w-6xl mx-auto px-6 py-16">
-      <AssetMarkSeen slug={params.slug} />
-      {/* Header */}
+      <AssetMarkSeen slug={slug} />
       <div className="mb-10">
         <div className="flex flex-wrap items-center gap-2 mb-3 text-[11px]">
           <span
@@ -80,7 +80,6 @@ export default function AssetDetailPage({ params }: AssetDetailPageProps) {
           {asset.gated ? "Gated download" : "Direct download"}
         </p>
 
-        {/* Actions */}
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <AddToCartButton assetId={asset.id} />
           <a
@@ -100,7 +99,6 @@ export default function AssetDetailPage({ params }: AssetDetailPageProps) {
         </div>
       </div>
 
-      {/* Body */}
       <div className="grid gap-10 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] items-start">
         <div className="space-y-6">
           <section>
@@ -149,7 +147,6 @@ export default function AssetDetailPage({ params }: AssetDetailPageProps) {
           </section>
         </div>
 
-        {/* Right rail: quick metadata */}
         <aside className="space-y-6">
           <div className="rounded-2xl border border-black/5 bg-[#f7f6f2] p-4">
             <h3
@@ -194,4 +191,3 @@ export default function AssetDetailPage({ params }: AssetDetailPageProps) {
     </section>
   );
 }
-

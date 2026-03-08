@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "home": "Home",
+    "myResources": "My Resources",
+    "howItWorks": "How it works",
+    "searchResults": "Search results",
+    "toView": "{count} to view"
+  },
+  "hero": {
+    "welcome": "Welcome to",
+    "tagline": "A portal for Hostopia product, sales, and training content – all in one place.",
+    "searchPlaceholder": "Search for a product, asset, or use case",
+    "startBrowsing": "Start Browsing by Product",
+    "howItWorks": "How Hostopia Connects Works"
+  },
+  "browse": {
+    "title": "Let Us Help You Find What You're Looking For",
+    "subtitle": "Use this guided experience to quickly surface the right resources in four simple steps.",
+    "step1": "Customer Stage",
+    "step1Desc": "Choose where your customer is in their journey",
+    "step2": "Product",
+    "step2Desc": "Select the product or solution",
+    "step3": "Content Type",
+    "step3Desc": "Identify the format you need",
+    "step4": "Workflow",
+    "step4Desc": "Define the task you're working on",
+    "viewResults": "View Your Results",
+    "viewResultsDesc": "See all matching assets, review them online, download them, or refine your filters to narrow the results.",
+    "begin": "Begin",
+    "yourSelection": "Your selection",
+    "startOver": "Start over",
+    "step1Title": "01 – Customer Stage",
+    "step1Copy": "Start from where your customer is in their lifecycle. Explore assets designed to support awareness, evaluation, purchase, and growth.",
+    "step2Title": "02 – Products",
+    "step2Copy": "Explore materials organized by product to quickly access the resources tied to specific solutions.",
+    "step3Title": "03 – Content Type",
+    "step3Copy": "Quickly jump to the format you need—presentations, documents, videos, or campaign kits.",
+    "step4Title": "04 – Workflow",
+    "step4Copy": "Find assets based on the task you're trying to complete, from launching campaigns to supporting sales conversations.",
+    "none": "None",
+    "next": "Next",
+    "back": "Back",
+    "nextSeeAssets": "Next — see assets",
+    "viewYourResults": "View Your Results",
+    "viewYourResultsDesc": "See all matching assets, review them online, download them, or refine your filters to narrow the results.",
+    "noAssetsMatch": "No assets match. Try fewer or different filters.",
+    "clickAssetToView": "Click an asset above to view its details here.",
+    "viewed": "Viewed",
+    "view": "View"
+  },
+  "ticker": {
+    "announcement": "What's New!",
+    "label": "The 2026 Hostopia Product Guide is now available in Connects."
+  },
+  "footer": {
+    "copyright": "© {year} Hostopia. Hostopia Connects – internal enablement prototype."
+  },
+  "cart": {
+    "title": "My Resources",
+    "empty": "Your collection is empty"
+  },
+  "howItWorks": {
+    "title": "How Hostopia Connects Works"
+  },
+  "asset": {
+    "download": "Download",
+    "addToResources": "Add to My Resources"
+  }
+}

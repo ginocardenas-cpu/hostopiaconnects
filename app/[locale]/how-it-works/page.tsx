@@ -1,11 +1,17 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 
-export const metadata = {
-  title: "How Hostopia Connects Works",
-  description: "Add assets to My Resources, then get a single download bundle in your inbox."
-};
+export async function generateMetadata() {
+  const t = await getTranslations("howItWorks");
+  return {
+    title: t("title"),
+    description: "Add assets to My Resources, then get a single download bundle in your inbox.",
+  };
+}
 
-export default function HowItWorksPage() {
+export default async function HowItWorksPage() {
+  const t = await getTranslations("howItWorks");
+
   return (
     <section className="max-w-6xl mx-auto px-6 py-16">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
@@ -14,7 +20,7 @@ export default function HowItWorksPage() {
             className="uppercase tracking-[0.2em] text-xs mb-3 text-gray-500"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
-            How Hostopia Connects Works
+            {t("title")}
           </p>
           <h1
             className="font-black leading-tight mb-4"

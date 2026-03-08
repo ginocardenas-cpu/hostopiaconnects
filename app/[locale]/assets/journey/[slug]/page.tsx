@@ -1,14 +1,9 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import {
   journeyFromSlug,
   journeyProducts,
-  journeys,
   type ProductJourney
 } from "@/lib/assets";
-
-interface JourneyPageProps {
-  params: { slug: string };
-}
 
 const journeyDescriptions: Record<ProductJourney, string> = {
   "Build a Brand":
@@ -21,8 +16,13 @@ const journeyDescriptions: Record<ProductJourney, string> = {
     "Ecommerce, custom sites, and Online Fax to deepen relationships and unlock new revenue."
 };
 
-export default function JourneyPage({ params }: JourneyPageProps) {
-  const journey = journeyFromSlug(params.slug);
+interface JourneyPageProps {
+  params: Promise<{ locale: string; slug: string }>;
+}
+
+export default async function JourneyPage({ params }: JourneyPageProps) {
+  const { slug } = await params;
+  const journey = journeyFromSlug(slug);
 
   if (!journey) {
     return (
@@ -70,9 +70,9 @@ export default function JourneyPage({ params }: JourneyPageProps) {
         </div>
 
         <div className="text-xs text-gray-500 space-y-1">
-            <p style={{ fontFamily: "Raleway, sans-serif" }}>
-              Choose a product under this journey to see its enablement assets.
-            </p>
+          <p style={{ fontFamily: "Raleway, sans-serif" }}>
+            Choose a product under this journey to see its enablement assets.
+          </p>
           <Link
             href="/"
             className="inline-flex items-center gap-1 text-[#2CADB2] hover:underline"
@@ -145,4 +145,3 @@ export default function JourneyPage({ params }: JourneyPageProps) {
     </section>
   );
 }
-

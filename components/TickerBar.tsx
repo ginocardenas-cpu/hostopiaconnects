@@ -1,15 +1,11 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import { HeroPill } from "@/components/ui/hero-pill";
 
-const defaultMessage = {
-  announcement: "What's New!",
-  label: "The 2026 Hostopia Product Guide is now available in Connects.",
-  href: "/#featured",
-};
-
 export function TickerBar() {
-  const { announcement, label, href } = defaultMessage;
+  const locale = useLocale();
+  const t = useTranslations("ticker");
 
   return (
     <div
@@ -17,9 +13,9 @@ export function TickerBar() {
       style={{ backgroundColor: "#24282B" }}
     >
       <HeroPill
-        href={href}
-        label={label}
-        announcement={announcement}
+        href={`/${locale}/#featured`}
+        label={t("label")}
+        announcement={t("announcement")}
         className="bg-[#2CADB2]/20 ring-1 ring-white/20 [&_div]:bg-white/95 [&_div]:text-[#2CADB2] [&_p]:text-white [&_svg]:text-white"
       />
     </div>

@@ -1,11 +1,13 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Home, HelpCircle, Briefcase, FileSearch } from "lucide-react";
+import { Link } from "@/i18n/routing";
 import { useCart } from "./CartProvider";
 import { useBrowse } from "./BrowseProvider";
 
 export function CartNav() {
+  const t = useTranslations("nav");
   const { assets } = useCart();
   const { resultSlugs, unseenCount } = useBrowse();
   const count = assets.length;
@@ -18,7 +20,7 @@ export function CartNav() {
     >
       <Link href="/" className="inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors">
         <Home size={16} />
-        <span>Home</span>
+        <span>{t("home")}</span>
       </Link>
 
       {hasSearchResults && (
@@ -27,7 +29,7 @@ export function CartNav() {
           className="relative inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors"
         >
           <FileSearch size={16} />
-          <span>{unseenCount > 0 ? `${unseenCount} to view` : "Search results"}</span>
+          <span>{unseenCount > 0 ? t("toView", { count: unseenCount }) : t("searchResults")}</span>
           {unseenCount > 0 && (
             <span className="inline-flex items-center justify-center rounded-full bg-[#2CADB2] text-white text-[10px] px-2 py-[2px]">
               {unseenCount}
@@ -38,7 +40,7 @@ export function CartNav() {
 
       <Link href="/how-it-works" className="inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors">
         <HelpCircle size={16} />
-        <span>How it works</span>
+        <span>{t("howItWorks")}</span>
       </Link>
 
       <Link
@@ -46,7 +48,7 @@ export function CartNav() {
         className="relative inline-flex items-center gap-1.5 hover:text-[#2CADB2] transition-colors"
       >
         <Briefcase size={16} />
-        <span>My Resources</span>
+        <span>{t("myResources")}</span>
         {count > 0 && (
           <span className="inline-flex items-center justify-center rounded-full bg-[#2CADB2] text-white text-[10px] px-2 py-[2px]">
             {count}

@@ -1,11 +1,13 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 import { HomeHighlights } from "@/components/HomeHighlights";
 import { BrowseSectionClient } from "@/components/BrowseSectionClient";
 
-export default function Home() {
+export default async function Home() {
+  const t = await getTranslations("hero");
+
   return (
     <>
-      {/* Hero with background image */}
       <section
         className="relative min-h-[70vh] flex flex-col justify-center items-center px-6 py-16 bg-cover bg-center"
         style={{ backgroundImage: "url('/hero-hands.png')" }}
@@ -21,7 +23,7 @@ export default function Home() {
               letterSpacing: "0.2em"
             }}
           >
-            Welcome to
+            {t("welcome")}
           </p>
           <h1
             className="font-black leading-tight mb-10"
@@ -40,13 +42,12 @@ export default function Home() {
               lineHeight: 1.625
             }}
           >
-            A portal for Hostopia product, sales, and training content –
-            all in one place.
+            {t("tagline")}
           </p>
           <div className="max-w-2xl mx-auto mb-10">
             <input
               type="search"
-              placeholder="Search for a product, asset, or use case"
+              placeholder={t("searchPlaceholder")}
               className="w-full rounded-full border border-white/30 bg-white/95 px-5 py-3 text-sm outline-none shadow-sm focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2] text-[#24282B]"
               style={{ fontFamily: "Raleway, sans-serif" }}
             />
@@ -61,28 +62,25 @@ export default function Home() {
                 color: "#24282B"
               }}
             >
-              Start Browsing by Product
+              {t("startBrowsing")}
             </a>
             <Link
               href="/how-it-works"
               className="inline-flex items-center justify-center rounded-full px-8 py-3 text-sm font-semibold border-2 border-white/60 text-white transition hover:bg-white/10 hover:border-white"
               style={{ fontFamily: "Montserrat, sans-serif" }}
             >
-              How Hostopia Connects Works
+              {t("howItWorks")}
             </Link>
           </div>
         </div>
       </section>
       <HomeHighlights />
 
-      {/* Let us help you find – intro + Begin, or wizard (Begin replaces intro with Step 1) */}
       <section id="browse-options" className="py-10 border-t border-black/5 bg-[#f7f6f2] scroll-mt-6">
         <div className="max-w-6xl mx-auto px-6">
           <BrowseSectionClient />
         </div>
       </section>
-
     </>
   );
 }
-

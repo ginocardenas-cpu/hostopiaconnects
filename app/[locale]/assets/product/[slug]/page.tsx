@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import {
   getAssetsByProductCategory,
   journeyProducts,
@@ -6,7 +6,7 @@ import {
 } from "@/lib/assets";
 
 interface ProductAssetsPageProps {
-  params: { slug: string };
+  params: Promise<{ locale: string; slug: string }>;
 }
 
 function productCategoryFromSlug(slug: string): ProductCategory | undefined {
@@ -14,9 +14,10 @@ function productCategoryFromSlug(slug: string): ProductCategory | undefined {
   return match?.category;
 }
 
-export default function ProductAssetsPage({ params }: ProductAssetsPageProps) {
-  const productMeta = journeyProducts.find((p) => p.slug === params.slug);
-  const category = productCategoryFromSlug(params.slug);
+export default async function ProductAssetsPage({ params }: ProductAssetsPageProps) {
+  const { slug } = await params;
+  const productMeta = journeyProducts.find((p) => p.slug === slug);
+  const category = productCategoryFromSlug(slug);
 
   if (!productMeta || !category) {
     return (
@@ -35,6 +36,9 @@ export default function ProductAssetsPage({ params }: ProductAssetsPageProps) {
   }
 
   const assets = getAssetsByProductCategory(category);
+  const journeySlug = journeyProducts.find((p) => p.slug === slug)?.journey
+    ?.toLowerCase()
+    .replace(/\s+/g, "-") ?? "";
 
   return (
     <section className="max-w-6xl mx-auto px-6 py-16">
@@ -69,9 +73,7 @@ export default function ProductAssetsPage({ params }: ProductAssetsPageProps) {
             individual assets or add them to My Resources (coming next).
           </p>
           <Link
-            href={`/assets/journey/${journeyProducts.find((p) => p.slug === params.slug)?.journey
-              ?.toLowerCase()
-              .replace(/\s+/g, "-") ?? ""}`}
+            href={`/assets/journey/${journeySlug}`}
             className="inline-flex items-center gap-1 text-[#2CADB2] hover:underline"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
@@ -143,4 +145,3 @@ export default function ProductAssetsPage({ params }: ProductAssetsPageProps) {
     </section>
   );
 }
-
