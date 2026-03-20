@@ -50,7 +50,7 @@ export function LibraryLanguageFilter({
         className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-[#2CADB2] flex items-center justify-between gap-2 text-left"
       >
         <span className="flex items-center gap-2 min-w-0">
-          <span className="text-base leading-none shrink-0" aria-hidden>
+          <span className="text-lg emoji-flag leading-none shrink-0" aria-hidden>
             {selected ? ASSET_LANGUAGE_FLAGS[selected] : ALL_LANG_FLAG}
           </span>
           <span className="truncate">{value || t("allLanguages")}</span>
@@ -79,7 +79,7 @@ export function LibraryLanguageFilter({
                 setOpen(false);
               }}
             >
-              <span className="text-base leading-none" aria-hidden>
+              <span className="text-lg emoji-flag leading-none" aria-hidden>
                 {ALL_LANG_FLAG}
               </span>
               {t("allLanguages")}
@@ -101,7 +101,7 @@ export function LibraryLanguageFilter({
                   setOpen(false);
                 }}
               >
-                <span className="text-base leading-none" aria-hidden>
+                <span className="text-lg emoji-flag leading-none" aria-hidden>
                   {ASSET_LANGUAGE_FLAGS[lang]}
                 </span>
                 {lang}

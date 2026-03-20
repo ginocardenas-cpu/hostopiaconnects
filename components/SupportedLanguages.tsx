@@ -1,9 +1,10 @@
-import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/routing";
+import { getTranslations, getLocale } from "next-intl/server";
+import Link from "next/link";
 import { assetLanguagesWithFlags } from "@/lib/assetLanguageFlags";
 
 export async function SupportedLanguages() {
   const t = await getTranslations("home");
+  const locale = await getLocale();
 
   return (
     <section className="py-12 bg-white border-b border-gray-100" aria-labelledby="supported-languages-heading">
@@ -21,14 +22,14 @@ export async function SupportedLanguages() {
           {t("supportedLanguagesSubtitle")}
         </p>
 
-        <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 list-none p-0 m-0">
           {assetLanguagesWithFlags.map(({ lang, flag }) => (
             <li key={lang}>
               <Link
-                href={`/library?language=${encodeURIComponent(lang)}`}
+                href={`/${locale}/library?language=${encodeURIComponent(lang)}`}
                 className="flex items-center gap-2.5 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-[#24282B] shadow-sm hover:border-[#2CADB2]/40 hover:shadow-md hover:text-[#2CADB2] transition-all duration-200"
               >
-                <span className="text-lg leading-none shrink-0" aria-hidden>
+                <span className="text-xl emoji-flag shrink-0" aria-hidden>
                   {flag}
                 </span>
                 <span className="truncate font-heading">{lang}</span>
@@ -39,7 +40,7 @@ export async function SupportedLanguages() {
 
         <p className="mt-6 text-center">
           <Link
-            href="/library"
+            href={`/${locale}/library`}
             className="inline-flex items-center gap-2 text-sm font-semibold text-[#2CADB2] hover:text-[#1d8f93] transition-colors font-heading"
           >
             {t("supportedLanguagesViewAll")}
