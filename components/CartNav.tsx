@@ -12,7 +12,7 @@ export function CartNav() {
   return (
     <Link
       href="/cart"
-      className="relative inline-flex items-center gap-1.5 text-white/70 hover:text-[#2CADB2] transition-colors text-xs font-heading"
+      className="relative inline-flex items-center gap-1.5 text-[#24282B]/60 hover:text-[#2CADB2] transition-colors text-xs font-heading"
       aria-label={t("myResources")}
     >
       <i className="fa-solid fa-briefcase text-sm" />

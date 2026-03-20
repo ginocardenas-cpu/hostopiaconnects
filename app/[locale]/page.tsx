@@ -70,45 +70,42 @@ export default async function Home() {
       {/* Highlights – What's New, Most Popular, Most Downloaded */}
       <HomeHighlights />
 
-      {/* Explore Library + Request a Document – side by side on lighter bg */}
-      <section className="py-14 bg-white border-t border-gray-100">
+      {/* Explore Library + Request a Document */}
+      <section className="py-16 bg-gray-50 border-t border-gray-100">
         <div className="max-w-5xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Explore Library card */}
-            <div className="relative rounded-2xl bg-[#2A2930] p-8 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#2CADB2]/15 via-transparent to-[#F8CF41]/10" aria-hidden />
-              <div className="relative">
-                <div className="w-12 h-12 rounded-xl bg-[#2CADB2]/20 flex items-center justify-center mb-5">
-                  <i className="fa-solid fa-grid-2 text-xl text-[#2CADB2]" />
-                </div>
-                <h3 className="font-heading font-bold text-xl text-white mb-2">
-                  Explore Full Library
-                </h3>
-                <p className="text-gray-400 font-body text-sm leading-relaxed mb-6">
-                  Browse and filter the complete asset collection by product, content type, language, and more.
-                </p>
-                <Link href="/library">
-                  <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-[#2CADB2] text-white text-sm font-heading font-semibold hover:bg-[#249599] transition-colors shadow-md">
-                    Browse Library
-                    <i className="fa-solid fa-arrow-right text-[10px]" />
-                  </span>
-                </Link>
+            <div className="group rounded-2xl bg-white border border-gray-200 p-8 shadow-sm hover:shadow-lg hover:border-[#2CADB2]/30 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-[#2CADB2]/10 flex items-center justify-center mb-5">
+                <i className="fa-solid fa-grid-2 text-xl text-[#2CADB2]" />
               </div>
+              <h3 className="font-bold text-xl text-[#24282B] mb-2">
+                Explore Full Library
+              </h3>
+              <p className="text-[#555A5E] text-sm leading-relaxed mb-6">
+                Browse and filter the complete asset collection by product, content type, language, and more.
+              </p>
+              <Link href="/library">
+                <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#2CADB2] text-white text-sm font-semibold hover:bg-[#1d8f93] transition-colors shadow-sm">
+                  Browse Library
+                  <i className="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-0.5 transition-transform" />
+                </span>
+              </Link>
             </div>
 
             {/* Request a Document card */}
-            <div className="rounded-2xl border-2 border-dashed border-gray-200 p-8 bg-[#f7f6f2]">
-              <div className="w-12 h-12 rounded-xl bg-[#F8CF41]/20 flex items-center justify-center mb-5">
-                <i className="fa-solid fa-lightbulb text-xl text-[#F8CF41]" />
+            <div className="group rounded-2xl bg-white border border-gray-200 p-8 shadow-sm hover:shadow-lg hover:border-[#F8CF41]/40 transition-all duration-300">
+              <div className="w-12 h-12 rounded-xl bg-[#F8CF41]/15 flex items-center justify-center mb-5">
+                <i className="fa-solid fa-lightbulb text-xl text-[#e0b82a]" />
               </div>
-              <h3 className="font-heading font-bold text-xl text-[#24282B] mb-2">
+              <h3 className="font-bold text-xl text-[#24282B] mb-2">
                 Can&apos;t Find What You Need?
               </h3>
-              <p className="text-[#555A5E] font-body text-sm leading-relaxed mb-6">
+              <p className="text-[#555A5E] text-sm leading-relaxed mb-6">
                 Let us know what materials would help your team sell more effectively. We&apos;ll prioritize creating them.
               </p>
               <Link href="/request">
-                <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md border border-[#24282B]/15 text-[#24282B] text-sm font-heading font-semibold hover:border-[#2CADB2] hover:text-[#2CADB2] transition-colors">
+                <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg border border-gray-200 text-[#24282B] text-sm font-semibold hover:border-[#2CADB2] hover:text-[#2CADB2] transition-colors">
                   <i className="fa-solid fa-paper-plane text-xs" />
                   Request or Suggest a Document
                 </span>

@@ -23,7 +23,7 @@ export function HomeHighlights() {
     { key: "downloaded", labelKey: "mostDownloaded", icon: Download }
   ];
 
-  const latest = getLatestAssets(4);
+  const latest = getLatestAssets(3);
   const popular = getMostViewedAssets(3);
   const downloaded = getMostDownloadedAssets(3);
 
