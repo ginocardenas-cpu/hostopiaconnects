@@ -26,6 +26,49 @@ export type ContentType =
 
 export type UseCase = "Sales" | "Marketing" | "Training & Onboarding" | "Support";
 
+/**
+ * Asset language — the language the asset content is written/recorded in.
+ * This is separate from the portal UI locale. A French-speaking partner
+ * might browse the portal in French but download an English sales deck.
+ *
+ * 14 languages matching Hostopia's 34-country footprint:
+ * Tier 1: English, French, Spanish, Portuguese
+ * Tier 2: German, Italian, Greek, Romanian, Bulgarian, Hungarian, Croatian, Norwegian, Swedish, Albanian
+ */
+export type AssetLanguage =
+  | "English"
+  | "French"
+  | "Spanish"
+  | "Portuguese"
+  | "German"
+  | "Italian"
+  | "Greek"
+  | "Romanian"
+  | "Bulgarian"
+  | "Hungarian"
+  | "Croatian"
+  | "Norwegian"
+  | "Swedish"
+  | "Albanian";
+
+/** All asset languages for use in filter UIs. */
+export const allAssetLanguages: AssetLanguage[] = [
+  "English",
+  "French",
+  "Spanish",
+  "Portuguese",
+  "German",
+  "Italian",
+  "Greek",
+  "Romanian",
+  "Bulgarian",
+  "Hungarian",
+  "Croatian",
+  "Norwegian",
+  "Swedish",
+  "Albanian",
+];
+
 export interface Asset {
   id: string;
   slug: string;
@@ -37,8 +80,8 @@ export interface Asset {
   summaryWhat: string;
   summaryWhy: string;
   summaryHow: string;
-  language: "English" | "French" | "Spanish" | "Portuguese";
-  region: "Global" | "North America" | "EMEA" | "APAC";
+  language: AssetLanguage;
+  region: "Global" | "North America" | "EMEA" | "APAC" | "LATAM";
   gated: boolean; // Download Gate Status: true = gated, false = free/direct
   internalOnly: boolean;
   fileUrl: string;
@@ -187,15 +230,102 @@ export function filterAssets(filters: {
   productCategories?: ProductCategory[];
   contentTypes?: ContentType[];
   useCases?: UseCase[];
+  languages?: AssetLanguage[];
+  query?: string;
 }): Asset[] {
-  const { journeys = [], productCategories = [], contentTypes = [], useCases = [] } = filters;
+  const {
+    journeys = [],
+    productCategories = [],
+    contentTypes = [],
+    useCases = [],
+    languages = [],
+    query = "",
+  } = filters;
+
+  const q = query.toLowerCase().trim();
+
   return sampleAssets.filter((asset) => {
     if (journeys.length && !journeys.includes(asset.journey)) return false;
-    if (productCategories.length && !productCategories.includes(asset.productCategory)) return false;
+    if (productCategories.length && !productCategories.includes(asset.productCategory))
+      return false;
     if (contentTypes.length && !contentTypes.includes(asset.contentType)) return false;
     if (useCases.length && !asset.useCases.some((u) => useCases.includes(u))) return false;
+    if (languages.length && !languages.includes(asset.language)) return false;
+    if (q) {
+      const haystack = [
+        asset.title,
+        asset.productCategory,
+        asset.contentType,
+        asset.summaryWhat,
+        asset.summaryWhy,
+        asset.summaryHow,
+        asset.journey,
+        asset.language,
+        ...asset.useCases,
+      ]
+        .join(" ")
+        .toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
     return true;
   });
+}
+
+/** Full-text search across all asset fields. Returns ranked results (title matches first). */
+export function searchAssets(query: string, limit = 20): Asset[] {
+  const q = query.toLowerCase().trim();
+  if (!q) return [];
+
+  type Scored = { asset: Asset; score: number };
+  const scored: Scored[] = sampleAssets
+    .map((asset) => {
+      let score = 0;
+      const title = asset.title.toLowerCase();
+      const product = asset.productCategory.toLowerCase();
+
+      if (title.includes(q)) score += 10;
+      if (title.startsWith(q)) score += 5;
+      if (product.includes(q)) score += 8;
+      if (asset.contentType.toLowerCase().includes(q)) score += 4;
+      if (asset.summaryWhat.toLowerCase().includes(q)) score += 2;
+      if (asset.summaryWhy.toLowerCase().includes(q)) score += 1;
+      if (asset.summaryHow.toLowerCase().includes(q)) score += 1;
+      if (asset.journey.toLowerCase().includes(q)) score += 3;
+      if (asset.useCases.some((u) => u.toLowerCase().includes(q))) score += 2;
+
+      return { asset, score };
+    })
+    .filter((s) => s.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  return scored.slice(0, limit).map((s) => s.asset);
+}
+
+/** Autocomplete suggestions for the search bar. Groups by product, asset, and type. */
+export function getSearchSuggestions(query: string): {
+  products: string[];
+  assets: Asset[];
+  contentTypes: ContentType[];
+} {
+  const q = query.toLowerCase().trim();
+  if (!q) return { products: [], assets: [], contentTypes: [] };
+
+  const products = [
+    ...new Set(
+      journeyProducts
+        .filter((p) => p.label.toLowerCase().includes(q) || p.category.toLowerCase().includes(q))
+        .map((p) => p.label)
+    ),
+  ];
+
+  const assets = searchAssets(q, 5);
+
+  const contentTypeValues: ContentType[] = [
+    "Video", "Presentation", "Document", "Case Study", "Playbook", "Training", "Tool",
+  ];
+  const contentTypes = contentTypeValues.filter((ct) => ct.toLowerCase().includes(q));
+
+  return { products, assets, contentTypes };
 }
 
 /** Latest assets by lastUpdated (newest first), for "What's New" / Featured. */
