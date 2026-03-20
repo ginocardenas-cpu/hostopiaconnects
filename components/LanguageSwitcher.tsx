@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
 import {
   localeNames,
@@ -29,6 +29,7 @@ const UI_LOCALE_FLAGS: Record<string, string> = {
 };
 
 export function LanguageSwitcher() {
+  const t = useTranslations("languageSwitcher");
   const locale = useLocale() as AppLocale;
   const router = useRouter();
   const pathname = usePathname();
@@ -74,7 +75,7 @@ export function LanguageSwitcher() {
       {open && (
         <div className="absolute right-0 z-50 mt-1 w-64 max-w-[85vw] rounded-xl border border-black/10 bg-white py-2 shadow-lg max-h-[min(70vh,420px)] overflow-y-auto">
           <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
-            Primary languages
+            {t("primaryLanguages")}
           </p>
           {tier1Locales.map((loc) => (
             <button
@@ -94,7 +95,7 @@ export function LanguageSwitcher() {
 
           <div className="mt-1 border-t border-gray-100 pt-1">
             <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
-              Additional languages
+              {t("additionalLanguages")}
             </p>
             {tier2Locales.map((loc) => (
               <button

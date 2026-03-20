@@ -193,6 +193,10 @@
     "mostDownloaded": "Most downloaded",
     "alphabetical": "A–Z"
   },
+  "languageSwitcher": {
+    "primaryLanguages": "Primary languages",
+    "additionalLanguages": "Additional languages"
+  },
   "highlights": {
     "whatsNew": "What's New",
     "mostPopular": "Most Popular",

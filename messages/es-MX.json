@@ -156,6 +156,47 @@
     "product": "Producto",
     "viewAssetsForProduct": "Ver recursos de este producto"
   },
+  "search": {
+    "placeholder": "Buscar recursos, productos, tipos de contenido…",
+    "popularSearches": "Búsquedas populares",
+    "products": "Productos",
+    "assets": "Recursos",
+    "contentTypes": "Tipos de contenido",
+    "noResults": "Sin resultados",
+    "resultsFor": "Resultados para \"{query}\"",
+    "noResultsFor": "Sin resultados para \"{query}\"",
+    "tryDifferent": "Prueba con otro término o navega por categoría.",
+    "backToHome": "← Volver al inicio"
+  },
+  "library": {
+    "title": "Biblioteca de recursos",
+    "subtitle": "Explora, filtra y encuentra exactamente los recursos de ventas y marketing que necesitas.",
+    "filters": "Filtros",
+    "clearAll": "Borrar todo",
+    "journey": "Etapa del cliente",
+    "product": "Producto",
+    "contentType": "Tipo de contenido",
+    "useCase": "Caso de uso",
+    "language": "Idioma",
+    "allJourneys": "Todas las etapas",
+    "allProducts": "Todos los productos",
+    "allTypes": "Todos los tipos",
+    "allUseCases": "Todos los casos de uso",
+    "allLanguages": "Todos los idiomas",
+    "showing": "Mostrando {count} recursos",
+    "showingFiltered": "Mostrando {count} de {total} recursos",
+    "noResults": "Ningún recurso coincide con tus filtros",
+    "noResultsHint": "Ajusta o borra los filtros para ver todos los recursos.",
+    "sortBy": "Ordenar por",
+    "newest": "Más recientes",
+    "mostViewed": "Más vistos",
+    "mostDownloaded": "Más descargados",
+    "alphabetical": "A–Z"
+  },
+  "languageSwitcher": {
+    "primaryLanguages": "Idiomas principales",
+    "additionalLanguages": "Idiomas adicionales"
+  },
   "highlights": {
     "whatsNew": "Novedades",
     "mostPopular": "Más populares",

@@ -2,12 +2,13 @@ import { createNavigation } from "next-intl/navigation";
 import { defineRouting } from "next-intl/routing";
 
 /**
- * UI locales — the languages the portal chrome (nav, labels, buttons) is
- * translated into.  Tier 1 gets full translations; Tier 2 falls back to
- * English for UI but can still filter/download assets in their language.
+ * UI locales — languages the portal chrome (nav, labels, buttons) can use.
+ * Tier 1: full message catalogs in `messages/{locale}.json` (shown first in switcher).
+ * Tier 2: routed locales with no catalog yet — UI falls back to English until
+ * `messages/{locale}.json` is added; asset content may still be available in those languages.
  *
- * Tier 1 (full UI): en, fr-CA, es-MX, pt-BR
- * Tier 2 (UI in English, content available): de, it, el, ro, bg, hu, hr, nb, sv, sq
+ * Tier 1: en, fr-CA, es-MX, pt-BR, de, it
+ * Tier 2: el, ro, bg, hu, hr, nb, sv, sq
  */
 export const allLocales = [
   "en",
@@ -73,10 +74,24 @@ export const localeShortNames: Record<string, string> = {
   sq: "SQ",
 };
 
-/** Tier 1 locales get full UI translations. */
-export const tier1Locales: AppLocale[] = ["en", "fr-CA", "es-MX", "pt-BR"];
+/** Locales with full UI message files (primary list in language switcher). */
+export const tier1Locales: AppLocale[] = [
+  "en",
+  "fr-CA",
+  "es-MX",
+  "pt-BR",
+  "de",
+  "it",
+];
 
-/** Tier 2 locales use English UI but have content available. */
+/** Routed locales without a full catalog yet — English UI until translated. */
 export const tier2Locales: AppLocale[] = [
-  "de", "it", "el", "ro", "bg", "hu", "hr", "nb", "sv", "sq",
+  "el",
+  "ro",
+  "bg",
+  "hu",
+  "hr",
+  "nb",
+  "sv",
+  "sq",
 ];
