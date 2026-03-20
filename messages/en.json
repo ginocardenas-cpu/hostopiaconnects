@@ -12,6 +12,12 @@
     "searchPlaceholder": "Search for a product, asset, or use case",
     "howItWorks": "How Hostopia Connects Works"
   },
+  "home": {
+    "supportedLanguagesEyebrow": "Global content",
+    "supportedLanguagesTitle": "Languages we support",
+    "supportedLanguagesSubtitle": "Filter assets by the language they were created in—the same list as the Language filter in the Asset Library. Click a language to jump straight to matching resources.",
+    "supportedLanguagesViewAll": "View all assets"
+  },
   "browse": {
     "title": "Let Us Help You Find What You're Looking For",
     "subtitle": "Use this guided experience to quickly surface the right resources in four simple steps.",

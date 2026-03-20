@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { HomeHighlights } from "@/components/HomeHighlights";
 import { SearchBar } from "@/components/SearchBar";
+import { SupportedLanguages } from "@/components/SupportedLanguages";
 
 const QUICK_LINKS = [
   { label: "Sales Decks", href: "/library?type=Presentation", icon: "fa-solid fa-chart-bar" },
@@ -66,6 +67,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Asset content languages — same as Library filter, with flags */}
+      <SupportedLanguages />
 
       {/* Highlights – What's New, Most Popular, Most Downloaded */}
       <HomeHighlights />

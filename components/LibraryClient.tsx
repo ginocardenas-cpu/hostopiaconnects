@@ -10,7 +10,6 @@ import {
   journeys,
   journeyProducts,
   sampleAssets,
-  allAssetLanguages,
   type Asset,
   type ProductJourney,
   type ProductCategory,
@@ -18,6 +17,8 @@ import {
   type UseCase,
   type AssetLanguage,
 } from "@/lib/assets";
+import { LibraryLanguageFilter } from "@/components/LibraryLanguageFilter";
+import { ASSET_LANGUAGE_FLAGS } from "@/lib/assetLanguageFlags";
 
 const ALL_CONTENT_TYPES: ContentType[] = [
   "Video",
@@ -219,24 +220,11 @@ export function LibraryClient() {
         </select>
       </div>
 
-      {/* Language filter */}
-      <div>
-        <label className="block text-xs font-heading font-bold uppercase text-gray-500 mb-2">
-          {t("language")}
-        </label>
-        <select
-          value={selectedLanguage}
-          onChange={(e) => setSelectedLanguage(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-[#2CADB2]"
-        >
-          <option value="">{t("allLanguages")}</option>
-          {allAssetLanguages.map((lang) => (
-            <option key={lang} value={lang}>
-              {lang}
-            </option>
-          ))}
-        </select>
-      </div>
+      <LibraryLanguageFilter
+        value={selectedLanguage}
+        onChange={setSelectedLanguage}
+        t={t}
+      />
 
       {/* Clear filters */}
       {hasFilters && (
@@ -364,7 +352,11 @@ export function LibraryClient() {
                   <FilterPill label={selectedUseCase} onRemove={() => setSelectedUseCase("")} />
                 )}
                 {selectedLanguage && (
-                  <FilterPill label={selectedLanguage} onRemove={() => setSelectedLanguage("")} />
+                  <FilterPill
+                    icon={ASSET_LANGUAGE_FLAGS[selectedLanguage as AssetLanguage]}
+                    label={selectedLanguage}
+                    onRemove={() => setSelectedLanguage("")}
+                  />
                 )}
                 {query && (
                   <FilterPill label={`"${query}"`} onRemove={() => setQuery("")} />
@@ -407,12 +399,15 @@ export function LibraryClient() {
 function FilterPill({
   label,
   onRemove,
+  icon,
 }: {
   label: string;
   onRemove: () => void;
+  icon?: string;
 }) {
   return (
     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#d1f0ee] text-[#0f766e] text-xs font-semibold">
+      {icon && <span className="leading-none" aria-hidden>{icon}</span>}
       {label}
       <button
         onClick={onRemove}
