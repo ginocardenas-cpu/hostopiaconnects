@@ -1,6 +1,10 @@
 {
   "nav": {
     "home": "Accueil",
+    "library": "Bibliothèque",
+    "mainNavigation": "Navigation principale",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
     "myResources": "Mes ressources",
     "howItWorks": "Fonctionnement",
     "searchResults": "Résultats de recherche",
@@ -16,7 +20,21 @@
     "supportedLanguagesEyebrow": "Contenu mondial",
     "supportedLanguagesTitle": "Langues prises en charge",
     "supportedLanguagesSubtitle": "Filtrez les ressources selon la langue de création — la même liste que le filtre Langue dans la bibliothèque. Cliquez sur une langue pour ouvrir les ressources correspondantes.",
-    "supportedLanguagesViewAll": "Voir toutes les ressources"
+    "supportedLanguagesViewAll": "Voir toutes les ressources",
+    "jumpTo": "Accéder à :",
+    "quickSalesDecks": "Présentations commerciales",
+    "quickTraining": "Formation",
+    "quickVideos": "Vidéos",
+    "quickPlaybooks": "Playbooks",
+    "quickCaseStudies": "Études de cas",
+    "quickDocuments": "Documents",
+    "quickBrowseAll": "Parcourir tout",
+    "ctaLibraryTitle": "Explorer la bibliothèque complète",
+    "ctaLibraryBody": "Parcourez et filtrez l'ensemble des ressources par produit, type de contenu, langue et plus encore.",
+    "ctaLibraryButton": "Parcourir la bibliothèque",
+    "ctaRequestTitle": "Vous ne trouvez pas ce qu'il vous faut ?",
+    "ctaRequestBody": "Dites-nous quels documents aideraient votre équipe à mieux vendre. Nous prioriserons leur création.",
+    "ctaRequestButton": "Demander ou suggérer un document"
   },
   "browse": {
     "title": "Trouvons ce que vous cherchez",
@@ -63,6 +81,7 @@
     "label": "Le Guide produits Hostopia 2026 est maintenant disponible dans Connects."
   },
   "footer": {
+    "tagline": "Derrière les marques qui soutiennent les petites entreprises.",
     "copyright": "© {year} Hostopia. Hostopia Connects – prototype interne d'habilitation."
   },
   "cart": {
@@ -158,6 +177,9 @@
   },
   "search": {
     "placeholder": "Rechercher des ressources, produits, types de contenu…",
+    "triggerLabel": "Recherche",
+    "openSearchAria": "Ouvrir la recherche",
+    "closeSearchAria": "Fermer la recherche",
     "popularSearches": "Recherches populaires",
     "products": "Produits",
     "assets": "Ressources",

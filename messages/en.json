@@ -1,6 +1,10 @@
 {
   "nav": {
     "home": "Home",
+    "library": "Library",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
     "myResources": "My Resources",
     "howItWorks": "How it works",
     "searchResults": "Search results",
@@ -16,7 +20,21 @@
     "supportedLanguagesEyebrow": "Global content",
     "supportedLanguagesTitle": "Languages we support",
     "supportedLanguagesSubtitle": "Filter assets by the language they were created in—the same list as the Language filter in the Asset Library. Click a language to jump straight to matching resources.",
-    "supportedLanguagesViewAll": "View all assets"
+    "supportedLanguagesViewAll": "View all assets",
+    "jumpTo": "Jump to:",
+    "quickSalesDecks": "Sales Decks",
+    "quickTraining": "Training",
+    "quickVideos": "Videos",
+    "quickPlaybooks": "Playbooks",
+    "quickCaseStudies": "Case Studies",
+    "quickDocuments": "Documents",
+    "quickBrowseAll": "Browse All",
+    "ctaLibraryTitle": "Explore Full Library",
+    "ctaLibraryBody": "Browse and filter the complete asset collection by product, content type, language, and more.",
+    "ctaLibraryButton": "Browse Library",
+    "ctaRequestTitle": "Can't Find What You Need?",
+    "ctaRequestBody": "Let us know what materials would help your team sell more effectively. We'll prioritize creating them.",
+    "ctaRequestButton": "Request or Suggest a Document"
   },
   "browse": {
     "title": "Let Us Help You Find What You're Looking For",
@@ -63,6 +81,7 @@
     "label": "The 2026 Hostopia Product Guide is now available in Connects."
   },
   "footer": {
+    "tagline": "Behind the brands that power small business.",
     "copyright": "© {year} Hostopia. Hostopia Connects – internal enablement prototype."
   },
   "cart": {
@@ -158,6 +177,9 @@
   },
   "search": {
     "placeholder": "Search assets, products, content types…",
+    "triggerLabel": "Search",
+    "openSearchAria": "Open search",
+    "closeSearchAria": "Close search",
     "popularSearches": "Popular Searches",
     "products": "Products",
     "assets": "Assets",

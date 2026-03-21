@@ -1,6 +1,10 @@
 {
   "nav": {
     "home": "Home",
+    "library": "Libreria",
+    "mainNavigation": "Navigazione principale",
+    "openMenu": "Apri menu",
+    "closeMenu": "Chiudi menu",
     "myResources": "Le mie risorse",
     "howItWorks": "Come funziona",
     "searchResults": "Risultati di ricerca",
@@ -16,7 +20,21 @@
     "supportedLanguagesEyebrow": "Contenuto globale",
     "supportedLanguagesTitle": "Lingue supportate",
     "supportedLanguagesSubtitle": "Filtra le risorse in base alla lingua in cui sono state create—la stessa lista del filtro Lingua nella libreria. Clicca una lingua per aprire subito le risorse corrispondenti.",
-    "supportedLanguagesViewAll": "Vedi tutte le risorse"
+    "supportedLanguagesViewAll": "Vedi tutte le risorse",
+    "jumpTo": "Vai a:",
+    "quickSalesDecks": "Deck di vendita",
+    "quickTraining": "Formazione",
+    "quickVideos": "Video",
+    "quickPlaybooks": "Playbook",
+    "quickCaseStudies": "Casi studio",
+    "quickDocuments": "Documenti",
+    "quickBrowseAll": "Sfoglia tutto",
+    "ctaLibraryTitle": "Esplora l'intera libreria",
+    "ctaLibraryBody": "Sfoglia e filtra l'intera raccolta di risorse per prodotto, tipo di contenuto, lingua e altro.",
+    "ctaLibraryButton": "Apri la libreria",
+    "ctaRequestTitle": "Non trovi quello che ti serve?",
+    "ctaRequestBody": "Dicci quali materiali aiuterebbero il tuo team a vendere meglio. Daremo priorità alla loro creazione.",
+    "ctaRequestButton": "Richiedi o suggerisci un documento"
   },
   "browse": {
     "title": "Ti aiutiamo a trovare ciò che cerchi",
@@ -63,6 +81,7 @@
     "label": "La Guida prodotti Hostopia 2026 è ora disponibile su Connects."
   },
   "footer": {
+    "tagline": "Dietro i marchi che sostengono le piccole imprese.",
     "copyright": "© {year} Hostopia. Hostopia Connects – prototipo interno di abilitazione."
   },
   "cart": {
@@ -158,6 +177,9 @@
   },
   "search": {
     "placeholder": "Cerca risorse, prodotti, tipi di contenuto…",
+    "triggerLabel": "Cerca",
+    "openSearchAria": "Apri ricerca",
+    "closeSearchAria": "Chiudi ricerca",
     "popularSearches": "Ricerche popolari",
     "products": "Prodotti",
     "assets": "Risorse",

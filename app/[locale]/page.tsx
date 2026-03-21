@@ -5,16 +5,17 @@ import { SearchBar } from "@/components/SearchBar";
 import { SupportedLanguages } from "@/components/SupportedLanguages";
 
 const QUICK_LINKS = [
-  { label: "Sales Decks", href: "/library?type=Presentation", icon: "fa-solid fa-chart-bar" },
-  { label: "Training", href: "/library?type=Training", icon: "fa-solid fa-graduation-cap" },
-  { label: "Videos", href: "/library?type=Video", icon: "fa-solid fa-video" },
-  { label: "Playbooks", href: "/library?type=Playbook", icon: "fa-solid fa-book" },
-  { label: "Case Studies", href: "/library?type=Case+Study", icon: "fa-solid fa-file-lines" },
-  { label: "Documents", href: "/library?type=Document", icon: "fa-solid fa-file-pdf" },
+  { labelKey: "quickSalesDecks" as const, href: "/library?type=Presentation", icon: "fa-solid fa-chart-bar" },
+  { labelKey: "quickTraining" as const, href: "/library?type=Training", icon: "fa-solid fa-graduation-cap" },
+  { labelKey: "quickVideos" as const, href: "/library?type=Video", icon: "fa-solid fa-video" },
+  { labelKey: "quickPlaybooks" as const, href: "/library?type=Playbook", icon: "fa-solid fa-book" },
+  { labelKey: "quickCaseStudies" as const, href: "/library?type=Case+Study", icon: "fa-solid fa-file-lines" },
+  { labelKey: "quickDocuments" as const, href: "/library?type=Document", icon: "fa-solid fa-file-pdf" },
 ];
 
 export default async function Home() {
   const t = await getTranslations("hero");
+  const tHome = await getTranslations("home");
 
   return (
     <>
@@ -40,7 +41,7 @@ export default async function Home() {
 
           {/* Search */}
           <div className="max-w-lg mx-auto">
-            <SearchBar />
+            <SearchBar variant="hero" />
           </div>
         </div>
       </section>
@@ -49,19 +50,21 @@ export default async function Home() {
       <section className="py-5 bg-white border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <span className="text-xs text-gray-400 font-body mr-2 uppercase tracking-wider">Jump to:</span>
+            <span className="text-xs text-gray-400 font-body mr-2 uppercase tracking-wider">
+              {tHome("jumpTo")}
+            </span>
             {QUICK_LINKS.map((link) => (
-              <Link key={link.label} href={link.href}>
+              <Link key={link.labelKey} href={link.href}>
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-white text-xs font-semibold text-gray-600 hover:border-[#2CADB2] hover:text-[#2CADB2] transition-colors font-heading">
                   <i className={`${link.icon} text-[10px]`} />
-                  {link.label}
+                  {tHome(link.labelKey)}
                 </span>
               </Link>
             ))}
             <Link href="/library">
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#2CADB2] text-white text-xs font-semibold hover:bg-[#249599] transition-colors font-heading">
                 <i className="fa-solid fa-grid-2 text-[10px]" />
-                Browse All
+                {tHome("quickBrowseAll")}
               </span>
             </Link>
           </div>
@@ -84,14 +87,14 @@ export default async function Home() {
                 <i className="fa-solid fa-grid-2 text-xl text-[#2CADB2]" />
               </div>
               <h3 className="font-bold text-xl text-[#24282B] mb-2">
-                Explore Full Library
+                {tHome("ctaLibraryTitle")}
               </h3>
               <p className="text-[#555A5E] text-sm leading-relaxed mb-6">
-                Browse and filter the complete asset collection by product, content type, language, and more.
+                {tHome("ctaLibraryBody")}
               </p>
               <Link href="/library">
                 <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#2CADB2] text-white text-sm font-semibold hover:bg-[#1d8f93] transition-colors shadow-sm">
-                  Browse Library
+                  {tHome("ctaLibraryButton")}
                   <i className="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-0.5 transition-transform" />
                 </span>
               </Link>
@@ -103,15 +106,15 @@ export default async function Home() {
                 <i className="fa-solid fa-lightbulb text-xl text-[#e0b82a]" />
               </div>
               <h3 className="font-bold text-xl text-[#24282B] mb-2">
-                Can&apos;t Find What You Need?
+                {tHome("ctaRequestTitle")}
               </h3>
               <p className="text-[#555A5E] text-sm leading-relaxed mb-6">
-                Let us know what materials would help your team sell more effectively. We&apos;ll prioritize creating them.
+                {tHome("ctaRequestBody")}
               </p>
               <Link href="/request">
                 <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg border border-gray-200 text-[#24282B] text-sm font-semibold hover:border-[#2CADB2] hover:text-[#2CADB2] transition-colors">
                   <i className="fa-solid fa-paper-plane text-xs" />
-                  Request or Suggest a Document
+                  {tHome("ctaRequestButton")}
                 </span>
               </Link>
             </div>

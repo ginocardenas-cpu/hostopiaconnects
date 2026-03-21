@@ -3,11 +3,9 @@ import Image from "next/image";
 import { getMessages, getTranslations } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { CartLayoutClient } from "@/components/CartLayoutClient";
-import { CartNav } from "@/components/CartNav";
 import { TickerBar } from "@/components/TickerBar";
-import { SearchBar } from "@/components/SearchBar";
 import { Link } from "@/i18n/routing";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { LocaleHeader } from "@/components/LocaleHeader";
 
 export default async function LocaleLayout({
   children,
@@ -18,7 +16,6 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
   const messages = await getMessages();
-  const tNav = await getTranslations("nav");
   const tFooter = await getTranslations("footer");
   const year = new Date().getFullYear();
 
@@ -28,45 +25,7 @@ export default async function LocaleLayout({
         <div className="min-h-screen bg-white text-[#24282B] flex flex-col">
           <TickerBar />
 
-          {/* Header */}
-          <header className="bg-white border-b border-gray-200 sticky top-0 z-20">
-            <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-6">
-              {/* Logo */}
-              <Link href="/" className="flex-shrink-0" aria-label="Hostopia Connects home">
-                <Image
-                  src="/logo-hostopia-nav.png"
-                  alt="Hostopia - A HostPapa Company"
-                  width={160}
-                  height={48}
-                  className="h-10 w-auto object-contain"
-                  priority
-                />
-              </Link>
-
-              {/* Nav */}
-              <nav className="hidden md:flex items-center gap-8">
-                <Link
-                  href="/"
-                  className="text-xs font-heading font-semibold uppercase tracking-wider text-[#24282B]/70 hover:text-[#2CADB2] transition-colors"
-                >
-                  {tNav("home")}
-                </Link>
-                <Link
-                  href="/library"
-                  className="text-xs font-heading font-semibold uppercase tracking-wider text-[#24282B]/70 hover:text-[#2CADB2] transition-colors"
-                >
-                  Library
-                </Link>
-              </nav>
-
-              {/* Right: search, briefcase, language */}
-              <div className="flex items-center gap-3">
-                <SearchBar />
-                <CartNav />
-                <LanguageSwitcher />
-              </div>
-            </div>
-          </header>
+          <LocaleHeader />
 
           <main className="flex-1">
             {children}
@@ -86,7 +45,7 @@ export default async function LocaleLayout({
                   />
                 </Link>
                 <p className="text-[13px] text-gray-500 font-body leading-relaxed max-w-sm">
-                  Behind the brands that power small business.
+                  {tFooter("tagline")}
                 </p>
                 <div className="flex items-center gap-5 mt-1">
                   <a href="https://www.linkedin.com/company/hostopia" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#2CADB2] transition-colors" aria-label="LinkedIn">
