@@ -12,6 +12,9 @@ public/assets/*.webm
 .env*.local
 .env
 
+# TypeScript incremental build cache (local only)
+*.tsbuildinfo
+
 # Misc
 .DS_Store
 *.pem
