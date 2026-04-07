@@ -58,6 +58,12 @@ const useCasesWithType: { label: string; description: string; type: UseCase; Ico
   { label: "Support", description: "Documentation and support materials to help your customers succeed with our solutions.", type: "Support", Icon: HelpCircle },
 ];
 
+const cardStyle = {
+  fontFamily: "Raleway, sans-serif",
+  color: "#555A5E",
+  lineHeight: 1.625,
+} as const;
+
 function SelectionTile({
   icon: Icon,
   title,
@@ -83,18 +89,18 @@ function SelectionTile({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`group relative overflow-hidden text-left rounded-2xl border transition-all duration-200 flex flex-col min-h-[140px] p-6 ${
-        selected ? "border-teal bg-teal/10 shadow-md" : "border-black/5 bg-white hover:border-teal/30 hover:shadow-lg"
+        selected ? "border-[#2CADB2] bg-[#2CADB2]/10 shadow-md" : "border-black/5 bg-white hover:border-[#2CADB2]/30 hover:shadow-lg"
       }`}
     >
-      <div className="absolute -top-6 -right-4 w-16 h-16 rounded-full bg-gradient-to-br from-teal/10 via-gold/20 to-transparent" />
-      <div className="mb-4 flex-shrink-0 w-11 h-11 rounded-xl bg-teal/10 flex items-center justify-center text-teal group-hover:bg-teal/20 transition-colors">
+      <div className="absolute -top-6 -right-4 w-16 h-16 rounded-full bg-gradient-to-br from-[#2CADB2]/10 via-[#F8CF41]/20 to-transparent" />
+      <div className="mb-4 flex-shrink-0 w-11 h-11 rounded-xl bg-[#2CADB2]/10 flex items-center justify-center text-[#2CADB2] group-hover:bg-[#2CADB2]/20 transition-colors">
         <Icon size={22} />
       </div>
       <div className="flex-1 min-w-0 flex flex-col">
-        <div className="mb-2 font-heading text-[1.05rem] font-black text-charcoal">
+        <div className="font-black mb-2" style={{ fontFamily: "Montserrat, sans-serif", fontSize: "1.05rem", color: "#24282B" }}>
           {title}
         </div>
-        <p className="break-words font-body text-sm leading-relaxed text-gray-500">{description}</p>
+        <p className="text-sm leading-relaxed break-words" style={cardStyle}>{description}</p>
       </div>
     </motion.button>
   );
@@ -152,24 +158,24 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Your selection – clickable steps; Start over at bottom */}
         <div className="lg:w-56 flex-shrink-0 space-y-4">
-          <h4 className="font-heading text-xs font-bold uppercase tracking-wider text-teal">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-[#2CADB2]" style={{ fontFamily: "Montserrat, sans-serif" }}>
             {t("yourSelection")}
           </h4>
           <div className="space-y-3 text-sm">
                               <button
                                 type="button"
                                 onClick={() => setWizardStep(1)}
-                                className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-teal/10 transition-colors border border-transparent hover:border-teal/20"
+                                className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-[#2CADB2]/10 transition-colors border border-transparent hover:border-[#2CADB2]/20"
                               >
-                                <span className="font-heading font-semibold text-charcoal">{t("step1Title")}</span>
+                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step1Title")}</span>
                                 {selectedJourneys.length === 0 ? (
                                   <span className="block text-xs text-gray-400 mt-0.5">{t("none")}</span>
                                 ) : (
                                   <ul className="space-y-0.5 mt-1">
                                     {selectedJourneys.map((j) => (
                                       <li key={j} className="flex items-center gap-1.5">
-                                        <ChevronRight className="w-3 h-3 text-teal flex-shrink-0" />
-                                        <span className="font-body text-gray-500 leading-relaxed">{j}</span>
+                                        <ChevronRight className="w-3 h-3 text-[#2CADB2] flex-shrink-0" />
+                                        <span style={cardStyle}>{j}</span>
                                       </li>
                                     ))}
                                   </ul>
@@ -178,9 +184,9 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                               <button
                                 type="button"
                                 onClick={() => setWizardStep(2)}
-                                className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-teal/10 transition-colors border border-transparent hover:border-teal/20"
+                                className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-[#2CADB2]/10 transition-colors border border-transparent hover:border-[#2CADB2]/20"
                               >
-                                <span className="font-heading font-semibold text-charcoal">{t("step2Title")}</span>
+                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step2Title")}</span>
                                 {selectedProductCategories.length === 0 ? (
                                   <span className="block text-xs text-gray-400 mt-0.5">{t("none")}</span>
                                 ) : (
@@ -190,8 +196,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                       .reduce<{ label: string }[]>((acc, p) => (acc.some((x) => x.label === p.label) ? acc : [...acc, { label: p.label }]), [])
                                       .map(({ label }) => (
                                         <li key={label} className="flex items-center gap-1.5">
-                                          <ChevronRight className="w-3 h-3 text-teal flex-shrink-0" />
-                                          <span className="font-body text-gray-500 leading-relaxed">{label}</span>
+                                          <ChevronRight className="w-3 h-3 text-[#2CADB2] flex-shrink-0" />
+                                          <span style={cardStyle}>{label}</span>
                                         </li>
                                       ))}
                                   </ul>
@@ -200,17 +206,17 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                               <button
                                 type="button"
                                 onClick={() => setWizardStep(3)}
-                                className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-teal/10 transition-colors border border-transparent hover:border-teal/20"
+                                className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-[#2CADB2]/10 transition-colors border border-transparent hover:border-[#2CADB2]/20"
                               >
-                                <span className="font-heading font-semibold text-charcoal">{t("step3Title")}</span>
+                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step3Title")}</span>
                                 {selectedContentTypes.length === 0 ? (
                                   <span className="block text-xs text-gray-400 mt-0.5">{t("none")}</span>
                                 ) : (
                                   <ul className="space-y-0.5 mt-1">
                                     {contentTypesWithType.filter((c) => selectedContentTypes.includes(c.type)).map((c) => (
                                       <li key={c.type} className="flex items-center gap-1.5">
-                                        <ChevronRight className="w-3 h-3 text-teal flex-shrink-0" />
-                                        <span className="font-body text-gray-500 leading-relaxed">{c.label}</span>
+                                        <ChevronRight className="w-3 h-3 text-[#2CADB2] flex-shrink-0" />
+                                        <span style={cardStyle}>{c.label}</span>
                                       </li>
                                     ))}
                                   </ul>
@@ -219,17 +225,17 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                               <button
                                 type="button"
                                 onClick={() => setWizardStep(4)}
-                                className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-teal/10 transition-colors border border-transparent hover:border-teal/20"
+                                className="w-full text-left rounded-lg px-2 py-1.5 hover:bg-[#2CADB2]/10 transition-colors border border-transparent hover:border-[#2CADB2]/20"
                               >
-                                <span className="font-heading font-semibold text-charcoal">{t("step4Title")}</span>
+                                <span className="font-semibold text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step4Title")}</span>
                                 {selectedUseCases.length === 0 ? (
                                   <span className="block text-xs text-gray-400 mt-0.5">{t("none")}</span>
                                 ) : (
                                   <ul className="space-y-0.5 mt-1">
                                     {useCasesWithType.filter((u) => selectedUseCases.includes(u.type)).map((u) => (
                                       <li key={u.type} className="flex items-center gap-1.5">
-                                        <ChevronRight className="w-3 h-3 text-teal flex-shrink-0" />
-                                        <span className="font-body text-gray-500 leading-relaxed">{u.label}</span>
+                                        <ChevronRight className="w-3 h-3 text-[#2CADB2] flex-shrink-0" />
+                                        <span style={cardStyle}>{u.label}</span>
                                       </li>
                                     ))}
                                   </ul>
@@ -239,7 +245,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                             <button
                               type="button"
                               onClick={handleStartOver}
-                              className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-teal/30 bg-transparent px-3 py-2 text-xs font-semibold text-gray-500 transition-colors hover:bg-teal/10 hover:text-teal font-heading"
+                              className="mt-4 w-full inline-flex items-center justify-center gap-1.5 rounded-lg border border-[#2CADB2]/30 bg-transparent px-3 py-2 text-xs font-semibold text-[#555A5E] hover:bg-[#2CADB2]/10 hover:text-[#2CADB2] transition-colors"
+                              style={{ fontFamily: "Montserrat, sans-serif" }}
                             >
                               <RotateCcw className="w-3.5 h-3.5" />
                               {t("startOver")}
@@ -250,8 +257,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                             {wizardStep === 1 && (
                               <>
                                 <div className="mb-4 text-center">
-                                  <h3 className="font-heading text-lg font-black text-charcoal">{t("step1Title")}</h3>
-                                  <p className="mx-auto mt-2 max-w-xl font-body text-sm leading-relaxed text-gray-500">{t("step1Copy")}</p>
+                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step1Title")}</h3>
+                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>{t("step1Copy")}</p>
                                 </div>
                                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                   {journeys.map((journey, i) => {
@@ -281,7 +288,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                   <motion.button
                                     type="button"
                                     onClick={() => setWizardStep(2)}
-                                    className="flex items-center gap-2 rounded-full bg-teal px-6 py-2 text-sm font-bold text-white shadow-md font-heading"
+                                    className="rounded-full px-6 py-2 text-sm font-bold shadow-md flex items-center gap-2"
+                                    style={{ fontFamily: "Montserrat, sans-serif", backgroundColor: "#2CADB2", color: "white" }}
                                     whileHover={{ scale: 1.03 }}
                                     whileTap={{ scale: 0.98 }}
                                   >
@@ -294,8 +302,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                             {wizardStep === 2 && (
                               <>
                                 <div className="mb-4 text-center">
-                                  <h3 className="font-heading text-lg font-black text-charcoal">{t("step2Title")}</h3>
-                                  <p className="mx-auto mt-2 max-w-xl font-body text-sm leading-relaxed text-gray-500">{t("step2Copy")}</p>
+                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step2Title")}</h3>
+                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>{t("step2Copy")}</p>
                                 </div>
                                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                                   {productsForJourneys.map((p, i) => {
@@ -322,11 +330,12 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                   />
                                 </div>
                                 <div className="flex justify-between">
-                                  <button type="button" onClick={() => setWizardStep(1)} className="font-heading text-sm font-semibold text-teal hover:underline">← {t("back")}</button>
+                                  <button type="button" onClick={() => setWizardStep(1)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← {t("back")}</button>
                                   <motion.button
                                     type="button"
                                     onClick={() => setWizardStep(3)}
-                                    className="flex items-center gap-2 rounded-full bg-teal px-6 py-2 text-sm font-bold text-white shadow-md font-heading"
+                                    className="rounded-full px-6 py-2 text-sm font-bold shadow-md flex items-center gap-2"
+                                    style={{ fontFamily: "Montserrat, sans-serif", backgroundColor: "#2CADB2", color: "white" }}
                                     whileHover={{ scale: 1.03 }}
                                     whileTap={{ scale: 0.98 }}
                                   >
@@ -339,8 +348,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                             {wizardStep === 3 && (
                               <>
                                 <div className="mb-4 text-center">
-                                  <h3 className="font-heading text-lg font-black text-charcoal">{t("step3Title")}</h3>
-                                  <p className="mx-auto mt-2 max-w-xl font-body text-sm leading-relaxed text-gray-500">{t("step3Copy")}</p>
+                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step3Title")}</h3>
+                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>{t("step3Copy")}</p>
                                 </div>
                                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                   {contentTypesWithType.map(({ label, description, type, Icon }, i) => (
@@ -364,11 +373,12 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                   />
                                 </div>
                                 <div className="flex justify-between">
-                                  <button type="button" onClick={() => setWizardStep(2)} className="font-heading text-sm font-semibold text-teal hover:underline">← {t("back")}</button>
+                                  <button type="button" onClick={() => setWizardStep(2)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← {t("back")}</button>
                                   <motion.button
                                     type="button"
                                     onClick={() => setWizardStep(4)}
-                                    className="flex items-center gap-2 rounded-full bg-teal px-6 py-2 text-sm font-bold text-white shadow-md font-heading"
+                                    className="rounded-full px-6 py-2 text-sm font-bold shadow-md flex items-center gap-2"
+                                    style={{ fontFamily: "Montserrat, sans-serif", backgroundColor: "#2CADB2", color: "white" }}
                                     whileHover={{ scale: 1.03 }}
                                     whileTap={{ scale: 0.98 }}
                                   >
@@ -381,8 +391,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                             {wizardStep === 4 && (
                               <>
                                 <div className="mb-4 text-center">
-                                  <h3 className="font-heading text-lg font-black text-charcoal">{t("step4Title")}</h3>
-                                  <p className="mx-auto mt-2 max-w-xl font-body text-sm leading-relaxed text-gray-500">{t("step4Copy")}</p>
+                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("step4Title")}</h3>
+                                  <p className="text-sm mt-2 max-w-xl mx-auto" style={cardStyle}>{t("step4Copy")}</p>
                                 </div>
                                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                                   {useCasesWithType.map(({ label, description, type, Icon }, i) => (
@@ -406,7 +416,7 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                   />
                                 </div>
                                 <div className="flex justify-between">
-                                  <button type="button" onClick={() => setWizardStep(3)} className="font-heading text-sm font-semibold text-teal hover:underline">← {t("back")}</button>
+                                  <button type="button" onClick={() => setWizardStep(3)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← {t("back")}</button>
                                   <motion.button
                                     type="button"
                                     onClick={() => {
@@ -414,7 +424,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                       setWizardStep(5);
                                       setSelectedAsset(null);
                                     }}
-                                    className="flex items-center gap-2 rounded-full bg-teal px-6 py-2 text-sm font-bold text-white shadow-md font-heading"
+                                    className="rounded-full px-6 py-2 text-sm font-bold shadow-md flex items-center gap-2"
+                                    style={{ fontFamily: "Montserrat, sans-serif", backgroundColor: "#2CADB2", color: "white" }}
                                     whileHover={{ scale: 1.03 }}
                                     whileTap={{ scale: 0.98 }}
                                   >
@@ -427,12 +438,12 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                             {wizardStep === 5 && (
                               <>
                                 <div className="mb-4">
-                                  <h3 className="font-heading text-lg font-black text-charcoal">{t("viewYourResults")}</h3>
-                                  <p className="mt-1 font-body text-sm leading-relaxed text-gray-500">{t("viewYourResultsDesc")}</p>
+                                  <h3 className="text-lg font-black text-[#24282B]" style={{ fontFamily: "Montserrat, sans-serif" }}>{t("viewYourResults")}</h3>
+                                  <p className="text-sm mt-1" style={cardStyle}>{t("viewYourResultsDesc")}</p>
                                 </div>
                                 <div className="space-y-2 max-h-[280px] overflow-y-auto">
                                   {filteredAssets.length === 0 ? (
-                                    <p className="py-4 font-body text-sm leading-relaxed text-gray-500">{t("noAssetsMatch")}</p>
+                                    <p className="text-sm py-4" style={cardStyle}>{t("noAssetsMatch")}</p>
                                   ) : (
                                     filteredAssets.map((asset) => {
                                       const viewed = seenSlugs.includes(asset.slug);
@@ -447,24 +458,22 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                           }}
                                           className={`w-full flex items-center justify-between gap-4 rounded-xl border px-4 py-3 text-left transition-all ${
                                             isSelected
-                                              ? "border-teal bg-teal/10 shadow-md"
+                                              ? "border-[#2CADB2] bg-[#2CADB2]/10 shadow-md"
                                               : viewed
                                                 ? "border-black/5 bg-gray-100/80 opacity-75 hover:opacity-90"
-                                                : "border-black/5 bg-white hover:border-teal hover:shadow-md"
+                                                : "border-black/5 bg-white hover:border-[#2CADB2] hover:shadow-md"
                                           }`}
                                           whileHover={{ x: 2 }}
                                           whileTap={{ scale: 0.99 }}
                                         >
                                           <div>
-                                            <span className="block font-heading text-sm font-semibold text-charcoal">{asset.title}</span>
-                                            <span className="font-body text-xs leading-relaxed text-gray-500">
-                                              {asset.contentType} · {asset.productCategory}
-                                            </span>
+                                            <span className="block text-sm font-semibold" style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}>{asset.title}</span>
+                                            <span className="text-xs" style={cardStyle}>{asset.contentType} · {asset.productCategory}</span>
                                           </div>
                                           {viewed ? (
                                             <span className="text-xs text-gray-500 font-medium">{t("viewed")}</span>
                                           ) : (
-                                            <span className="text-xs text-teal font-medium">{t("view")}</span>
+                                            <span className="text-xs text-[#2CADB2] font-medium">{t("view")}</span>
                                           )}
                                         </motion.button>
                                       );
@@ -472,7 +481,7 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                   )}
                                 </div>
                                 <div className="flex justify-between pt-2">
-                                <button type="button" onClick={() => setWizardStep(4)} className="font-heading text-sm font-semibold text-teal hover:underline">← {t("back")}</button>
+                                <button type="button" onClick={() => setWizardStep(4)} className="text-sm font-semibold text-[#2CADB2] hover:underline" style={{ fontFamily: "Montserrat, sans-serif" }}>← {t("back")}</button>
                               </div>
 
                                 <AnimatePresence mode="wait">
@@ -491,7 +500,8 @@ export function UniqueAccordion({ onStartOver }: UniqueAccordionProps) {
                                     <motion.p
                                       initial={{ opacity: 0 }}
                                       animate={{ opacity: 1 }}
-                                      className="py-6 text-center font-body text-sm text-gray-400"
+                                      className="text-sm text-gray-400 py-6 text-center"
+                                      style={{ fontFamily: "Raleway, sans-serif" }}
                                     >
                                       {t("clickAssetToView")}
                                     </motion.p>

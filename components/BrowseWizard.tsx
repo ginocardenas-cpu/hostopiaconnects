@@ -109,13 +109,19 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
 
   const modal = (
     <div className="fixed inset-0 z-40 flex items-start justify-center bg-black/40 backdrop-blur-sm overflow-y-auto">
-      <div className="mt-20 mb-10 w-full max-w-5xl overflow-hidden rounded-3xl border border-black/10 bg-white font-body shadow-2xl">
+      <div className="mt-20 mb-10 w-full max-w-5xl rounded-3xl bg-white shadow-2xl border border-black/10 overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-black/5">
           <div>
-            <p className="mb-1 text-[11px] uppercase tracking-[0.18em] text-gray-500">
+            <p
+              className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mb-1"
+              style={{ fontFamily: "Raleway, sans-serif" }}
+            >
               Guided browse
             </p>
-            <h2 className="font-heading text-sm font-black">
+            <h2
+              className="text-sm font-black"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
               Drill down by journey, product, and content.
             </h2>
           </div>
@@ -150,9 +156,9 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                     }}
                     className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold ${
                       active
-                        ? "bg-teal text-white"
+                        ? "bg-[#2CADB2] text-white"
                         : completed
-                        ? "bg-teal/10 text-teal"
+                        ? "bg-[#2CADB2]/10 text-[#2CADB2]"
                         : "bg-gray-100 text-gray-400"
                     }`}
                   >
@@ -162,6 +168,7 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                     className={`text-[11px] ${
                       active ? "text-gray-900" : "text-gray-500"
                     }`}
+                    style={{ fontFamily: "Raleway, sans-serif" }}
                   >
                     {label}
                   </span>
@@ -172,7 +179,8 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
               <button
                 type="button"
                 onClick={reset}
-                className="hover:text-teal"
+                className="hover:text-[#2CADB2]"
+                style={{ fontFamily: "Raleway, sans-serif" }}
               >
                 Reset filters
               </button>
@@ -185,7 +193,8 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
               {pathChips.map((chip) => (
                 <span
                   key={chip}
-                  className="rounded-full bg-cream border border-black/5 px-3 py-1 text-[11px] text-gray-700"
+                  className="rounded-full bg-[#f7f6f2] border border-black/5 px-3 py-1 text-[11px] text-gray-700"
+                  style={{ fontFamily: "Raleway, sans-serif" }}
                 >
                   {chip}
                 </span>
@@ -200,6 +209,7 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
             <div className="space-y-4">
               <p
                 className="text-xs text-gray-600"
+                style={{ fontFamily: "Raleway, sans-serif" }}
               >
                 Step 1: Select one or more journeys that match where your customer
                 is today.
@@ -224,16 +234,20 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                       }}
                       className={`text-left rounded-2xl border px-4 py-3 transition ${
                         selected
-                          ? "border-teal bg-teal-light"
-                          : "border-black/10 bg-white hover:border-teal/60"
+                          ? "border-[#2CADB2] bg-[#f0fbfa]"
+                          : "border-black/10 bg-white hover:border-[#2CADB2]/60"
                       }`}
                     >
                       <p
                         className="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-1"
+                        style={{ fontFamily: "Raleway, sans-serif" }}
                       >
                         Journey
                       </p>
-                      <p className="font-heading text-sm font-black">
+                      <p
+                        className="text-sm font-black"
+                        style={{ fontFamily: "Montserrat, sans-serif" }}
+                      >
                         {j.label}
                       </p>
                     </button>
@@ -245,7 +259,8 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                   type="button"
                   onClick={() => setStep(2)}
                   disabled={journeysSelected.length === 0}
-                  className="inline-flex items-center gap-1 rounded-full bg-teal px-4 py-1.5 text-[11px] font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-40 font-heading"
+                  className="inline-flex items-center gap-1 rounded-full px-4 py-1.5 text-[11px] font-semibold transition disabled:opacity-40 disabled:cursor-not-allowed bg-[#2CADB2] text-white"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
                 >
                   Next: Choose products
                   <ArrowRight size={12} />
@@ -258,6 +273,7 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
             <div className="space-y-4">
               <p
                 className="text-xs text-gray-600"
+                style={{ fontFamily: "Raleway, sans-serif" }}
               >
                 Step 2: Select one or more products you want enablement content
                 for.
@@ -272,20 +288,25 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                       onClick={() => toggleCategory(p.category)}
                       className={`text-left rounded-2xl border px-4 py-3 transition ${
                         selected
-                          ? "border-teal bg-teal-light"
-                          : "border-black/10 bg-white hover:border-teal/60"
+                          ? "border-[#2CADB2] bg-[#f0fbfa]"
+                          : "border-black/10 bg-white hover:border-[#2CADB2]/60"
                       }`}
                     >
                       <p
                         className="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-1"
+                        style={{ fontFamily: "Raleway, sans-serif" }}
                       >
                         Product
                       </p>
-                      <p className="font-heading text-sm font-black mb-1">
+                      <p
+                        className="text-sm font-black mb-1"
+                        style={{ fontFamily: "Montserrat, sans-serif" }}
+                      >
                         {p.label}
                       </p>
                       <p
                         className="text-[11px] text-gray-500 line-clamp-2"
+                        style={{ fontFamily: "Raleway, sans-serif" }}
                       >
                         {p.description}
                       </p>
@@ -297,7 +318,8 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="text-gray-500 hover:text-teal"
+                  className="text-gray-500 hover:text-[#2CADB2]"
+                  style={{ fontFamily: "Raleway, sans-serif" }}
                 >
                   ← Back to journeys
                 </button>
@@ -305,7 +327,8 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                   type="button"
                   onClick={() => setStep(3)}
                   disabled={!productCategories.length}
-                  className="inline-flex items-center gap-1 rounded-full bg-teal px-4 py-1.5 text-[11px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40 font-heading"
+                  className="inline-flex items-center gap-1 rounded-full bg-[#2CADB2] text-white px-4 py-1.5 text-[11px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
                 >
                   Next: Content &amp; use case
                   <ArrowRight size={12} />
@@ -318,6 +341,7 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
             <div className="space-y-5">
               <p
                 className="text-xs text-gray-600"
+                style={{ fontFamily: "Raleway, sans-serif" }}
               >
                 Step 3: Refine by content type and use case. You can select
                 multiple options in each row.
@@ -325,6 +349,7 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
               <div>
                 <p
                   className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mb-2"
+                  style={{ fontFamily: "Raleway, sans-serif" }}
                 >
                   Content type
                 </p>
@@ -342,11 +367,12 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                         key={type}
                         type="button"
                         onClick={() => toggleContentType(type as ContentType)}
-                        className={`rounded-full border px-3 py-1 font-heading text-[11px] font-semibold transition ${
+                        className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition ${
                           selected
-                            ? "border-teal bg-teal text-white"
-                            : "border-black/10 bg-white text-gray-700 hover:border-teal/60 hover:text-teal"
+                            ? "bg-[#2CADB2] text-white border-[#2CADB2]"
+                            : "bg-white text-gray-700 border-black/10 hover:border-[#2CADB2]/60 hover:text-[#2CADB2]"
                         }`}
+                        style={{ fontFamily: "Montserrat, sans-serif" }}
                       >
                         {type}
                       </button>
@@ -357,6 +383,7 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
               <div>
                 <p
                   className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mb-2"
+                  style={{ fontFamily: "Raleway, sans-serif" }}
                 >
                   Use case
                 </p>
@@ -369,11 +396,12 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                           key={u}
                           type="button"
                           onClick={() => toggleUseCase(u as UseCase)}
-                          className={`rounded-full border px-3 py-1 font-heading text-[11px] font-semibold transition ${
+                          className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition ${
                             selected
-                              ? "border-teal bg-teal text-white"
-                              : "border-black/10 bg-white text-gray-700 hover:border-teal/60 hover:text-teal"
+                              ? "bg-[#2CADB2] text-white border-[#2CADB2]"
+                              : "bg-white text-gray-700 border-black/10 hover:border-[#2CADB2]/60 hover:text-[#2CADB2]"
                           }`}
+                          style={{ fontFamily: "Montserrat, sans-serif" }}
                         >
                           {u}
                         </button>
@@ -386,7 +414,8 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="text-gray-500 hover:text-teal"
+                  className="text-gray-500 hover:text-[#2CADB2]"
+                  style={{ fontFamily: "Raleway, sans-serif" }}
                 >
                   ← Back to products
                 </button>
@@ -396,7 +425,8 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                     setResultsFromAssets(filteredAssets);
                     setShowResults(true);
                   }}
-                  className="inline-flex items-center gap-1 rounded-full bg-teal px-4 py-1.5 text-[11px] font-semibold text-white font-heading"
+                  className="inline-flex items-center gap-1 rounded-full bg-[#2CADB2] text-white px-4 py-1.5 text-[11px] font-semibold"
+                  style={{ fontFamily: "Montserrat, sans-serif" }}
                 >
                   Show matching assets
                   <ArrowRight size={12} />
@@ -408,15 +438,17 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
 
         {/* Results at the bottom */}
         {showResults && (
-          <div className="px-6 py-5 border-t border-black/5 bg-cream">
+          <div className="px-6 py-5 border-t border-black/5 bg-[#f7f6f2]">
             <p
               className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mb-3"
+              style={{ fontFamily: "Raleway, sans-serif" }}
             >
               Matching assets ({filteredAssets.length})
             </p>
             {filteredAssets.length === 0 ? (
               <p
                 className="text-xs text-gray-600"
+                style={{ fontFamily: "Raleway, sans-serif" }}
               >
                 No assets match these filters yet. Try removing one or more
                 options above.
@@ -431,7 +463,7 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                       markSeen(asset.slug);
                       onClose();
                     }}
-                    className={`block rounded-xl border px-3 py-2 hover:border-teal/60 hover:shadow-sm transition ${
+                    className={`block rounded-xl border px-3 py-2 hover:border-[#2CADB2]/60 hover:shadow-sm transition ${
                       seenSlugs.includes(asset.slug)
                         ? "bg-gray-100 border-dashed opacity-75"
                         : "bg-white border-black/5"
@@ -439,14 +471,19 @@ export function BrowseWizard({ open, onClose }: BrowseWizardProps) {
                   >
                     <p
                       className="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-1"
+                      style={{ fontFamily: "Raleway, sans-serif" }}
                     >
                       {asset.productCategory} · {asset.contentType}
                     </p>
-                    <p className="line-clamp-2 font-heading text-xs font-semibold text-gray-900">
+                    <p
+                      className="text-xs font-semibold text-gray-900 line-clamp-2"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
                       {asset.title}
                     </p>
                     <p
                       className="text-[11px] text-gray-500 line-clamp-2 mt-1"
+                      style={{ fontFamily: "Raleway, sans-serif" }}
                     >
                       {asset.summaryWhat}
                     </p>

@@ -64,15 +64,18 @@ export function AssetFeedback({ assetId }: AssetFeedbackProps) {
   if (!mounted) return null;
 
   return (
-    <div className="flex items-center gap-2 font-body">
+    <div
+      className="flex items-center gap-2"
+      style={{ fontFamily: "Raleway, sans-serif" }}
+    >
       <span className="text-xs text-gray-600 mr-1">Was this useful?</span>
       <button
         type="button"
         onClick={handleUp}
         className={`p-1.5 rounded-md transition ${
           value === "up"
-            ? "bg-teal/20 text-teal"
-            : "text-gray-400 hover:text-teal hover:bg-teal/10"
+            ? "bg-[#2CADB2]/20 text-[#2CADB2]"
+            : "text-gray-400 hover:text-[#2CADB2] hover:bg-[#2CADB2]/10"
         }`}
         aria-label="Thumbs up"
       >

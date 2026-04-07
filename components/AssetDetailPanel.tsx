@@ -11,10 +11,13 @@ interface AssetDetailPanelProps {
 
 export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
   return (
-    <div className="rounded-2xl border border-teal/20 bg-white p-6 font-body shadow-sm">
+    <div
+      className="rounded-2xl border border-[#2CADB2]/20 bg-white p-6 shadow-sm"
+      style={{ fontFamily: "Raleway, sans-serif" }}
+    >
       <div className="flex flex-wrap items-center gap-2 mb-3 text-[11px]">
         <span
-          className="inline-flex items-center gap-1 rounded-full bg-cream px-3 py-1 uppercase tracking-[0.18em] text-gray-600"
+          className="inline-flex items-center gap-1 rounded-full bg-[#f7f6f2] px-3 py-1 uppercase tracking-[0.18em] text-gray-600"
         >
           {asset.journey}
         </span>
@@ -26,7 +29,14 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
         </span>
       </div>
 
-      <h2 className="mb-2 font-heading text-[clamp(1.1rem,2vw,1.4rem)] font-black leading-tight text-charcoal">
+      <h2
+        className="font-black leading-tight mb-2"
+        style={{
+          fontFamily: "Montserrat, sans-serif",
+          fontSize: "clamp(1.1rem, 2vw, 1.4rem)",
+          color: "#24282B",
+        }}
+      >
         {asset.title}
       </h2>
 
@@ -41,14 +51,16 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
           href={asset.fileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full border border-charcoal/20 bg-white px-5 py-2 text-sm font-semibold text-charcoal transition hover:border-teal hover:bg-cream font-heading"
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold border border-[#24282B]/20 bg-white transition hover:bg-[#f7f6f2] hover:border-[#2CADB2]"
+          style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}
         >
           <FileText size={16} />
           Preview
         </a>
         <Link
           href={`/assets/${asset.slug}`}
-          className="text-sm font-semibold text-teal hover:underline font-heading"
+          className="text-sm font-semibold text-[#2CADB2] hover:underline"
+          style={{ fontFamily: "Montserrat, sans-serif" }}
         >
           Open full page →
         </Link>
