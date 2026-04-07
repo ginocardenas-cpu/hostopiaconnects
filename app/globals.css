@@ -1,40 +1,66 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Raleway:wght@300;400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 42 33% 97%;
-    --foreground: 220 15% 13%;
-    --primary: 182 58% 42%;
+    --charcoal: #24282b;
+    --teal: #2cadb2;
+    --teal-dark: #1d8f93;
+    --gold: #f8cf41;
+    --gold-dark: #e0b82a;
+    --cream: #f7f6f2;
+    --background: 43 33% 97%;
+    --foreground: 200 9% 15%;
+    --primary: 182 58% 43%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 45 89% 62%;
-    --secondary-foreground: 220 15% 13%;
-    --muted: 42 20% 94%;
-    --muted-foreground: 220 10% 40%;
+    --secondary: 45 89% 61%;
+    --secondary-foreground: 200 9% 15%;
+    --muted: 43 20% 94%;
+    --muted-foreground: 220 9% 46%;
     --accent: 182 30% 93%;
-    --accent-foreground: 182 58% 42%;
+    --accent-foreground: 182 58% 43%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 10% 88%;
     --input: 220 10% 88%;
-    --ring: 182 58% 42%;
+    --ring: 182 58% 43%;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cream text-charcoal font-body antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
   }
 }
 
-html {
-  scroll-behavior: smooth;
+.section-label {
+  font-family: "Raleway", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal);
 }
 
-body {
-  font-family: theme("fontFamily.body");
-  background-color: #fff;
-  color: #24282b;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: theme("fontFamily.heading");
+.body-copy {
+  font-family: "Raleway", sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgb(107, 114, 128);
 }
 
 a {
@@ -51,17 +77,30 @@ a {
   font-weight: normal;
 }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f7f6f2; }
-::-webkit-scrollbar-thumb { background: #2CADB2; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #1d8f93; }
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--teal);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--teal-dark);
+}
 
-/* Hover preview fade-in animation */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .animate-fadeIn {
   animation: fadeIn 0.2s ease-out;
 }
-

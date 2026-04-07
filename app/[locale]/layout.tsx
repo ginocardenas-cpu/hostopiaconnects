@@ -22,7 +22,7 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
       <CartLayoutClient>
-        <div className="min-h-screen bg-white text-[#24282B] flex flex-col">
+        <div className="flex min-h-screen flex-col bg-cream text-charcoal">
           <TickerBar />
 
           <LocaleHeader />
@@ -32,7 +32,7 @@ export default async function LocaleLayout({
           </main>
 
           {/* Footer */}
-          <footer className="bg-white border-t border-gray-200">
+          <footer className="border-t border-black/5 bg-white">
             <div className="max-w-7xl mx-auto px-6 py-10">
               <div className="flex flex-col items-center text-center gap-4">
                 <Link href="/" className="inline-block">
