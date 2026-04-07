@@ -18,50 +18,34 @@ export default function CartPage() {
   };
 
   return (
-    <section className="max-w-6xl mx-auto px-6 py-16">
+    <section className="mx-auto max-w-6xl px-6 py-16 font-body">
       <div className="flex flex-col md:flex-row md:items-start gap-10">
         <div className="flex-1">
           <div className="mb-6">
-            <p
-              className="uppercase tracking-[0.18em] text-xs text-gray-500 mb-3"
-              style={{ fontFamily: "Raleway, sans-serif" }}
-            >
+            <p className="section-label mb-3">
               {t("title")}
             </p>
-            <h1
-              className="font-black leading-tight mb-2"
-              style={{
-                fontFamily: "Montserrat, sans-serif",
-                fontSize: "clamp(1.8rem, 3vw, 2.3rem)"
-              }}
-            >
+            <h1 className="mb-2 font-heading text-[clamp(1.8rem,3vw,2.3rem)] font-black leading-tight text-charcoal">
               {t("reviewTitle")}
             </h1>
-            <p
-              className="text-sm text-gray-600"
-              style={{ fontFamily: "Raleway, sans-serif" }}
-            >
+            <p className="text-sm text-gray-600">
               {t("reviewIntro")}
             </p>
-            <p
-              className="mt-3 text-sm font-semibold text-[#2CADB2]"
-              style={{ fontFamily: "Raleway, sans-serif" }}
-            >
+            <p className="mt-3 text-sm font-semibold text-teal">
               {t("downloadsEmail")}
             </p>
           </div>
 
           {!hasItems ? (
-            <div className="rounded-2xl border border-dashed border-[#2CADB2]/40 bg-[#f0fbfa] p-6 text-sm text-gray-700">
-              <p style={{ fontFamily: "Raleway, sans-serif" }}>
+            <div className="rounded-2xl border border-dashed border-teal/40 bg-teal-light p-6 text-sm text-gray-700">
+              <p>
                 {t("empty")}. {t("emptyHint")}{" "}
                 <span className="font-semibold">{t("addToMyResourcesBtn")}</span>{" "}
                 {t("emptyHintSuffix")}
               </p>
               <Link
                 href="/"
-                className="inline-flex items-center gap-1 mt-4 text-xs text-[#2CADB2] hover:underline"
-                style={{ fontFamily: "Raleway, sans-serif" }}
+                className="mt-4 inline-flex items-center gap-1 text-xs text-teal hover:underline"
               >
                 {t("backToHome")}
               </Link>
@@ -74,23 +58,16 @@ export default function CartPage() {
                   className="flex items-start justify-between gap-4 rounded-2xl border border-black/5 bg-white p-4"
                 >
                   <div>
-                    <p
-                      className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mb-1"
-                      style={{ fontFamily: "Raleway, sans-serif" }}
-                    >
+                    <p className="mb-1 text-[11px] uppercase tracking-[0.18em] text-gray-500">
                       {asset.contentType} · {asset.productCategory}
                     </p>
                     <Link
                       href={`/assets/${asset.slug}`}
-                      className="text-sm font-semibold hover:text-[#2CADB2] transition-colors"
-                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                      className="font-heading text-sm font-semibold transition-colors hover:text-teal"
                     >
                       {asset.title}
                     </Link>
-                    <p
-                      className="text-xs text-gray-600 mt-1"
-                      style={{ fontFamily: "Raleway, sans-serif" }}
-                    >
+                    <p className="mt-1 text-xs text-gray-600">
                       {asset.summaryWhat}
                     </p>
                   </div>
@@ -98,7 +75,6 @@ export default function CartPage() {
                     type="button"
                     onClick={() => removeItem(asset.id)}
                     className="text-[11px] text-gray-500 hover:text-red-600"
-                    style={{ fontFamily: "Raleway, sans-serif" }}
                   >
                     {t("remove")}
                   </button>
@@ -110,19 +86,10 @@ export default function CartPage() {
 
         <aside className="w-full md:w-[360px]">
           <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
-            <h2
-              className="font-black mb-2"
-              style={{
-                fontFamily: "Montserrat, sans-serif",
-                fontSize: "1.1rem"
-              }}
-            >
+            <h2 className="mb-2 font-heading text-[1.1rem] font-black text-charcoal">
               {t("requestBundleTitle")}
             </h2>
-            <p
-              className="text-xs text-gray-600 mb-4"
-              style={{ fontFamily: "Raleway, sans-serif" }}
-            >
+            <p className="mb-4 text-xs text-gray-600">
               {t("requestBundleIntro")}
             </p>
 
@@ -130,8 +97,7 @@ export default function CartPage() {
               <div>
                 <label
                   htmlFor="fullName"
-                  className="block text-xs font-semibold mb-1 text-gray-700"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
+                  className="mb-1 block text-xs font-semibold text-gray-700"
                 >
                   {t("fullName")}
                 </label>
@@ -139,14 +105,13 @@ export default function CartPage() {
                   id="fullName"
                   name="fullName"
                   required
-                  className="w-full rounded-md border border-black/10 bg-[#f7f6f2] px-3 py-2 text-xs outline-none focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2]"
+                  className="w-full rounded-md border border-black/10 bg-cream px-3 py-2 text-xs outline-none focus:border-teal focus:ring-1 focus:ring-teal"
                 />
               </div>
               <div>
                 <label
                   htmlFor="company"
-                  className="block text-xs font-semibold mb-1 text-gray-700"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
+                  className="mb-1 block text-xs font-semibold text-gray-700"
                 >
                   {t("company")}
                 </label>
@@ -154,14 +119,13 @@ export default function CartPage() {
                   id="company"
                   name="company"
                   required
-                  className="w-full rounded-md border border-black/10 bg-[#f7f6f2] px-3 py-2 text-xs outline-none focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2]"
+                  className="w-full rounded-md border border-black/10 bg-cream px-3 py-2 text-xs outline-none focus:border-teal focus:ring-1 focus:ring-teal"
                 />
               </div>
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-xs font-semibold mb-1 text-gray-700"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
+                  className="mb-1 block text-xs font-semibold text-gray-700"
                 >
                   {t("emailAddress")}
                 </label>
@@ -170,7 +134,7 @@ export default function CartPage() {
                   name="email"
                   type="email"
                   required
-                  className="w-full rounded-md border border-black/10 bg-[#f7f6f2] px-3 py-2 text-xs outline-none focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2]"
+                  className="w-full rounded-md border border-black/10 bg-cream px-3 py-2 text-xs outline-none focus:border-teal focus:ring-1 focus:ring-teal"
                 />
               </div>
 
@@ -184,7 +148,6 @@ export default function CartPage() {
                 <label
                   htmlFor="optIn"
                   className="text-[11px] text-gray-600"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
                 >
                   {t("optInLabel")}
                 </label>
@@ -193,37 +156,23 @@ export default function CartPage() {
               <button
                 type="submit"
                 disabled={!hasItems}
-                className="mt-2 inline-flex w-full items-center justify-center rounded-full px-6 py-2 text-xs font-bold shadow-md transition hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  backgroundColor: "#F8CF41",
-                  color: "#24282B"
-                }}
+                className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-gold px-6 py-2 text-xs font-bold text-charcoal shadow-md transition hover:bg-gold-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 font-heading"
               >
                 {t("submitButton")}
               </button>
 
               {!hasItems && !submitted && (
-                <p
-                  className="text-[11px] text-gray-500 mt-1"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
-                >
+                <p className="mt-1 text-[11px] text-gray-500">
                   {t("submitHint")}
                 </p>
               )}
 
               {submitted && (
-                <div className="mt-3 rounded-xl border border-[#2CADB2]/40 bg-[#f0fbfa] px-3 py-2">
-                  <p
-                    className="text-[11px] font-semibold text-[#2CADB2]"
-                    style={{ fontFamily: "Montserrat, sans-serif" }}
-                  >
+                <div className="mt-3 rounded-xl border border-teal/40 bg-teal-light px-3 py-2">
+                  <p className="font-heading text-[11px] font-semibold text-teal">
                     {t("successTitle")}
                   </p>
-                  <p
-                    className="mt-1 text-[11px] text-gray-700"
-                    style={{ fontFamily: "Raleway, sans-serif" }}
-                  >
+                  <p className="mt-1 text-[11px] text-gray-700">
                     {t("successBody")}
                   </p>
                 </div>

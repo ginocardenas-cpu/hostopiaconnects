@@ -24,13 +24,10 @@ export default async function JourneyPage({ params }: JourneyPageProps) {
 
   if (!journey) {
     return (
-      <section className="max-w-4xl mx-auto px-6 py-20">
-        <p
-          className="text-sm text-gray-600"
-          style={{ fontFamily: "Raleway, sans-serif" }}
-        >
+      <section className="mx-auto max-w-4xl px-6 py-20 font-body">
+        <p className="text-sm text-gray-600">
           {t("notFound")}{" "}
-          <Link href="/" className="text-[#2CADB2] underline">
+          <Link href="/" className="text-teal underline">
             {t("goBackHome")}
           </Link>
         </p>
@@ -42,40 +39,27 @@ export default async function JourneyPage({ params }: JourneyPageProps) {
   const descriptionKey = journeyDescriptionKeys[journey];
 
   return (
-    <section className="max-w-6xl mx-auto px-6 py-16">
+    <section className="mx-auto max-w-6xl px-6 py-16 font-body">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
-          <p
-            className="uppercase tracking-[0.18em] text-xs text-gray-500 mb-3"
-            style={{ fontFamily: "Raleway, sans-serif" }}
-          >
+          <p className="section-label mb-3">
             {t("productJourney")}
           </p>
-          <h1
-            className="font-black leading-tight mb-3"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontSize: "clamp(2rem, 3.5vw, 2.8rem)"
-            }}
-          >
+          <h1 className="mb-3 font-heading text-[clamp(2rem,3.5vw,2.8rem)] font-black leading-tight text-charcoal">
             {journey}
           </h1>
-          <p
-            className="text-sm md:text-base text-gray-600 max-w-xl"
-            style={{ fontFamily: "Raleway, sans-serif" }}
-          >
+          <p className="max-w-xl text-sm text-gray-600 md:text-base">
             {t(descriptionKey)}
           </p>
         </div>
 
         <div className="text-xs text-gray-500 space-y-1">
-          <p style={{ fontFamily: "Raleway, sans-serif" }}>
+          <p>
             {t("chooseProduct")}
           </p>
           <Link
             href="/"
-            className="inline-flex items-center gap-1 text-[#2CADB2] hover:underline"
-            style={{ fontFamily: "Raleway, sans-serif" }}
+            className="inline-flex items-center gap-1 text-teal hover:underline"
           >
             {t("backToJourneys")}
           </Link>
@@ -83,10 +67,7 @@ export default async function JourneyPage({ params }: JourneyPageProps) {
       </div>
 
       {products.length === 0 ? (
-        <p
-          className="text-sm text-gray-600"
-          style={{ fontFamily: "Raleway, sans-serif" }}
-        >
+        <p className="text-sm text-gray-600">
           {t("noProducts")}
         </p>
       ) : (
@@ -97,42 +78,28 @@ export default async function JourneyPage({ params }: JourneyPageProps) {
               href={`/assets/product/${product.slug}`}
               className="group relative overflow-hidden rounded-2xl border border-black/5 bg-white p-5 hover:-translate-y-1 hover:shadow-lg transition-all duration-200"
             >
-              <div className="absolute -top-10 -right-8 w-24 h-24 rounded-full bg-gradient-to-br from-[#2CADB2]/10 via-[#F8CF41]/15 to-transparent" />
+              <div className="absolute -top-10 -right-8 w-24 h-24 rounded-full bg-gradient-to-br from-teal/10 via-gold/15 to-transparent" />
               <div className="relative">
                 <div className="flex items-center justify-between mb-3">
                   <span
-                    className="inline-flex items-center gap-2 rounded-full bg-[#f7f6f2] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-600"
-                    style={{ fontFamily: "Raleway, sans-serif" }}
+                    className="inline-flex items-center gap-2 rounded-full bg-cream px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-600"
                   >
                     <span>◆</span>
                     <span>{t("product")}</span>
                   </span>
                   <span
                     className="text-[11px] text-gray-500"
-                    style={{ fontFamily: "Raleway, sans-serif" }}
                   >
                     {product.label}
                   </span>
                 </div>
-                <h2
-                  className="font-black mb-2"
-                  style={{
-                    fontFamily: "Montserrat, sans-serif",
-                    fontSize: "1.05rem"
-                  }}
-                >
+                <h2 className="mb-2 font-heading text-[1.05rem] font-black text-charcoal">
                   {product.label}
                 </h2>
-                <p
-                  className="text-sm text-gray-600 mb-3"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
-                >
+                <p className="mb-3 text-sm text-gray-600">
                   {product.description}
                 </p>
-                <span
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-[#2CADB2]"
-                  style={{ fontFamily: "Montserrat, sans-serif" }}
-                >
+                <span className="inline-flex items-center gap-1 font-heading text-xs font-semibold text-teal">
                   {t("viewAssetsForProduct")}
                   <span>↗</span>
                 </span>

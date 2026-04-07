@@ -1,50 +1,37 @@
 "use client";
 
 import React from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
-import {
-  localeNames,
-  tier1Locales,
-  tier2Locales,
-  type AppLocale,
-} from "@/i18n/routing";
+import { localeNames } from "@/i18n/routing";
 
-/** Flag per UI locale (next-intl routing), for header switcher */
-const UI_LOCALE_FLAGS: Record<string, string> = {
-  en: "🇺🇸",
-  "fr-CA": "🇨🇦",
-  "es-MX": "🇲🇽",
-  "pt-BR": "🇧🇷",
-  de: "🇩🇪",
-  it: "🇮🇹",
-  el: "🇬🇷",
-  ro: "🇷🇴",
-  bg: "🇧🇬",
-  hu: "🇭🇺",
-  hr: "🇭🇷",
-  nb: "🇳🇴",
-  sv: "🇸🇪",
-  sq: "🇦🇱",
-};
+type ActiveLocale = "en" | "es-MX";
+
+const ACTIVE_LOCALES: { locale: ActiveLocale; flag: string; label: string }[] = [
+  {
+    locale: "en",
+    flag: "🇺🇸",
+    label: "English (US/Canada)",
+  },
+  {
+    locale: "es-MX",
+    flag: "🇲🇽",
+    label: "Español (México)",
+  },
+];
+
+const COMING_SOON: { flag: string; label: string }[] = [
+  { flag: "🇨🇦", label: "Français (Canada)" },
+  { flag: "🇧🇷", label: "Português (Brasil)" },
+];
 
 export function LanguageSwitcher() {
-  const t = useTranslations("languageSwitcher");
-  const locale = useLocale() as AppLocale;
+  const locale = useLocale() as ActiveLocale;
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
-  const ref = React.useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const handleChange = (newLocale: AppLocale) => {
+  const handleChange = (newLocale: ActiveLocale) => {
     if (newLocale === locale) {
       setOpen(false);
       return;
@@ -53,64 +40,50 @@ export function LanguageSwitcher() {
     setOpen(false);
   };
 
-  const flag = UI_LOCALE_FLAGS[locale] ?? "🌐";
-  const label = localeNames[locale] ?? locale;
+  const current = ACTIVE_LOCALES.find((item) => item.locale === locale) ?? ACTIVE_LOCALES[0];
 
   return (
-    <div ref={ref} className="relative text-xs" style={{ fontFamily: "Montserrat, sans-serif" }}>
+    <div className="relative text-xs font-heading">
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/90 px-3 py-1 font-semibold text-gray-700 shadow-sm hover:border-[#2CADB2]/60 hover:text-[#2CADB2] transition-colors"
-        aria-label={label}
+        className="inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/90 px-3 py-1 font-semibold text-gray-700 shadow-sm hover:border-teal/60 hover:text-teal transition-colors"
+        aria-label={localeNames[locale]}
         aria-expanded={open}
       >
-        <span className="text-lg emoji-flag leading-none shrink-0" aria-hidden>
-          {flag}
-        </span>
-        <span className="max-w-[10rem] truncate">{label}</span>
-        <span className="ml-0.5 text-[10px] text-gray-500 shrink-0">{open ? "▴" : "▾"}</span>
+        <span className="text-base leading-none">{current.flag}</span>
+        <span>{current.label}</span>
+        <span className="ml-1 text-[10px] text-gray-500">▾</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-1 w-64 max-w-[85vw] rounded-xl border border-black/10 bg-white py-2 shadow-lg max-h-[min(70vh,420px)] overflow-y-auto">
-          <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
-            {t("primaryLanguages")}
-          </p>
-          {tier1Locales.map((loc) => (
+        <div className="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-black/10 bg-white/95 py-2 shadow-lg">
+          {ACTIVE_LOCALES.map((item) => (
             <button
-              key={loc}
+              key={item.locale}
               type="button"
-              onClick={() => handleChange(loc)}
-              className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-[11px] hover:bg-[#2CADB2]/10 ${
-                locale === loc ? "font-bold text-[#2CADB2]" : "text-gray-700"
+              onClick={() => handleChange(item.locale)}
+              className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-[11px] hover:bg-teal/10 ${
+                locale === item.locale ? "font-bold text-teal" : "text-gray-700"
               }`}
             >
-              <span className="text-lg emoji-flag leading-none shrink-0" aria-hidden>
-                {UI_LOCALE_FLAGS[loc]}
-              </span>
-              <span>{localeNames[loc]}</span>
+              <span className="text-base leading-none">{item.flag}</span>
+              <span>{item.label}</span>
             </button>
           ))}
 
           <div className="mt-1 border-t border-gray-100 pt-1">
             <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
-              {t("additionalLanguages")}
+              Coming soon
             </p>
-            {tier2Locales.map((loc) => (
-              <button
-                key={loc}
-                type="button"
-                onClick={() => handleChange(loc)}
-                className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-[11px] hover:bg-[#2CADB2]/10 ${
-                  locale === loc ? "font-bold text-[#2CADB2]" : "text-gray-700"
-                }`}
+            {COMING_SOON.map((item) => (
+              <div
+                key={item.label}
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-[11px] text-gray-400"
               >
-                <span className="text-lg emoji-flag leading-none shrink-0" aria-hidden>
-                  {UI_LOCALE_FLAGS[loc]}
-                </span>
-                <span>{localeNames[loc]}</span>
-              </button>
+                <span className="text-base leading-none">{item.flag}</span>
+                <span>{item.label}</span>
+              </div>
             ))}
           </div>
         </div>
@@ -118,3 +91,4 @@ export function LanguageSwitcher() {
     </div>
   );
 }
+

@@ -22,8 +22,8 @@ function InteractiveHoverButton({
       className={cn(
         "group relative w-32 cursor-pointer overflow-hidden rounded-full border p-2 text-center font-semibold transition-colors",
         active
-          ? "border-[#2CADB2] bg-[#2CADB2] text-white"
-          : "bg-background border-border text-foreground hover:border-[#2CADB2]/50",
+          ? "border-teal bg-teal text-white"
+          : "bg-background border-border text-foreground hover:border-teal/50",
         className,
       )}
       {...props}

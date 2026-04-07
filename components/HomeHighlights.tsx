@@ -23,7 +23,7 @@ export function HomeHighlights() {
     { key: "downloaded", labelKey: "mostDownloaded", icon: Download }
   ];
 
-  const latest = getLatestAssets(3);
+  const latest = getLatestAssets(4);
   const popular = getMostViewedAssets(3);
   const downloaded = getMostDownloadedAssets(3);
 
@@ -44,7 +44,7 @@ export function HomeHighlights() {
   const featured = featuredSlides[featuredIndex];
 
   return (
-    <section className="py-10 bg-[#f7f6f2]">
+    <section className="bg-cream py-10 font-body">
       <div className="max-w-6xl mx-auto px-6">
         <div className="rounded-3xl bg-white shadow-[0_18px_60px_rgba(15,23,42,0.08)] border border-black/5 overflow-hidden">
           <div className="grid md:grid-cols-[1.4fr_minmax(0,1fr)]">
@@ -58,12 +58,11 @@ export function HomeHighlights() {
                       key={key}
                       type="button"
                       onClick={() => setActive(key)}
-                      className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold border transition ${
+                      className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold transition font-heading ${
                         selected
-                          ? "bg-[#2CADB2] text-white border-[#2CADB2]"
-                          : "bg-white text-gray-600 border-black/10 hover:border-[#2CADB2]/60 hover:text-[#2CADB2]"
+                          ? "border-teal bg-teal text-white"
+                          : "border-black/10 bg-white text-gray-600 hover:border-teal/60 hover:text-teal"
                       }`}
-                      style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
                       <Icon size={14} />
                       <span>{t(labelKey)}</span>
@@ -72,10 +71,7 @@ export function HomeHighlights() {
                 })}
               </div>
 
-              <div
-                className="mb-4 text-xs text-gray-500"
-                style={{ fontFamily: "Raleway, sans-serif" }}
-              >
+              <div className="mb-4 text-xs text-gray-500">
                 {active === "new" && t("newDesc")}
                 {active === "popular" && t("popularDesc")}
                 {active === "downloaded" && t("downloadedDesc")}
@@ -86,32 +82,20 @@ export function HomeHighlights() {
                   <Link
                     key={asset.id}
                     href={`/assets/${asset.slug}`}
-                    className="flex items-start justify-between gap-3 rounded-xl px-3 py-2 hover:bg-[#f7f6f2] transition group"
+                    className="flex items-start justify-between gap-3 rounded-xl px-3 py-2 hover:bg-cream transition group"
                   >
                     <div className="flex items-start gap-3 min-w-0">
-                      <span
-                        className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold bg-[#2CADB2]/10 text-[#2CADB2] group-hover:bg-[#2CADB2] group-hover:text-white transition-colors"
-                        style={{ fontFamily: "Montserrat, sans-serif" }}
-                      >
+                      <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-teal/10 text-xs font-bold text-teal transition-colors group-hover:bg-teal group-hover:text-white font-heading">
                         {index + 1}
                       </span>
                       <div className="min-w-0">
-                        <p
-                          className="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-1"
-                          style={{ fontFamily: "Raleway, sans-serif" }}
-                        >
+                        <p className="mb-1 text-[11px] uppercase tracking-[0.18em] text-gray-400">
                           {asset.productCategory} · {asset.contentType}
                         </p>
-                        <p
-                          className="text-sm font-semibold text-gray-900 truncate"
-                          style={{ fontFamily: "Montserrat, sans-serif" }}
-                        >
+                        <p className="truncate font-heading text-sm font-semibold text-gray-900">
                           {asset.title}
                         </p>
-                        <p
-                          className="text-[11px] text-gray-500 truncate"
-                          style={{ fontFamily: "Raleway, sans-serif" }}
-                        >
+                        <p className="truncate text-[11px] text-gray-500">
                           {active === "new" &&
                             `${t("updated")} ${new Date(
                               asset.lastUpdated
@@ -125,7 +109,7 @@ export function HomeHighlights() {
                     </div>
                     <ArrowRight
                       size={14}
-                      className="mt-1 text-gray-300 group-hover:text-[#2CADB2] flex-shrink-0"
+                      className="mt-1 text-gray-300 group-hover:text-teal flex-shrink-0"
                     />
                   </Link>
                 ))}
@@ -133,12 +117,9 @@ export function HomeHighlights() {
             </div>
 
             {/* Right: featured asset carousel — site-aligned palette */}
-            <div className="relative p-6 md:p-8 bg-gradient-to-br from-[#f0fbfa] via-[#f7f6f2] to-[#e8f7f7] border-l border-[#2CADB2]/20">
+            <div className="relative p-6 md:p-8 bg-gradient-to-br from-teal-light via-cream to-teal-light border-l border-teal/20">
               <div className="relative flex flex-col h-full">
-                <p
-                  className="text-[11px] uppercase tracking-[0.18em] mb-2 text-[#2CADB2]"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
-                >
+                <p className="mb-2 text-[11px] uppercase tracking-[0.18em] text-teal">
                   {t("featuredAsset")}
                 </p>
                 {featured && (
@@ -155,39 +136,24 @@ export function HomeHighlights() {
                         />
                       </div>
                       <div className="flex-1">
-                        <h2
-                          className="font-black mb-2 text-[#24282B]"
-                          style={{
-                            fontFamily: "Montserrat, sans-serif",
-                            fontSize: "1.4rem"
-                          }}
-                        >
+                        <h2 className="mb-2 font-heading text-[1.4rem] font-black text-charcoal">
                           {featured.title}
                         </h2>
-                        <p
-                          className="text-sm text-[#555A5E] mb-3 line-clamp-3"
-                          style={{ fontFamily: "Raleway, sans-serif", lineHeight: 1.625 }}
-                        >
+                        <p className="mb-3 line-clamp-3 text-sm leading-relaxed text-gray-500">
                           {featured.summaryWhat}
                         </p>
                       </div>
                     </div>
 
-                    <div className="relative mb-4 p-4 rounded-xl bg-white/80 border border-[#2CADB2]/15 shadow-sm flex items-center gap-4">
-                      <div className="rounded-xl bg-[#2CADB2]/10 p-3 flex-shrink-0">
-                        <FileText size={28} className="text-[#2CADB2]" />
+                    <div className="relative mb-4 p-4 rounded-xl bg-white/80 border border-teal/15 shadow-sm flex items-center gap-4">
+                      <div className="rounded-xl bg-teal/10 p-3 flex-shrink-0">
+                        <FileText size={28} className="text-teal" />
                       </div>
                       <div>
-                        <p
-                          className="text-[11px] uppercase tracking-[0.18em] text-[#2CADB2]"
-                          style={{ fontFamily: "Raleway, sans-serif" }}
-                        >
+                        <p className="text-[11px] uppercase tracking-[0.18em] text-teal">
                           {featured.contentType}
                         </p>
-                        <p
-                          className="text-sm font-semibold text-[#24282B]"
-                          style={{ fontFamily: "Montserrat, sans-serif" }}
-                        >
+                        <p className="font-heading text-sm font-semibold text-charcoal">
                           {featured.productCategory}
                         </p>
                       </div>
@@ -201,7 +167,7 @@ export function HomeHighlights() {
                             type="button"
                             onClick={() => setFeaturedIndex(idx)}
                             className={`h-1.5 rounded-full transition-all ${
-                              idx === featuredIndex ? "w-6 bg-[#2CADB2]" : "w-2 bg-gray-300"
+                              idx === featuredIndex ? "w-6 bg-teal" : "w-2 bg-gray-300"
                             }`}
                             aria-label={`Go to featured slide ${idx + 1}`}
                           />
@@ -215,7 +181,7 @@ export function HomeHighlights() {
                               (prev - 1 + featuredSlides.length) % featuredSlides.length
                             )
                           }
-                          className="inline-flex items-center justify-center rounded-full border border-black/10 bg-white/80 p-1.5 text-gray-600 hover:text-[#2CADB2] hover:border-[#2CADB2]/60 transition-colors"
+                          className="inline-flex items-center justify-center rounded-full border border-black/10 bg-white/80 p-1.5 text-gray-600 hover:text-teal hover:border-teal/60 transition-colors"
                           aria-label="Previous featured asset"
                         >
                           <ChevronLeft size={14} />
@@ -225,7 +191,7 @@ export function HomeHighlights() {
                           onClick={() =>
                             setFeaturedIndex((prev) => (prev + 1) % featuredSlides.length)
                           }
-                          className="inline-flex items-center justify-center rounded-full border border-black/10 bg-white/80 p-1.5 text-gray-600 hover:text-[#2CADB2] hover:border-[#2CADB2]/60 transition-colors"
+                          className="inline-flex items-center justify-center rounded-full border border-black/10 bg-white/80 p-1.5 text-gray-600 hover:text-teal hover:border-teal/60 transition-colors"
                           aria-label="Next featured asset"
                         >
                           <ChevronRight size={14} />
@@ -236,8 +202,7 @@ export function HomeHighlights() {
                     <div className="mt-3">
                       <Link
                         href={`/assets/${featured.slug}`}
-                        className="inline-flex items-center gap-2 rounded-full bg-[#2CADB2] text-white px-5 py-2 text-xs font-bold shadow-md hover:bg-[#2CADB2]/90 hover:shadow-lg transition"
-                        style={{ fontFamily: "Montserrat, sans-serif" }}
+                        className="inline-flex items-center gap-2 rounded-full bg-teal px-5 py-2 text-xs font-bold text-white shadow-md transition hover:bg-teal/90 hover:shadow-lg font-heading"
                       >
                         {t("viewAsset")}
                         <ArrowRight size={14} />

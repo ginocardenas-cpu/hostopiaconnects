@@ -43,14 +43,13 @@ const highlightBoxes = [
 
 export function ConnectsHero() {
   return (
-    <div className="w-full relative container px-2 mx-auto max-w-7xl min-h-0">
+    <div className="container relative mx-auto min-h-0 w-full max-w-7xl px-2 font-body">
       <div className="mt-6 bg-accent/50 rounded-2xl relative">
         <header className="flex items-center">
           <div className="w-full md:w-2/3 lg:w-1/2 bg-background/95 backdrop-blur-sm p-4 rounded-br-2xl flex items-center gap-2">
             <Link
               href="/"
-              className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent"
-              style={{ fontFamily: "Montserrat, sans-serif" }}
+              className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text font-heading text-xl font-semibold text-transparent"
             >
               HostopiaConnects
             </Link>
@@ -106,8 +105,7 @@ export function ConnectsHero() {
                   <SheetTitle className="flex items-center justify-between">
                     <Link
                       href="/"
-                      className="text-xl font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent"
-                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                      className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text font-heading text-xl font-semibold text-transparent"
                     >
                       HostopiaConnects
                     </Link>
@@ -188,8 +186,7 @@ export function ConnectsHero() {
         >
           <div className="mx-auto text-center">
             <motion.h1
-              className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight"
-              style={{ fontFamily: "Montserrat, sans-serif" }}
+              className="mb-6 font-heading text-4xl font-bold leading-tight tracking-tight md:text-5xl lg:text-7xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
@@ -203,8 +200,7 @@ export function ConnectsHero() {
               </span>
             </motion.h1>
             <motion.p
-              className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed"
-              style={{ fontFamily: "Raleway, sans-serif" }}
+              className="mx-auto max-w-2xl font-body text-base leading-relaxed text-muted-foreground md:text-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
@@ -236,16 +232,10 @@ export function ConnectsHero() {
                 <div className="absolute top-4 right-4 w-12 h-12 rounded-xl bg-background/80 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
                   <Icon className="w-6 h-6" />
                 </div>
-                <h2
-                  className="text-2xl sm:text-3xl font-bold text-primary mt-2 mb-3 group-hover:text-primary/90 transition-colors duration-300 pr-14"
-                  style={{ fontFamily: "Montserrat, sans-serif" }}
-                >
+                <h2 className="mb-3 mt-2 pr-14 font-heading text-2xl font-bold text-primary transition-colors duration-300 group-hover:text-primary/90 sm:text-3xl">
                   {box.title}
                 </h2>
-                <p
-                  className="text-sm text-muted-foreground flex-1"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
-                >
+                <p className="flex-1 font-body text-sm text-muted-foreground">
                   {box.description}
                 </p>
                 <div className="mt-4 flex items-center justify-end">

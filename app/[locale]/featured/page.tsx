@@ -16,33 +16,18 @@ export default async function FeaturedPage() {
   const assets = getLatestAssets(12);
 
   return (
-    <section className="max-w-6xl mx-auto px-6 py-16">
+    <section className="mx-auto max-w-6xl px-6 py-16 font-body">
       <div className="mb-12">
-        <div className="flex items-center gap-3 mb-3">
-          <span
-            className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em]"
-            style={{ fontFamily: "Raleway, sans-serif", color: "#2CADB2" }}
-          >
+        <div className="mb-3 flex items-center gap-3">
+          <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-teal">
             <Sparkles size={14} />
             {t("featuredAssets")}
           </span>
         </div>
-        <h1
-          className="font-black leading-tight mb-3"
-          style={{
-            fontFamily: "Montserrat, sans-serif",
-            fontSize: "clamp(2rem, 4vw, 3rem)",
-            color: "#24282B"
-          }}
-        >
+        <h1 className="mb-3 font-heading text-[clamp(2rem,4vw,3rem)] font-black leading-tight text-charcoal">
           {t("whatsNew")}
         </h1>
-        <p
-          className="text-base text-gray-600 max-w-xl"
-          style={{ fontFamily: "Raleway, sans-serif" }}
-        >
-          {t("subtitle")}
-        </p>
+        <p className="max-w-xl text-base text-gray-600">{t("subtitle")}</p>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -52,48 +37,27 @@ export default async function FeaturedPage() {
             href={`/assets/${asset.slug}`}
             className="group relative overflow-hidden rounded-2xl border border-black/5 bg-white p-5 hover:-translate-y-1 hover:shadow-lg transition-all duration-200"
           >
-            <div className="absolute -top-6 -right-4 w-20 h-20 rounded-full bg-gradient-to-br from-[#2CADB2]/10 via-[#F8CF41]/15 to-transparent" />
+            <div className="absolute -top-6 -right-4 w-20 h-20 rounded-full bg-gradient-to-br from-teal/10 via-gold/15 to-transparent" />
             <div className="relative">
               <div className="flex items-center justify-between gap-2 mb-2">
-                <span
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#f7f6f2] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
-                >
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-cream px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                   <FileText size={12} />
                   {asset.contentType}
                 </span>
-                <span
-                  className="text-[11px] text-gray-500"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
-                >
+                <span className="text-[11px] text-gray-500">
                   {asset.productCategory}
                 </span>
               </div>
-              <h2
-                className="font-black mb-2 line-clamp-2"
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontSize: "1.05rem"
-                }}
-              >
+              <h2 className="mb-2 line-clamp-2 font-heading text-[1.05rem] font-black">
                 {asset.title}
               </h2>
-              <p
-                className="text-sm text-gray-600 line-clamp-2 mb-3"
-                style={{ fontFamily: "Raleway, sans-serif" }}
-              >
+              <p className="mb-3 line-clamp-2 text-sm text-gray-600">
                 {asset.summaryWhat}
               </p>
-              <p
-                className="text-xs text-gray-500 mb-3"
-                style={{ fontFamily: "Raleway, sans-serif" }}
-              >
+              <p className="mb-3 text-xs text-gray-500">
                 {t("updated")} {new Date(asset.lastUpdated).toLocaleDateString()}
               </p>
-              <span
-                className="inline-flex items-center gap-1 text-xs font-semibold text-[#2CADB2]"
-                style={{ fontFamily: "Montserrat, sans-serif" }}
-              >
+              <span className="inline-flex items-center gap-1 font-heading text-xs font-semibold text-teal">
                 {t("viewDownload")}
                 <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
               </span>
@@ -103,11 +67,7 @@ export default async function FeaturedPage() {
       </div>
 
       <div className="mt-12 text-center">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[#2CADB2] hover:underline"
-          style={{ fontFamily: "Montserrat, sans-serif" }}
-        >
+        <Link href="/" className="inline-flex items-center gap-2 font-heading text-sm font-semibold text-teal hover:underline">
           {t("backToHome")}
         </Link>
       </div>
