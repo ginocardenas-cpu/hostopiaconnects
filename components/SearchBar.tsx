@@ -27,16 +27,12 @@ const contentTypeIcon: Record<string, string> = {
   Tool: "fa-solid fa-wrench",
 };
 
-export type SearchBarVariant = "hero" | "toolbar";
-
 export interface SearchBarProps {
-  /** `hero` = light-on-dark trigger (home). `toolbar` = header / light pages. */
-  variant?: SearchBarVariant;
   /** Full-width trigger with placeholder (e.g. search page) */
   wideTrigger?: boolean;
 }
 
-export function SearchBar({ variant = "hero", wideTrigger = false }: SearchBarProps) {
+export function SearchBar({ wideTrigger = false }: SearchBarProps) {
   const t = useTranslations("search");
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -44,7 +40,6 @@ export function SearchBar({ variant = "hero", wideTrigger = false }: SearchBarPr
   const modalRef = useRef<HTMLDivElement>(null);
 
   const suggestions = getSearchSuggestions(query);
-  const isToolbar = variant === "toolbar";
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -96,20 +91,7 @@ export function SearchBar({ variant = "hero", wideTrigger = false }: SearchBarPr
   return (
     <>
       {/* Trigger */}
-      {variant === "hero" ? (
-        <button
-          type="button"
-          onClick={openSearch}
-          aria-label={t("openSearchAria")}
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/20 bg-white/10 text-white/60 hover:bg-white/15 hover:text-white/80 transition-colors"
-        >
-          <i className="fa-solid fa-magnifying-glass text-xs" />
-          <span className="text-xs hidden sm:inline font-heading">{t("triggerLabel")}</span>
-          <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/10 text-white/40">
-            ⌘K
-          </kbd>
-        </button>
-      ) : wideTrigger ? (
+      {wideTrigger ? (
         <button
           type="button"
           onClick={openSearch}
@@ -148,22 +130,12 @@ export function SearchBar({ variant = "hero", wideTrigger = false }: SearchBarPr
           role="presentation"
         >
           <div
-            className={cn(
-              "fixed inset-0 z-[60] flex pointer-events-none",
-              isToolbar
-                ? "items-end justify-center sm:items-start sm:justify-center sm:pt-16 md:pt-20 p-0 sm:p-4"
-                : "items-start justify-center pt-16 sm:pt-20 px-3 sm:px-4"
-            )}
+            className="fixed inset-0 z-[60] flex pointer-events-none items-end justify-center sm:items-start sm:justify-center sm:pt-16 md:pt-20 p-0 sm:p-4"
             onClick={handleClickOutside}
           >
             <div
               ref={modalRef}
-              className={cn(
-                "pointer-events-auto w-full bg-white shadow-2xl flex flex-col overflow-hidden",
-                isToolbar
-                  ? "max-h-[min(92dvh,720px)] rounded-t-2xl sm:rounded-xl sm:max-h-[min(85vh,640px)] sm:max-w-xl border-t sm:border border-gray-200"
-                  : "max-h-[min(85vh,640px)] rounded-xl max-w-xl border border-gray-200"
-              )}
+              className="pointer-events-auto w-full bg-white shadow-2xl flex flex-col overflow-hidden max-h-[min(92dvh,720px)] rounded-t-2xl sm:rounded-xl sm:max-h-[min(85vh,640px)] sm:max-w-xl border-t sm:border border-gray-200"
               onClick={(e) => e.stopPropagation()}
               role="dialog"
               aria-modal="true"

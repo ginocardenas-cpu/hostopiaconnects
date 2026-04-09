@@ -96,7 +96,7 @@ export function LocaleHeader() {
               {mobileOpen ? <X size={22} strokeWidth={2.25} /> : <Menu size={22} strokeWidth={2.25} />}
             </button>
 
-            <SearchBar variant="toolbar" />
+            <SearchBar />
             <CartNav />
             <LanguageSwitcher />
           </div>

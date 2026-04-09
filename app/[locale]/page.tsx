@@ -1,8 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { HomeHighlights } from "@/components/HomeHighlights";
-import { SearchBar } from "@/components/SearchBar";
-import { SupportedLanguages } from "@/components/SupportedLanguages";
 
 const QUICK_LINKS = [
   { labelKey: "quickSalesDecks" as const, href: "/library?type=Presentation", icon: "fa-solid fa-chart-bar" },
@@ -35,14 +33,9 @@ export default async function Home() {
           >
             <span className="text-[#2CADB2]">Hostopia</span>Connects
           </h1>
-          <p className="text-lg max-w-2xl mx-auto mb-8 text-white/70 font-body leading-relaxed">
+          <p className="text-lg max-w-2xl mx-auto text-white/70 font-body leading-relaxed">
             {t("tagline")}
           </p>
-
-          {/* Search */}
-          <div className="max-w-lg mx-auto">
-            <SearchBar variant="hero" />
-          </div>
         </div>
       </section>
 
@@ -70,9 +63,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      {/* Asset content languages — same as Library filter, with flags */}
-      <SupportedLanguages />
 
       {/* Highlights – What's New, Most Popular, Most Downloaded */}
       <HomeHighlights />

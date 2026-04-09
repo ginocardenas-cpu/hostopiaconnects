@@ -42,7 +42,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 {t("title") || "Search HostopiaConnects"}
               </h1>
               <div className="max-w-2xl">
-                <SearchBar variant="toolbar" wideTrigger />
+                <SearchBar wideTrigger />
               </div>
             </>
           )}
