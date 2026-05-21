@@ -215,6 +215,7 @@ function rowToAsset(row, index) {
     id: slug,
     slug,
     title,
+    fileName: basenameOnly(filename),
     journey,
     productCategory,
     contentType,

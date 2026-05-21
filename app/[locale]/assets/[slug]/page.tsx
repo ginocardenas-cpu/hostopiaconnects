@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { FileText } from "lucide-react";
-import { getAssetBySlug } from "@/lib/assets";
+import { getAssetBySlug, getAssetSourceFileName } from "@/lib/assets";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { AssetFeedback } from "@/components/AssetFeedback";
 import { AssetMarkSeen } from "@/components/AssetMarkSeen";
@@ -12,7 +12,7 @@ interface AssetDetailPageProps {
 }
 
 export default async function AssetDetailPage({ params }: AssetDetailPageProps) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const t = await getTranslations("asset");
   const asset = getAssetBySlug(slug);
 
@@ -32,32 +32,33 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
     );
   }
 
+  const sourceFile = getAssetSourceFileName(asset);
+
   return (
     <section className="max-w-6xl mx-auto px-6 py-16">
       <AssetMarkSeen slug={slug} />
       <div className="mb-10">
         <div className="flex flex-wrap items-center gap-2 mb-3 text-[11px]">
           <span
-            className="inline-flex items-center gap-1 rounded-full bg-[#f7f6f2] px-3 py-1 uppercase tracking-[0.18em] text-gray-600"
+            className="inline-flex items-center rounded-full bg-[#ecebe6] px-3 py-1 font-semibold uppercase tracking-[0.14em] text-gray-600"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
-            <span>◎</span>
-            <span>{asset.journey}</span>
+            {asset.journey}
           </span>
           <span
-            className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 border border-black/5 text-gray-600"
+            className="inline-flex items-center rounded-full bg-white px-3 py-1 border border-black/8 text-gray-600"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
             {asset.productCategory}
           </span>
           <span
-            className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 border border-black/5 text-gray-600"
+            className="inline-flex items-center rounded-full bg-white px-3 py-1 border border-black/8 text-gray-600"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
             {asset.contentType}
           </span>
           <span
-            className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 border border-black/5 text-gray-600"
+            className="inline-flex items-center rounded-full bg-white px-3 py-1 border border-black/8 text-gray-600"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
             {asset.language} · {asset.region}
@@ -65,21 +66,34 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
         </div>
 
         <h1
-          className="font-black leading-tight mb-3"
+          className="font-black leading-tight mb-2 text-[#24282B]"
           style={{
             fontFamily: "Montserrat, sans-serif",
-            fontSize: "clamp(1.8rem, 3.2vw, 2.6rem)"
+            fontSize: "clamp(1.8rem, 3.2vw, 2.6rem)",
           }}
         >
           {asset.title}
         </h1>
 
         <p
+          className="text-sm text-gray-500 mb-2 break-all"
+          style={{ fontFamily: "Raleway, sans-serif" }}
+        >
+          <span className="font-medium text-gray-600">{t("sourceFile")}: </span>
+          {sourceFile}
+        </p>
+
+        <p
           className="text-xs text-gray-500 mb-6"
           style={{ fontFamily: "Raleway, sans-serif" }}
         >
-          {t("lastUpdated")} {new Date(asset.lastUpdated).toLocaleDateString()} ·{" "}
-          {asset.gated ? t("gatedDownload") : t("directDownload")}
+          {t("lastUpdated")}{" "}
+          {new Date(asset.lastUpdated).toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}{" "}
+          · {asset.gated ? t("gatedDownload") : t("directDownload")}
         </p>
 
         <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -94,24 +108,24 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
             <FileText size={16} />
             {t("preview")}
           </a>
-          <CopyLinkButton />
+          <CopyLinkButton copyPath={`/${locale}/assets/${slug}`} label={t("copyLink")} />
         </div>
         <div className="mb-8">
           <AssetFeedback assetId={asset.id} />
         </div>
       </div>
 
-      <div className="grid gap-10 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] items-start">
-        <div className="space-y-6">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] items-start">
+        <div className="space-y-8">
           <section>
             <h2
-              className="text-sm font-semibold uppercase tracking-[0.18em] mb-2 text-gray-600"
-              style={{ fontFamily: "Raleway, sans-serif" }}
+              className="text-xs font-bold uppercase tracking-[0.16em] mb-3 text-gray-700"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
             >
               {t("whatItIs")}
             </h2>
             <p
-              className="text-sm md:text-base text-gray-800"
+              className="text-sm md:text-base text-gray-800 leading-relaxed"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
               {asset.summaryWhat}
@@ -120,13 +134,13 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
 
           <section>
             <h2
-              className="text-sm font-semibold uppercase tracking-[0.18em] mb-2 text-gray-600"
-              style={{ fontFamily: "Raleway, sans-serif" }}
+              className="text-xs font-bold uppercase tracking-[0.16em] mb-3 text-gray-700"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
             >
               {t("whyImportant")}
             </h2>
             <p
-              className="text-sm md:text-base text-gray-800"
+              className="text-sm md:text-base text-gray-800 leading-relaxed"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
               {asset.summaryWhy}
@@ -135,13 +149,13 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
 
           <section>
             <h2
-              className="text-sm font-semibold uppercase tracking-[0.18em] mb-2 text-gray-600"
-              style={{ fontFamily: "Raleway, sans-serif" }}
+              className="text-xs font-bold uppercase tracking-[0.16em] mb-3 text-gray-700"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
             >
               {t("howToUse")}
             </h2>
             <p
-              className="text-sm md:text-base text-gray-800 whitespace-pre-line"
+              className="text-sm md:text-base text-gray-800 leading-relaxed whitespace-pre-line"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
               {asset.summaryHow}
@@ -149,42 +163,48 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
           </section>
         </div>
 
-        <aside className="space-y-6">
-          <div className="rounded-2xl border border-black/5 bg-[#f7f6f2] p-4">
+        <aside className="space-y-5 lg:sticky lg:top-24">
+          <div className="rounded-2xl border border-black/6 bg-[#f0efeb] p-5 shadow-sm">
             <h3
-              className="text-xs font-semibold uppercase tracking-[0.18em] mb-3 text-gray-600"
-              style={{ fontFamily: "Raleway, sans-serif" }}
+              className="text-xs font-bold uppercase tracking-[0.16em] mb-4 text-gray-700"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
             >
               {t("atAGlance")}
             </h3>
-            <dl
-              className="space-y-2 text-xs text-gray-700"
-              style={{ fontFamily: "Raleway, sans-serif" }}
-            >
-              <div className="flex justify-between gap-4">
-                <dt className="text-gray-500">{t("primaryUseCases")}</dt>
-                <dd className="text-right">{asset.useCases.join(" · ")}</dd>
+            <dl className="space-y-4 text-sm" style={{ fontFamily: "Raleway, sans-serif" }}>
+              <div>
+                <dt className="text-[11px] font-medium uppercase tracking-wide text-gray-500 mb-1">
+                  {t("sourceFile")}
+                </dt>
+                <dd className="text-gray-900 font-medium break-all leading-snug">{sourceFile}</dd>
               </div>
-              <div className="flex justify-between gap-4">
-                <dt className="text-gray-500">{t("languageRegion")}</dt>
-                <dd className="text-right">
-                  {asset.language} ·{" "}
-                  {asset.region === "Global" ? "Global" : asset.region}
+              <div>
+                <dt className="text-[11px] font-medium uppercase tracking-wide text-gray-500 mb-1">
+                  {t("primaryUseCases")}
+                </dt>
+                <dd className="text-gray-900">{asset.useCases.join(" · ")}</dd>
+              </div>
+              <div>
+                <dt className="text-[11px] font-medium uppercase tracking-wide text-gray-500 mb-1">
+                  {t("languageRegion")}
+                </dt>
+                <dd className="text-gray-900">
+                  {asset.language} · {asset.region}
                 </dd>
               </div>
-              <div className="flex justify-between gap-4">
-                <dt className="text-gray-500">{t("downloadType")}</dt>
-                <dd className="text-right">
+              <div>
+                <dt className="text-[11px] font-medium uppercase tracking-wide text-gray-500 mb-1">
+                  {t("downloadType")}
+                </dt>
+                <dd className="text-gray-900">
                   {asset.gated ? t("leadGatedBundle") : t("directFileDownload")}
                 </dd>
               </div>
             </dl>
           </div>
 
-          <div className="rounded-2xl border border-dashed border-[#2CADB2]/50 bg-[#f0fbfa] p-4 text-xs text-gray-700">
-            <p style={{ fontFamily: "Raleway, sans-serif" }}>
-              {t("previewHint")}
-            </p>
+          <div className="rounded-2xl border border-dashed border-[#5ab8b3] bg-[#e8f7f6] p-4 text-xs text-gray-700 leading-relaxed">
+            <p style={{ fontFamily: "Raleway, sans-serif" }}>{t("previewHint")}</p>
           </div>
         </aside>
       </div>

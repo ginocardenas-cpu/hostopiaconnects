@@ -73,6 +73,8 @@ export interface Asset {
   id: string;
   slug: string;
   title: string;
+  /** Original file name from inventory (Filename column); shown on the asset card. */
+  fileName?: string;
   journey: ProductJourney;
   productCategory: ProductCategory;
   contentType: ContentType;
@@ -88,6 +90,18 @@ export interface Asset {
   lastUpdated: string; // ISO date
   viewCount: number;
   downloadCount: number;
+}
+
+/** Display name for the downloadable file (inventory Filename, or decoded from `fileUrl`). */
+export function getAssetSourceFileName(asset: Asset): string {
+  const fromInventory = asset.fileName?.trim();
+  if (fromInventory) return fromInventory;
+  const seg = asset.fileUrl.split("/").pop() ?? "";
+  try {
+    return decodeURIComponent(seg);
+  } catch {
+    return seg;
+  }
 }
 
 export const journeys: { label: ProductJourney; slug: string }[] = [
@@ -254,6 +268,7 @@ export function filterAssets(filters: {
     if (q) {
       const haystack = [
         asset.title,
+        getAssetSourceFileName(asset),
         asset.productCategory,
         asset.contentType,
         asset.summaryWhat,
@@ -285,6 +300,7 @@ export function searchAssets(query: string, limit = 20): Asset[] {
 
       if (title.includes(q)) score += 10;
       if (title.startsWith(q)) score += 5;
+      if (getAssetSourceFileName(asset).toLowerCase().includes(q)) score += 6;
       if (product.includes(q)) score += 8;
       if (asset.contentType.toLowerCase().includes(q)) score += 4;
       if (asset.summaryWhat.toLowerCase().includes(q)) score += 2;
