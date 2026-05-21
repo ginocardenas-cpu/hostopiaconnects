@@ -4,7 +4,9 @@ This is a separate Next.js app that powers the **public-facing Hostopia Connects
 
 - Modern UX for sales and partner enablement
 - Structured content by product journey, content type, and use case
-- Lead-gated My Resources (bundle downloads) with CRM integration
+- **My Resources** flow: detail card + preview → add to collection → header count → request bundle (**email delivery & CRM still to be built**)
+
+**Product flow (detail → preview → collect → request → tracking):** see **[`docs/MY-RESOURCES-AND-FULFILLMENT.md`](./docs/MY-RESOURCES-AND-FULFILLMENT.md)**. Shorter end-user copy also lives under `howItWorks` and `cart` in **`messages/en.json`**.
 
 ## Getting started
 

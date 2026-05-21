@@ -13,7 +13,10 @@ export type ProductCategory =
   | "Ecommerce"
   | "Online Fax"
   | "Directory Listings"
-  | "Reputation Management";
+  | "Reputation Management"
+  /** Online Marketing Center — inventory “Product Category” values */
+  | "Brand Monitoring"
+  | "Marketing 360";
 
 export type ContentType =
   | "Video"
@@ -210,6 +213,20 @@ export const journeyProducts: {
     slug: "online-fax",
     category: "Online Fax",
     description: "Online Fax use cases, training, and sales tools."
+  },
+  {
+    journey: "Grow their Business",
+    label: "Brand Monitoring",
+    slug: "brand-monitoring",
+    category: "Brand Monitoring",
+    description: "OMC starter tier — alerts, unified feed, and competitor tracking enablement."
+  },
+  {
+    journey: "Grow their Business",
+    label: "Marketing 360",
+    slug: "marketing-360",
+    category: "Marketing 360",
+    description: "OMC top tier — paid media, social, reputation, and reporting enablement."
   }
 ];
 

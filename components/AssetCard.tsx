@@ -18,6 +18,8 @@ const categoryColorMap: Record<ProductCategory, string> = {
   "Online Fax": "#78716C",
   "Directory Listings": "#EC4899",
   "Reputation Management": "#14B8A6",
+  "Brand Monitoring": "#0D9488",
+  "Marketing 360": "#7C3AED",
 };
 
 // Content type to Font Awesome 6 Solid icon mapping

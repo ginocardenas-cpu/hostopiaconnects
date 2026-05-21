@@ -1,10 +1,12 @@
 # Adding your docs and videos to Hostopia Connects
 
+End-user flow (detail card, preview, **My Resources**, future email fulfillment, tracking): **[`docs/MY-RESOURCES-AND-FULFILLMENT.md`](./docs/MY-RESOURCES-AND-FULFILLMENT.md)**.
+
 ## Refresh from the Hostopia asset inventory (XLSX)
 
-1. Save the workbook as **`Assets/HostopiaConnects/Hostopia_Asset_Inventory v2 - UPDATED 2026-05-21.xlsx`** (or keep the default **`Hostopia_Asset_Inventory v2.xlsx`** in the same folder).
-2. Put rows on the **`NEW Assets`** sheet when you want only new items; if that sheet is empty, the importer uses **`Asset Inventory`** instead.
-3. Run **`npm run assets:from-inventory`**. This overwrites **`lib/assets.data.json`** from the sheet (Filename → `fileName` + `fileUrl` under `/assets/…`, Title and summaries → display fields).
+1. Save the workbook in **`Assets/HostopiaConnects/`**. Prefer a filename that includes **`UPDATED`** and the year (e.g. **`Hostopia_Asset_Inventory v2 - UPDATED 2026-05-21.xlsx`**) so it is chosen over older `v2.xlsx` files — see **`Assets/HostopiaConnects/README.md`**.
+2. Put **updates and new SKUs** on the **`NEW Assets`** tab. On import, each row’s **Title** is matched to **`Asset Inventory`**; matching rows are **replaced** with the NEW row (file name, What/Why/How, gated, last updated, etc.). Titles only in **`NEW Assets`** are **appended**. If **`NEW Assets`** is empty, only **`Asset Inventory`** is used.
+3. Run **`npm run assets:from-inventory`**. This overwrites **`lib/assets.data.json`** (Filename → `fileName` + `fileUrl`, summaries → card copy). Optional: **`ASSETS_INVENTORY_XLSX`** env or pass the file path as the first CLI argument to `node scripts/inventory-to-assets.mjs`.
 4. Copy the actual files into **`public/assets/`** using the same names as the **Filename** column (the catalog uses URL-encoded paths, e.g. spaces → `%20`).
 
 **CSV bulk path:** `npm run assets:import` runs **`scripts/csv-to-assets.js`** (see repo comments / `data/` if present).

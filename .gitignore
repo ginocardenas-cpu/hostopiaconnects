@@ -22,6 +22,9 @@ _design-extract/
 _inv.zip
 _xlsx_unzip/
 
+# Excel lock files (open workbook)
+~$*.xlsx
+
 # Misc
 .DS_Store
 *.pem
