@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Product Template — Family Index</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,380;6..72,400;6..72,500&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="system.css">
+<style>
+  body { background: var(--paper); }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 64px 56px 96px; }
+  header.h {
+    display: grid; grid-template-columns: 1fr auto; gap: 48px;
+    align-items: end;
+    padding-bottom: 28px; border-bottom: 1px solid var(--ink);
+  }
+  h1.title { font-size: 84px; line-height: 0.96; font-weight: 380; letter-spacing: -0.02em; }
+  .lede-2 { font-size: 19px; line-height: 1.5; color: var(--ink-2); max-width: 620px; margin-top: 24px; text-wrap: pretty; }
+
+  .product-section { margin-top: 56px; }
+  .product-head {
+    display: grid; grid-template-columns: 60px 1fr auto;
+    gap: 24px; align-items: baseline;
+    padding-bottom: 14px; border-bottom: 1px solid var(--rule); margin-bottom: 24px;
+  }
+  .product-head .ix { font-family: var(--mono); font-size: 13px; letter-spacing: 0.14em; color: var(--teal); padding-top: 6px; }
+  .product-head h2 { font-family: var(--serif); font-size: 38px; line-height: 1.05; font-weight: 400; }
+  .product-head .status {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 5px 10px; border: 1px solid var(--teal); color: var(--teal); border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .product-head .status::before { content: ""; width: 6px; height: 6px; background: var(--teal); border-radius: 50%; }
+  .product-head .status.draft { border-color: var(--accent-warm); color: var(--accent-warm); }
+  .product-head .status.draft::before { background: var(--accent-warm); }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .card-link {
+    display: flex; flex-direction: column;
+    text-decoration: none; color: var(--ink);
+    background: var(--white); border: 1px solid var(--rule);
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .card-link:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-color: var(--teal); }
+  .card-link .thumb { aspect-ratio: 4/3; position: relative; overflow: hidden; }
+  .card-link .body { padding: 18px 20px 22px; }
+  .card-link .num { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--teal); }
+  .card-link h3 { font-family: var(--serif); font-weight: 400; font-size: 22px; line-height: 1.15; margin-top: 8px; }
+  .card-link p { font-size: 13px; margin-top: 8px; color: var(--ink-2); line-height: 1.45; }
+  .card-link .meta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-top: 12px; }
+
+  /* Thumbnails */
+  .thumb.t-deck {
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: center; padding: 22px;
+  }
+  .thumb.t-deck .mini {
+    aspect-ratio: 16/9; width: 100%;
+    background: var(--paper);
+    position: relative;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  }
+  .thumb.t-deck .mini::before {
+    content: ""; position: absolute; top: 18%; left: 8%; width: 50%; height: 28%; background: var(--ink);
+  }
+  .thumb.t-deck .mini::after {
+    content: ""; position: absolute; bottom: 14%; left: 8%; right: 8%; height: 2px; background: var(--teal);
+  }
+  .thumb.t-deck.alt { background: var(--teal); }
+
+  .thumb.t-slick {
+    background: var(--paper-2);
+    display: flex; gap: 6px; padding: 16px; align-items: center; justify-content: center;
+  }
+  .thumb.t-slick .pg {
+    aspect-ratio: 0.77; height: 80%;
+    background: var(--paper); border: 1px solid var(--rule); position: relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .thumb.t-slick .pg::before {
+    content: ""; position: absolute; top: 14%; left: 12%; right: 30%; height: 8%; background: var(--ink);
+  }
+  .thumb.t-slick .pg::after {
+    content: ""; position: absolute; bottom: 20%; left: 12%; right: 12%; height: 30%; background: var(--cream);
+  }
+  .thumb.t-slick .pg:nth-child(2) { background: var(--ink); }
+  .thumb.t-slick .pg:nth-child(2)::before { background: var(--cream); }
+  .thumb.t-slick .pg:nth-child(2)::after { background: var(--teal); }
+
+  .thumb.t-doc {
+    background: var(--paper-2);
+    display: flex; gap: 4px; padding: 14px; flex-wrap: wrap;
+  }
+  .thumb.t-doc .pg { width: calc(20% - 4px); aspect-ratio: 0.77; background: var(--paper); border: 1px solid var(--rule); }
+  .thumb.t-doc .pg:nth-child(1) { background: var(--ink); }
+  .thumb.t-doc .pg:nth-child(3) { background: var(--cream); }
+  .thumb.t-doc .pg:nth-child(6) { background: var(--cream); }
+  .thumb.t-doc .pg:nth-child(10) { background: var(--cream); }
+
+  .scratch-banner {
+    margin-top: 56px;
+    padding: 24px 28px;
+    background: var(--ink); color: var(--paper);
+    display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center;
+  }
+  .scratch-banner .label { color: var(--cream); }
+  .scratch-banner h3 { font-family: var(--serif); font-weight: 400; font-size: 26px; color: var(--paper); margin-top: 4px; line-height: 1.15; }
+  .scratch-banner p { color: rgba(245,239,227,0.8); font-size: 14px; margin-top: 8px; max-width: 580px; }
+  .scratch-banner a { text-decoration: none; color: var(--ink); background: var(--paper); padding: 12px 18px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+
+  footer.f {
+    margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--rule);
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 40px 20px 72px; }
+    header.h {
+      grid-template-columns: 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    h1.title { font-size: clamp(2.25rem, 10vw, 3.25rem); line-height: 1.02; }
+    .product-head {
+      grid-template-columns: 40px 1fr;
+      grid-template-rows: auto auto;
+    }
+    .product-head .ix { padding-top: 2px; }
+    .product-head h2 { font-size: clamp(1.35rem, 5vw, 1.85rem); grid-column: 2; }
+    .product-head .status { grid-column: 1 / -1; margin-top: 4px; }
+    .grid { grid-template-columns: 1fr; gap: 16px; }
+    .scratch-banner {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 20px 22px;
+    }
+    .scratch-banner > div:last-child {
+      font-size: clamp(2.5rem, 14vw, 4rem);
+      justify-self: start;
+    }
+    footer.f { flex-direction: column; gap: 12px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="h">
+    <div>
+      <div class="eyebrow">Product template · v2.1 · 2026</div>
+      <h1 class="title serif" style="margin-top: 18px;">A consistent template family for every product.</h1>
+      <p class="lede-2">One visual system. Three deliverables per product. Seven products shipped — eight more to go.</p>
+    </div>
+    <div class="brandmark"><span class="glyph"></span>Product Template</div>
+  </header>
+
+  <!-- Product 1 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">01</div>
+      <h2>Professional Logo Design</h2>
+      <span class="status">Finalized · 2026-05-13</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Professional Logo Design Presentation FINAL 2026-05-18.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Professional Logo Design Presentation</h3>
+          <p>13 slides — Selected work showcase included.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Professional Logo Design Sales Slick FINAL 2026-05-18.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Professional Logo Design Sales Slick</h3>
+          <p>3 letter-size pages — customer + rep-facing.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Professional Logo Design Overview FINAL 2026-05-18.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Professional Logo Design Overview</h3>
+          <p>10-page source of truth — stats, plans, FAQs.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 2 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">02</div>
+      <h2>Domain Services</h2>
+      <span class="status">Finalized · 2026-05-13</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Domain Services Presentation FINAL 2026-05-18.html">
+        <div class="thumb t-deck alt"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Domain Services Presentation</h3>
+          <p>13 slides — extension showcase included.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Domain Services Sales Slick FINAL 2026-05-18.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Domain Services Sales Slick</h3>
+          <p>3 letter-size pages — new, built to template.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Domain Services Overview FINAL 2026-05-18.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Domain Services Overview</h3>
+          <p>10-page reference — opportunity, terms, playbook.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 3 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">03</div>
+      <h2>Online Fax</h2>
+      <span class="status">Finalized · 2026-05-13</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Online Fax Presentation FINAL 2026-05-18.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Online Fax Presentation</h3>
+          <p>13 slides — 8-feature showcase + 3-tier plans (Standard / Encrypted / Multi-User).</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Online Fax Sales Slick FINAL 2026-05-18.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Online Fax Sales Slick</h3>
+          <p>3 letter-size pages — new, built to template.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Online Fax Overview FINAL 2026-05-18.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Online Fax Overview</h3>
+          <p>10-page reference — product family, features, HIPAA tier.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 4 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">04</div>
+      <h2>Ecommerce</h2>
+      <span class="status">Finalized · 2026-05-14</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Ecommerce Presentation FINAL 2026-05-18.html">
+        <div class="thumb t-deck alt"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Ecommerce Presentation</h3>
+          <p>13 slides — 8-feature showcase + 4-tier plans (Sell 12 / 100 / 1K / Unlimited).</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Ecommerce Sales Slick FINAL 2026-05-18.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Ecommerce Sales Slick</h3>
+          <p>3 letter-size pages — new, built to template.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Ecommerce Overview FINAL 2026-05-18.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Ecommerce Overview</h3>
+          <p>10-page reference — 4-tier plan matrix, 40+ payment gateways.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 5 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">05</div>
+      <h2>SSL Services</h2>
+      <span class="status">Finalized · 2026-05-14</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/SSL Services Presentation FINAL 2026-05-18.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>SSL Services Presentation</h3>
+          <p>13 slides — 8-feature showcase + 5-tier plans (Positive / Sectigo / EV / Premium / Wildcard).</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/SSL Services Sales Slick FINAL 2026-05-18.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>SSL Services Sales Slick</h3>
+          <p>3 letter-size pages — new, built to template.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/SSL Services Overview FINAL 2026-05-18.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>SSL Services Overview</h3>
+          <p>10-page reference — 5-tier plan matrix, validation depth breakdown.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 6 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">06</div>
+      <h2>Do-It-For-Me Website Design</h2>
+      <span class="status">Finalized · 2026-05-14</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Website Design Presentation FINAL 2026-05-18.html">
+        <div class="thumb t-deck alt"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Website Design Presentation</h3>
+          <p>13 slides — includes a real customer Before/After slide + 4-tier plans.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Website Design Sales Slick FINAL 2026-05-18.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Website Design Sales Slick</h3>
+          <p>3 letter-size pages — Before/After hero on page 1.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Website Design Overview FINAL 2026-05-18.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Website Design Overview</h3>
+          <p>10-page reference — Before/After page + 4-tier plan matrix.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 7 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">07</div>
+      <h2>Custom Website Development</h2>
+      <span class="status">Finalized · 2026-05-14</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Custom Website Development Presentation FINAL 2026-05-18.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Custom Website Development Presentation</h3>
+          <p>12 slides — 6-step process + Custom vs. DIFM comparison.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Custom Website Development Sales Slick FINAL 2026-05-18.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Custom Website Development Sales Slick</h3>
+          <p>3 letter-size pages — side-by-side Custom vs. DIFM.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Custom Website Development Overview FINAL 2026-05-18.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Custom Website Development Overview</h3>
+          <p>10-page reference — dedicated Custom vs. DIFM comparison page.</p>
+          <div class="meta">FINAL · 2026-05-18</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 8 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">08</div>
+      <h2>Brand Monitoring</h2>
+      <span class="status">Finalized · 2026-05-19</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Brand Monitoring Presentation FINAL 2026-05-19.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Brand Monitoring Presentation</h3>
+          <p>13 slides — OMC Starter tier + 5-tier upgrade ladder.</p>
+          <div class="meta">FINAL · 2026-05-19</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Brand Monitoring Sales Slick FINAL 2026-05-19.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Brand Monitoring Sales Slick</h3>
+          <p>3 letter-size pages — OMC ladder on page 2.</p>
+          <div class="meta">FINAL · 2026-05-19</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Brand Monitoring Overview FINAL 2026-05-19.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Brand Monitoring Overview</h3>
+          <p>10-page reference — 5-tier OMC matrix.</p>
+          <div class="meta">FINAL · 2026-05-19</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 9 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">09</div>
+      <h2>Marketing 360</h2>
+      <span class="status">Finalized · 2026-05-20</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Marketing 360 Presentation FINAL 2026-05-20.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Marketing 360 Presentation</h3>
+          <p>13 slides — OMC 360 Suite (top tier) + 5-tier ladder.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Marketing 360 Sales Slick FINAL 2026-05-20.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Marketing 360 Sales Slick</h3>
+          <p>3 letter-size pages — managed marketing close.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Marketing 360 Overview FINAL 2026-05-20.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Marketing 360 Overview</h3>
+          <p>10-page reference — 6-col OMC inheritance matrix.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 10 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">10</div>
+      <h2>Email Marketing</h2>
+      <span class="status">Finalized · 2026-05-20</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Email Marketing Presentation FINAL 2026-05-20.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Email Marketing Presentation</h3>
+          <p>13 slides — Announcer Pro, $36 ROI framing.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Email Marketing Sales Slick FINAL 2026-05-20.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Email Marketing Sales Slick</h3>
+          <p>3 letter-size pages — 3-tier ladder.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Email Marketing Overview FINAL 2026-05-20.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Email Marketing Overview</h3>
+          <p>10-page reference — 3-tier matrix, 10-row spec table.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 11 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">11</div>
+      <h2>Website Builder</h2>
+      <span class="status">Finalized · 2026-05-20</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Website Builder Presentation FINAL 2026-05-20.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Website Builder Presentation</h3>
+          <p>13 slides — Online Presence Builder, AI prompt-to-site.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Website Builder Sales Slick FINAL 2026-05-20.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Website Builder Sales Slick</h3>
+          <p>3 letter-size pages — 3-tier ladder.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Website Builder Overview FINAL 2026-05-20.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Website Builder Overview</h3>
+          <p>10-page reference — 3-tier matrix, 10-row spec table.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 12 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">12</div>
+      <h2>Reputation and Listing Management</h2>
+      <span class="status">Finalized · 2026-05-20</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Reputation and Listing Management Presentation FINAL 2026-05-20.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Reputation and Listing Management Presentation</h3>
+          <p>13 slides — OMC Trust headline product, AI-first.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Reputation and Listing Management Sales Slick FINAL 2026-05-20.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Reputation and Listing Management Sales Slick</h3>
+          <p>3 letter-size pages — 5-feature ladder + OMC tier map.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Reputation and Listing Management Overview FINAL 2026-05-20.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Reputation and Listing Management Overview</h3>
+          <p>10-page reference — OMC ladder, 10-row spec table.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 13 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">13</div>
+      <h2>Social Media Management</h2>
+      <span class="status">Finalized · 2026-05-20</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Social Media Management Presentation FINAL 2026-05-20.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Social Media Management Presentation</h3>
+          <p>13 slides — Marketing Essentials, AI content + reviews.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Social Media Management Sales Slick FINAL 2026-05-20.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Social Media Management Sales Slick</h3>
+          <p>3 letter-size pages — 5-feature ladder + OMC tier map.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Social Media Management Overview FINAL 2026-05-20.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Social Media Management Overview</h3>
+          <p>10-page reference — OMC ladder, 10-row spec table.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 14 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">14</div>
+      <h2>Business Email</h2>
+      <span class="status">Finalized · 2026-05-20</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Business Email Presentation FINAL 2026-05-20.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Business Email Presentation</h3>
+          <p>13 slides — Business Class Email, domain trust framing.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Business Email Sales Slick FINAL 2026-05-20.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Business Email Sales Slick</h3>
+          <p>3 letter-size pages — ISP / Pro / Premium ladder.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Business Email Overview FINAL 2026-05-20.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Business Email Overview</h3>
+          <p>10-page reference — 13-row plan matrix, 10-row spec table.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 15 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">15</div>
+      <h2>Search Engine Optimization</h2>
+      <span class="status">Finalized · 2026-05-20</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Search Engine Optimization Presentation FINAL 2026-05-20.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>SEO Presentation</h3>
+          <p>13 slides — OMC Boost tier, AI-powered SEO suite.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Search Engine Optimization Sales Slick FINAL 2026-05-20.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>SEO Sales Slick</h3>
+          <p>3 letter-size pages — 5-feature ladder + OMC tier map.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Search Engine Optimization Overview FINAL 2026-05-20.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>SEO Overview</h3>
+          <p>10-page reference — OMC ladder, 10-row spec table.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 16: Hosting (4-product family) -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">16</div>
+      <h2>Hosting (Shared / WordPress / VPS / Dedicated)</h2>
+      <span class="status">Finalized · 2026-05-20</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Hosting Presentation FINAL 2026-05-20.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Hosting Presentation</h3>
+          <p>13 slides covering all four hosting tiers with comparison matrix + upgrade ladder.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Hosting Sales Slick FINAL 2026-05-20.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Hosting Sales Slick</h3>
+          <p>3 letter-size pages — four-tier matrix + audience map + ladder.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Hosting Overview FINAL 2026-05-20.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Hosting Overview</h3>
+          <p>10-page reference — 4-product profile cards, 11-row matrix, audience deep-dive, ladder.</p>
+          <div class="meta">FINAL · 2026-05-20</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Product 17 -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">17</div>
+      <h2>Directory Listings</h2>
+      <span class="status">Finalized · 2026-05-21</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Presentations V2/Directory Listings Presentation FINAL 2026-05-21.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Sales Deck</div>
+          <h3>Directory Listings Presentation</h3>
+          <p>13 slides — OneList Plus, 40+ directories.</p>
+          <div class="meta">FINAL · 2026-05-21</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Sales Slicks/Directory Listings Sales Slick FINAL 2026-05-21.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Sales Slick</div>
+          <h3>Directory Listings Sales Slick</h3>
+          <p>3 letter-size pages — OneList vs OneList Plus.</p>
+          <div class="meta">FINAL · 2026-05-21</div>
+        </div>
+      </a>
+      <a class="card-link" href="Hostopiaconnects-mac/assets/HostopiaConnects/Overview Docs V2/Directory Listings Overview FINAL 2026-05-21.html">
+        <div class="thumb t-doc">
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+          <div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div><div class="pg"></div>
+        </div>
+        <div class="body">
+          <div class="num">Product Overview</div>
+          <h3>Directory Listings Overview</h3>
+          <p>10-page reference — 2-tier matrix, 10-row spec table.</p>
+          <div class="meta">FINAL · 2026-05-21</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Working files / Design system -->
+  <section class="product-section">
+    <div class="product-head">
+      <div class="ix">DEV</div>
+      <h2>Working files &amp; reference</h2>
+      <span class="status draft">Editable source</span>
+    </div>
+    <div class="grid">
+      <a class="card-link" href="Hostopia_Asset_Inventory v2 - UPDATED 2026-05-21.xlsx" download>
+        <div class="thumb t-doc" style="background: var(--paper-2);">
+          <div class="pg" style="background: var(--white); border-color: var(--paper-3);"></div>
+          <div class="pg" style="background: var(--white); border-color: var(--paper-3);"></div>
+          <div class="pg" style="background: var(--white); border-color: var(--paper-3);"></div>
+          <div class="pg" style="background: var(--teal);"></div>
+        </div>
+        <div class="body">
+          <div class="num">Inventory · XLSX</div>
+          <h3>Asset Inventory</h3>
+          <p>All 50+ assets cataloged — Journey, Product, Content Type, Summary. Powers the portal index.</p>
+          <div class="meta">FINAL · 2026-05-21</div>
+        </div>
+      </a>
+      <a class="card-link" href="Design System.html">
+        <div class="thumb t-doc" style="background: var(--ink);">
+          <div class="pg" style="background: var(--teal);"></div>
+          <div class="pg" style="background: var(--cream); border-color: var(--paper-3);"></div>
+          <div class="pg" style="background: var(--paper); border-color: var(--paper-3);"></div>
+          <div class="pg" style="background: var(--accent-warm);"></div>
+        </div>
+        <div class="body">
+          <div class="num">Reference</div>
+          <h3>Design System</h3>
+          <p>Tokens, type, components — the shared vocabulary.</p>
+          <div class="meta">Static · v1</div>
+        </div>
+      </a>
+      <a class="card-link" href="Sales Deck.html">
+        <div class="thumb t-deck"><div class="mini"></div></div>
+        <div class="body">
+          <div class="num">Working file</div>
+          <h3>Current deck (Custom Website)</h3>
+          <p>Live working file — edit here, re-bundle to finalize.</p>
+          <div class="meta">Last edited · 2026-05-14</div>
+        </div>
+      </a>
+      <a class="card-link" href="Sales Slick.html">
+        <div class="thumb t-slick"><div class="pg"></div><div class="pg"></div><div class="pg"></div></div>
+        <div class="body">
+          <div class="num">Working file</div>
+          <h3>Current slick (Custom Website)</h3>
+          <p>Live working file for the active product.</p>
+          <div class="meta">Last edited · 2026-05-14</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <div class="scratch-banner">
+    <div>
+      <div class="label" style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;">Progress</div>
+      <h3>Seventeen of seventeen complete.</h3>
+      <p>Fifteen named products, the four-product hosting family, plus Directory Listings (OneList Plus) — the local-SEO foundation for every consumer-facing SMB.</p>
+    </div>
+    <div style="font-family: var(--serif); font-size: 84px; font-weight: 380; line-height: 1; color: var(--paper);">17<span style="font-size: 0.3em; color: var(--cream); margin: 0 8px;">of</span>17</div>
+  </div>
+
+  <footer class="f">
+    <span>Product Template · v2.1 · 2026</span>
+    <span>Baseline for all 15 products</span>
+  </footer>
+
+</div>
+
+</body>
+</html>

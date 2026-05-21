@@ -17,3 +17,12 @@ npm run dev
 
 Then open `http://localhost:3000` to view the portal shell.
 
+## Claude Design handoff (HTML prototype)
+
+Static export from **Claude Design** (product template family index) lives at:
+
+- **`/design-handoff/project/index.html`** — family index (17 product rows + working files)
+- **`/design-handoff/project/system.css`** — design tokens and shared components
+
+Card links point at `Hostopiaconnects-mac/assets/...` HTML files from the bundle. To make those links work locally, extract the full `Hostopia Connects-handoff.tar.gz` from the design export and copy the `Hostopiaconnects-mac` tree under **`public/design-handoff/project/`** (see `public/design-handoff/README.md`).
+

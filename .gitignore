@@ -15,6 +15,13 @@ public/assets/*.webm
 # TypeScript incremental build cache (local only)
 *.tsbuildinfo
 
+# Local Claude Design bundle extract (not source of truth)
+_design-extract/
+
+# Local scratch from inventory / xlsx inspection (do not commit)
+_inv.zip
+_xlsx_unzip/
+
 # Misc
 .DS_Store
 *.pem

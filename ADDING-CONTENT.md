@@ -1,8 +1,15 @@
 # Adding your docs and videos to Hostopia Connects
 
-**Hundreds of assets?** Use the **bulk import** flow: see **[BULK-IMPORT.md](./BULK-IMPORT.md)** (CSV + one command + one push).
+## Refresh from the Hostopia asset inventory (XLSX)
 
-For a few assets, use the flow below.
+1. Save the workbook as **`Assets/HostopiaConnects/Hostopia_Asset_Inventory v2 - UPDATED 2026-05-21.xlsx`** (or keep the default **`Hostopia_Asset_Inventory v2.xlsx`** in the same folder).
+2. Put rows on the **`NEW Assets`** sheet when you want only new items; if that sheet is empty, the importer uses **`Asset Inventory`** instead.
+3. Run **`npm run assets:from-inventory`**. This overwrites **`lib/assets.data.json`** from the sheet (Filename → `fileUrl` under `/assets/…`, Title and summaries → display fields).
+4. Copy the actual files into **`public/assets/`** using the same names as the **Filename** column (the catalog uses URL-encoded paths, e.g. spaces → `%20`).
+
+**CSV bulk path:** `npm run assets:import` runs **`scripts/csv-to-assets.js`** (see repo comments / `data/` if present).
+
+For a few assets, use the manual flow below.
 
 ## 1. Put files in `public/assets/`
 
