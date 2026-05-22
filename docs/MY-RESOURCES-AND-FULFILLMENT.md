@@ -17,10 +17,12 @@ Related UI copy lives in **`messages/en.json`** under `howItWorks` and `cart` (a
 
 ---
 
-## 2. Preview (optional)
+## 2. Preview (in-app modal)
 
-- **Preview** lets users open the asset file in a new tab (e.g. PDF, HTML, video) to **review** before committing to a download request.
-- Today this uses the asset’s `fileUrl` (served from **`public/assets/`**). If you later require that files are **only** available after fulfillment, the preview step would need to move behind signed URLs or a viewer—**not implemented yet**.
+- **Preview** opens a **modal** over the page (no new tab). The modal shows the asset title, a **close** control, and the file in an embedded viewer when the format supports it (**HTML**, **PDF**, common **images**, **video**).
+- **Hostopia Connects does not render a Download button** in this modal; fulfillment stays oriented toward **Add to My Resources** (see footer hint in the modal).
+- **PDF caveat:** When the file is a PDF, many browsers still inject **their own** PDF toolbar (which may include download). That is browser UI, not something we add. To get a fully custom page strip (like “Page 1 / 8” only), a next step is **PDF.js** (e.g. `react-pdf`) with a custom toolbar and no download action.
+- **Word / PowerPoint:** In-browser preview usually requires **conversion to PDF** on the server or a third-party viewer; until then, users see a short message to use **My Resources** to request the file.
 
 ---
 

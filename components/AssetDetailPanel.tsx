@@ -2,12 +2,12 @@
 
 import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
-import { FileText } from "lucide-react";
 import type { Asset } from "@/lib/assets";
 import { getAssetSourceFileName } from "@/lib/assets";
 import { AddToCartButton } from "./AddToCartButton";
-import { CopyLinkButton } from "./CopyLinkButton";
 import { AssetFeedback } from "./AssetFeedback";
+import { AssetPreviewButton } from "./AssetPreviewButton";
+import { CopyLinkButton } from "./CopyLinkButton";
 
 interface AssetDetailPanelProps {
   asset: Asset;
@@ -66,16 +66,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
 
       <div className="flex flex-wrap items-center gap-3 mb-5">
         <AddToCartButton assetId={asset.id} />
-        <a
-          href={asset.fileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold border border-[#24282B]/20 bg-white transition hover:bg-[#f7f6f2] hover:border-[#2CADB2]"
-          style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}
-        >
-          <FileText size={16} />
-          {t("preview")}
-        </a>
+        <AssetPreviewButton fileUrl={asset.fileUrl} title={asset.title} />
         <CopyLinkButton copyPath={copyPath} label={t("copyLink")} />
       </div>
 

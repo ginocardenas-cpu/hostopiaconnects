@@ -142,6 +142,10 @@
     "gatedDownload": "Téléchargement protégé",
     "directDownload": "Téléchargement direct",
     "preview": "Aperçu",
+    "previewClose": "Fermer l’aperçu",
+    "previewUnavailable": "Ce format ne peut pas encore être prévisualisé dans le navigateur. Ajoutez la ressource à Mes ressources pour en demander une copie.",
+    "previewPdfToolbarNote": "Si votre navigateur affiche ses propres commandes PDF, c’est distinct d’Hostopia Connects — nous n’ajoutons pas de bouton Télécharger dans cette fenêtre.",
+    "previewFooterHint": "Pour obtenir les fichiers, utilisez Ajouter à Mes ressources, puis demandez votre lot depuis la page Mes ressources.",
     "copyLink": "Copier le lien",
     "sourceFile": "Fichier",
     "whatItIs": "De quoi s'agit-il",
@@ -153,7 +157,7 @@
     "downloadType": "Type de téléchargement",
     "leadGatedBundle": "Lot avec collecte de prospect",
     "directFileDownload": "Téléchargement direct du fichier",
-    "previewHint": "Utilisez Aperçu pour ouvrir le fichier dans un nouvel onglet avant d'ajouter à Mes ressources. Vos commentaires nous aident à améliorer les documents."
+    "previewHint": "Utilisez Aperçu pour voir la ressource dans une fenêtre (sans bouton Télécharger Hostopia). Ajoutez à Mes ressources pour obtenir des copies. Vos pouces nous aident à améliorer les contenus."
   },
   "productList": {
     "notFound": "Nous n'avons pas trouvé ce produit.",

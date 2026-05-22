@@ -142,6 +142,10 @@
     "gatedDownload": "Download con registrazione",
     "directDownload": "Download diretto",
     "preview": "Anteprima",
+    "previewClose": "Chiudi anteprima",
+    "previewUnavailable": "Questo formato non può ancora essere visualizzato nel browser. Aggiungi la risorsa a Le mie risorse per richiedere una copia.",
+    "previewPdfToolbarNote": "Se il browser mostra la sua barra PDF, è separata da Hostopia Connects: non aggiungiamo un pulsante Scarica in questa anteprima.",
+    "previewFooterHint": "Per ottenere i file, usa Aggiungi a Le mie risorse e richiedi il pacchetto dalla pagina Le mie risorse.",
     "copyLink": "Copia link",
     "sourceFile": "File",
     "whatItIs": "Cos'è",
@@ -153,7 +157,7 @@
     "downloadType": "Tipo di download",
     "leadGatedBundle": "Pacchetto con lead gate",
     "directFileDownload": "Download diretto del file",
-    "previewHint": "Usa Anteprima per aprire il file in una nuova scheda prima di aggiungere a Le mie risorse. Il tuo feedback ci aiuta a migliorare i materiali."
+    "previewHint": "Usa Anteprima per vedere la risorsa in un pop-up (senza pulsante Scarica Hostopia). Aggiungi a Le mie risorse per le copie. Il tuo feedback ci aiuta a migliorare i materiali."
   },
   "productList": {
     "notFound": "Non abbiamo trovato quel prodotto.",

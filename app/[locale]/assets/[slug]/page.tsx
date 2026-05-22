@@ -1,10 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { FileText } from "lucide-react";
 import { getAssetBySlug, getAssetSourceFileName } from "@/lib/assets";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { AssetFeedback } from "@/components/AssetFeedback";
 import { AssetMarkSeen } from "@/components/AssetMarkSeen";
+import { AssetPreviewButton } from "@/components/AssetPreviewButton";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 
 interface AssetDetailPageProps {
@@ -98,16 +98,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
 
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <AddToCartButton assetId={asset.id} />
-          <a
-            href={asset.fileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full px-6 py-2 text-sm font-semibold border border-[#24282B]/20 bg-white transition hover:bg-[#f7f6f2] hover:border-[#2CADB2]"
-            style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}
-          >
-            <FileText size={16} />
-            {t("preview")}
-          </a>
+          <AssetPreviewButton fileUrl={asset.fileUrl} title={asset.title} />
           <CopyLinkButton copyPath={`/${locale}/assets/${slug}`} label={t("copyLink")} />
         </div>
         <div className="mb-8">
