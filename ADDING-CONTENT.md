@@ -6,8 +6,16 @@ End-user flow (detail card, preview, **My Resources**, future email fulfillment,
 
 1. Save the workbook in **`Assets/HostopiaConnects/`**. Prefer a filename that includes **`UPDATED`** and the year (e.g. **`Hostopia_Asset_Inventory v2 - UPDATED 2026-05-21.xlsx`**) so it is chosen over older `v2.xlsx` files — see **`Assets/HostopiaConnects/README.md`**.
 2. Put **updates and new SKUs** on the **`NEW Assets`** tab. On import, each row’s **Title** is matched to **`Asset Inventory`**; matching rows are **replaced** with the NEW row (file name, What/Why/How, gated, last updated, etc.). Titles only in **`NEW Assets`** are **appended**. If **`NEW Assets`** is empty, only **`Asset Inventory`** is used.
-3. Run **`npm run assets:from-inventory`**. This overwrites **`lib/assets.data.json`** (Filename → `fileName` + `fileUrl`, summaries → card copy). Optional: **`ASSETS_INVENTORY_XLSX`** env or pass the file path as the first CLI argument to `node scripts/inventory-to-assets.mjs`.
+3. Run **`npm run assets:from-inventory`**. This overwrites **`lib/assets.data.json`** (Filename → `fileName` + `fileUrl`, summaries → card copy) and **`lib/product-page.copy.json`** (localized H1 + intro on each **`/assets/product/[slug]`** page). Optional: **`ASSETS_INVENTORY_XLSX`** env or pass the file path as the first CLI argument to `node scripts/inventory-to-assets.mjs`.
 4. Copy the actual files into **`public/assets/`** using the same names as the **Filename** column (the catalog uses URL-encoded paths, e.g. spaces → `%20`).
+
+### Product page copy (optional slug sheets)
+
+If you add tabs with **product slug + intro** columns (not the localized Asset Inventory tabs), they are merged into **`lib/product-page.copy.json`**. See script env **`PRODUCT_PAGE_COPY_SHEETS`** in comments in `scripts/inventory-to-assets.mjs`.
+
+### Localized asset cards (V2 inventory tabs)
+
+Workbooks with **`Asset Inventory English`**, **`… Spanish (MX)`**, **`… French (CAN)`**, **`… German`** (and similar) merge **title + What/Why/How** into each catalog row’s **`i18n`** field by **Filename** match. Product preview grids at **`/assets/product/[slug]`** use the current route locale when **`i18n[locale]`** is present.
 
 **CSV bulk path:** `npm run assets:import` runs **`scripts/csv-to-assets.js`** (see repo comments / `data/` if present).
 

@@ -6,6 +6,8 @@
  * - Loads "Asset Inventory" as the base list when present.
  * - Overlays rows from "NEW Assets" on top of base rows with the same Title (case-insensitive),
  *   and appends NEW-only titles. If there is no base sheet but NEW Assets has rows, uses NEW only.
+ * - Writes localized **product page** intro copy to `lib/product-page.copy.json` from sheets whose
+ *   names look like product/preview UI tabs (or `PRODUCT_PAGE_COPY_SHEETS=Tab1,Tab2`). See ADDING-CONTENT.md.
  * - If a secondary v2 workbook exists, it can supply Asset Inventory when the primary file has
  *   NEW Assets but an empty Asset Inventory (common when updates live in a separate export).
  *
@@ -154,6 +156,7 @@ function scoreWorkbookFilename(fname) {
   let score = 0;
   if (lower.includes("updated")) score += 50;
   if (/2026/.test(lower)) score += 20;
+  if (/2026-05-2[5-9]|2026-0[6-9]|2027/.test(lower)) score += 15;
   if (lower.includes("v2") || lower.includes("inventoryv2")) score += 10;
   if (lower.includes("inventory")) score += 5;
   return score;
@@ -191,6 +194,8 @@ function resolvePrimaryWorkbook(cliPath) {
   if (xlsxFiles[0].score > 0) return xlsxFiles[0].full;
 
   const fallbacks = [
+    path.join(CONNECT_DIR, "Hostopia_Asset_Inventory v2 - UPDATED 2026-05-25.xlsx"),
+    path.join(CONNECT_DIR, "Hostopia_Asset_Inventory V2 - UPDATED 2026-05-25.xlsx"),
     path.join(CONNECT_DIR, "Hostopia_Asset_Inventory v2 - UPDATED 2026-05-21.xlsx"),
     path.join(CONNECT_DIR, "Hostopia_Asset_Inventoryv2 UPDATED 2026-05-21.xlsx"),
     path.join(CONNECT_DIR, "Hostopia_Asset_Inventory v2.xlsx"),
@@ -231,9 +236,24 @@ function rowFilename(row) {
 }
 
 function rowTitle(row) {
-  const v = row.Title ?? row.title;
-  if (v !== undefined && String(v).trim()) return String(v).trim();
+  const keys = ["Title", "title", "Título", "Titre", "Titel"];
+  for (const k of keys) {
+    const v = row[k];
+    if (v !== undefined && String(v).trim()) return String(v).trim();
+  }
   return "";
+}
+
+/** Product category cell — English + localized inventory sheet headers (V2). */
+function rowProductCategoryCell(row) {
+  return (
+    row["Product Category"] ??
+    row["Product category"] ??
+    row["Categoría de producto"] ??
+    row["Catégorie de produit"] ??
+    row["Produktkategorie"] ??
+    ""
+  );
 }
 
 function cellSummary(row, kind) {
@@ -245,17 +265,27 @@ function cellSummary(row, kind) {
           [`Summary ${em} What`, `Summary ${en} What`],
           ["Summary — What", "Summary - What", "Summary – What"],
           ["Summary What", "What"],
+          // V2 localized Asset Inventory tabs (ES / FR / DE)
+          ["Título | Resumen — Qué", "Título | Resumen - Qué", "Título | Resumen – Qué"],
+          ["Titre | Résumé — Quoi", "Titre | Résumé - Quoi", "Titre | Résumé – Quoi"],
+          ["Titel | Zusammenfassung — Was", "Titel | Zusammenfassung - Was", "Titel | Zusammenfassung – Was"],
         ]
       : kind === "why"
         ? [
             [`Summary ${em} Why`, `Summary ${en} Why`],
             ["Summary — Why", "Summary - Why", "Summary – Why"],
             ["Summary Why", "Why"],
+          ["Título | Resumen — Por qué", "Título | Resumen - Por qué", "Título | Resumen – Por qué"],
+          ["Titre | Résumé — Pourquoi", "Titre | Résumé - Pourquoi", "Titre | Résumé – Pourquoi"],
+          ["Titel | Zusammenfassung — Warum", "Titel | Zusammenfassung - Warum", "Titel | Zusammenfassung – Warum"],
           ]
         : [
             [`Summary ${em} How`, `Summary ${en} How`],
             ["Summary — How", "Summary - How", "Summary – How"],
             ["Summary How", "How"],
+          ["Título | Resumen — Cómo", "Título | Resumen - Cómo", "Título | Resumen – Cómo"],
+          ["Titre | Résumé — Comment", "Titre | Résumé - Comment", "Titre | Résumé – Comment"],
+          ["Titel | Zusammenfassung — Wie", "Titel | Zusammenfassung - Wie", "Titel | Zusammenfassung – Wie"],
           ];
 
   for (const group of pairs) {
@@ -418,7 +448,7 @@ function rowToAsset(row, index) {
   const title = decodeCell(rowTitle(row)) || filename;
   const journeyRaw = decodeCell(String(row.Journey ?? row.journey ?? "").trim());
   const journey = JOURNEYS.has(journeyRaw) ? journeyRaw : "Get Online";
-  const productCategory = mapProductCategory(row["Product Category"] ?? row["Product category"]);
+  const productCategory = mapProductCategory(rowProductCategoryCell(row));
   const contentType = mapContentType(
     row["Content Type"] ?? row["Content type"] ?? "",
     row["File Type"] ?? row["File type"] ?? ""
@@ -497,20 +527,318 @@ function loadMergedRows(primaryPath) {
   return { merged, wbPrimary };
 }
 
+function normInventoryFileKey(filename) {
+  const raw = decodeCell(String(filename ?? "").trim());
+  if (!raw) return "";
+  const base = basenameOnly(raw);
+  return base.trim().toLowerCase();
+}
+
+/**
+ * V2 workbook: tabs like "Asset Inventory English", "Asset Inventory Spanish (MX)".
+ * Returns app locale key, or null if not a localized inventory tab.
+ */
+function localeFromLocalizedAssetInventorySheet(sheetName) {
+  const l = String(sheetName).trim().toLowerCase();
+  if (!l.includes("asset") || !l.includes("inventory")) return null;
+  if (l.includes("new assets")) return null;
+  if (l === "asset inventory") return "en";
+  if (/\benglish\b/.test(l)) return "en";
+  if (/\bspanish\b/.test(l) || /\(\s*mx\s*\)/.test(l)) return "es-MX";
+  if (/\bfrench\b/.test(l) || /\(\s*can\s*\)/.test(l)) return "fr-CA";
+  if (/\bgerman\b/.test(l)) return "de";
+  return null;
+}
+
+/**
+ * Merge title + What/Why/How from non-English Asset Inventory sheets onto assets (matched by Filename basename).
+ */
+function mergeAssetI18nFromWorkbook(assets, wb) {
+  /** @type {Map<string, Record<string, { title?: string; summaryWhat?: string; summaryWhy?: string; summaryHow?: string }>>} */
+  const byFile = new Map();
+
+  for (const sheetName of wb.SheetNames) {
+    const locale = localeFromLocalizedAssetInventorySheet(sheetName);
+    if (!locale || locale === "en") continue;
+
+    const ws = wb.Sheets[sheetName];
+    if (!ws) continue;
+    const rows = XLSX.utils.sheet_to_json(ws, { defval: "", raw: false });
+    console.log(`[i18n] "${sheetName.trim()}" → ${locale} (${rows.length} row(s))`);
+
+    for (const row of rows) {
+      const fn = rowFilename(row);
+      if (!String(fn).trim()) continue;
+      const key = normInventoryFileKey(fn);
+      if (!key) continue;
+
+      const title = decodeCell(String(rowTitle(row) || "").trim());
+      const summaryWhat = cellSummary(row, "what");
+      const summaryWhy = cellSummary(row, "why");
+      const summaryHow = cellSummary(row, "how");
+      if (!title && !summaryWhat && !summaryWhy && !summaryHow) continue;
+
+      let locs = byFile.get(key);
+      if (!locs) {
+        locs = {};
+        byFile.set(key, locs);
+      }
+      locs[locale] = {
+        ...(title ? { title } : {}),
+        ...(summaryWhat ? { summaryWhat } : {}),
+        ...(summaryWhy ? { summaryWhy } : {}),
+        ...(summaryHow ? { summaryHow } : {}),
+      };
+    }
+  }
+
+  let attached = 0;
+  for (const asset of assets) {
+    const key = normInventoryFileKey(asset.fileName || "");
+    const locs = byFile.get(key);
+    if (!locs || !Object.keys(locs).length) continue;
+    asset.i18n = locs;
+    attached++;
+  }
+  console.log(`[i18n] Attached localized copy to ${attached} asset(s) (Filename match).`);
+}
+
+/** Product page slugs — must match `journeyProducts` in lib/assets.ts */
+const KNOWN_PRODUCT_SLUGS = new Set([
+  "domains",
+  "logo",
+  "email",
+  "ssl",
+  "hosting",
+  "website",
+  "directory-listings",
+  "seo",
+  "reputation-management",
+  "ecommerce",
+  "custom-website-development",
+  "online-fax",
+  "brand-monitoring",
+  "marketing-360",
+]);
+
+const APP_LOCALES = new Set([
+  "en",
+  "fr-CA",
+  "es-MX",
+  "pt-BR",
+  "de",
+  "it",
+  "el",
+  "ro",
+  "bg",
+  "hu",
+  "hr",
+  "nb",
+  "sv",
+  "sq",
+]);
+
+function normalizeProductSlug(raw) {
+  return String(raw || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/^-+|-+$/g, "");
+}
+
+function normalizeLocaleKey(raw) {
+  const s = decodeCell(String(raw || "").trim());
+  if (!s) return "en";
+  const k = s.replace(/_/g, "-").toLowerCase();
+  if (APP_LOCALES.has(k)) return k;
+  const aliases = {
+    english: "en",
+    eng: "en",
+    "fr-ca": "fr-CA",
+    "fr_ca": "fr-CA",
+    french: "fr-CA",
+    français: "fr-CA",
+    "french (canada)": "fr-CA",
+    "spanish": "es-MX",
+    español: "es-MX",
+    "es-mx": "es-MX",
+    "portuguese": "pt-BR",
+    "pt-br": "pt-BR",
+    german: "de",
+    deutsch: "de",
+    italian: "it",
+    italiano: "it",
+    greek: "el",
+    romanian: "ro",
+    bulgarian: "bg",
+    hungarian: "hu",
+    croatian: "hr",
+    norwegian: "nb",
+    swedish: "sv",
+    albanian: "sq",
+  };
+  if (aliases[k]) return aliases[k];
+  const noSpace = k.replace(/\s+/g, "");
+  if (aliases[noSpace]) return aliases[noSpace];
+  console.warn(`[product-page copy] Unknown locale "${raw}" — using "en".`);
+  return "en";
+}
+
+/** e.g. "Product pages (fr-CA)" → fr-CA */
+function localeHintFromSheetName(sheetName) {
+  const m = String(sheetName).match(/\(\s*([^)]+?)\s*\)\s*$/);
+  return m ? normalizeLocaleKey(m[1]) : null;
+}
+
+function isSkippedProductCopySheet(name) {
+  const l = name.trim().toLowerCase();
+  if (l === "summary") return true;
+  if (l.includes("asset inventory")) return true;
+  if (l.includes("new assets")) return true;
+  if (l.includes("gaps")) return true;
+  if (l.includes("duplicates")) return true;
+  if (l.includes("product coverage matrix")) return true;
+  return false;
+}
+
+function isCandidateProductCopySheet(name) {
+  const l = name.trim().toLowerCase();
+  if (isSkippedProductCopySheet(name)) return false;
+  const env = process.env.PRODUCT_PAGE_COPY_SHEETS?.trim();
+  if (env) {
+    const allow = env.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+    return allow.some((a) => l === a || l.includes(a));
+  }
+  return (
+    (l.includes("product") &&
+      (l.includes("page") || l.includes("preview") || l.includes("copy") || l.includes("ui"))) ||
+    /^translations.*product/i.test(l) ||
+    l.startsWith("products —") ||
+    l.startsWith("products -")
+  );
+}
+
+function rowPick(row, candidates) {
+  const map = new Map(Object.keys(row).map((k) => [k.toLowerCase().trim(), k]));
+  for (const c of candidates) {
+    const key = map.get(c.toLowerCase());
+    if (key !== undefined) {
+      const v = row[key];
+      if (v !== undefined && String(v).trim()) return decodeCell(String(v).trim());
+    }
+  }
+  return "";
+}
+
+function looksLikeProductCopySheet(rows, sheetName) {
+  if (!rows?.length) return false;
+  const keys = Object.keys(rows[0]).map((k) => k.toLowerCase().trim());
+  const slugish = keys.some(
+    (k) => k.includes("slug") || k.includes("product id") || k === "product slug" || k === "page slug"
+  );
+  const descish = keys.some(
+    (k) =>
+      k.includes("description") ||
+      k.includes("intro") ||
+      k === "body" ||
+      k.includes("preview") ||
+      k.includes("copy")
+  );
+  const locish = keys.some((k) => k.includes("locale") || k.includes("language") || k === "lang");
+  const sheetLocale = localeHintFromSheetName(sheetName);
+  return slugish && descish && (locish || Boolean(sheetLocale));
+}
+
+function extractProductPageCopyFromWorkbook(wb) {
+  /** @type {Record<string, Record<string, { label?: string; description?: string }>>} */
+  const byLocale = {};
+
+  for (const sheetName of wb.SheetNames) {
+    if (!isCandidateProductCopySheet(sheetName)) continue;
+    const ws = wb.Sheets[sheetName];
+    if (!ws) continue;
+    const rows = XLSX.utils.sheet_to_json(ws, { defval: "", raw: false });
+    if (!rows.length) continue;
+    if (!looksLikeProductCopySheet(rows, sheetName)) {
+      console.log(
+        `[product-page copy] Skip "${sheetName}" — headers need product slug + description (+ Locale column, or locale in sheet name like "… (fr-CA)").`
+      );
+      continue;
+    }
+    const sheetLocale = localeHintFromSheetName(sheetName);
+    console.log(`[product-page copy] Reading sheet "${sheetName}"…`);
+    for (const row of rows) {
+      const slugRaw = rowPick(row, [
+        "Product slug",
+        "product slug",
+        "Slug",
+        "slug",
+        "Page slug",
+        "Product ID",
+      ]);
+      const slug = normalizeProductSlug(slugRaw);
+      if (!slug) continue;
+
+      if (!KNOWN_PRODUCT_SLUGS.has(slug)) {
+        console.warn(`[product-page copy] Unknown product slug "${slug}" (from "${slugRaw}") — still writing row.`);
+      }
+
+      const localeRaw = rowPick(row, ["Locale", "language", "lang", "UI locale", "UI Locale"]);
+      const locale = normalizeLocaleKey(localeRaw || sheetLocale || "en");
+
+      const description = rowPick(row, [
+        "Description",
+        "Page description",
+        "Intro",
+        "Introduction",
+        "Preview intro",
+        "Body",
+        "Copy",
+      ]);
+      const label = rowPick(row, ["Label", "Page title", "Title", "Product title", "Headline", "Name"]);
+
+      if (!description && !label) continue;
+
+      if (!byLocale[locale]) byLocale[locale] = {};
+      byLocale[locale][slug] = {
+        ...(label ? { label } : {}),
+        ...(description ? { description } : {}),
+      };
+    }
+  }
+
+  if (!byLocale.en) byLocale.en = {};
+  return byLocale;
+}
+
+function writeProductPageCopy(wb) {
+  const data = extractProductPageCopyFromWorkbook(wb);
+  const outPath = path.join(root, "lib", "product-page.copy.json");
+  fs.writeFileSync(outPath, JSON.stringify(data, null, 2) + "\n", "utf8");
+  const locales = Object.keys(data).length;
+  const entries = Object.values(data).reduce((n, o) => n + Object.keys(o).length, 0);
+  console.log(`Wrote lib/product-page.copy.json (${locales} locale(s), ${entries} product row(s)).`);
+}
+
 function main() {
   const cliPath = process.argv[2];
   const primaryPath = resolvePrimaryWorkbook(cliPath);
-  const { merged } = loadMergedRows(primaryPath);
+  const { merged, wbPrimary } = loadMergedRows(primaryPath);
 
   const assets = merged
     .filter((row) => rowFilename(row))
     .map((row, i) => rowToAsset(row, i + 1));
+
+  mergeAssetI18nFromWorkbook(assets, wbPrimary);
 
   const outPath = path.join(root, "lib", "assets.data.json");
   fs.writeFileSync(outPath, JSON.stringify(assets, null, 2) + "\n", "utf8");
   console.log(
     `Wrote ${assets.length} assets from ${path.basename(primaryPath)} (+ merges) → lib/assets.data.json`
   );
+
+  writeProductPageCopy(wbPrimary);
 }
 
 main();

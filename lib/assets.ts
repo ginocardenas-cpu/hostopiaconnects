@@ -72,6 +72,14 @@ export const allAssetLanguages: AssetLanguage[] = [
   "Albanian",
 ];
 
+/** Optional per-UI-locale copy merged from localized Asset Inventory workbook tabs (see inventory script). */
+export type AssetLocaleFields = {
+  title?: string;
+  summaryWhat?: string;
+  summaryWhy?: string;
+  summaryHow?: string;
+};
+
 export interface Asset {
   id: string;
   slug: string;
@@ -93,6 +101,8 @@ export interface Asset {
   lastUpdated: string; // ISO date
   viewCount: number;
   downloadCount: number;
+  /** Localized title/summaries keyed by app locale (e.g. `fr-CA`, `es-MX`, `de`). */
+  i18n?: Record<string, AssetLocaleFields>;
 }
 
 /** Display name for the downloadable file (inventory Filename, or decoded from `fileUrl`). */
@@ -105,6 +115,28 @@ export function getAssetSourceFileName(asset: Asset): string {
   } catch {
     return seg;
   }
+}
+
+/** Title + summaries for the current portal locale when present in `asset.i18n`. */
+export function getAssetFieldsForLocale(
+  asset: Asset,
+  locale: string
+): Pick<Asset, "title" | "summaryWhat" | "summaryWhy" | "summaryHow"> {
+  const pack = asset.i18n?.[locale];
+  if (!pack) {
+    return {
+      title: asset.title,
+      summaryWhat: asset.summaryWhat,
+      summaryWhy: asset.summaryWhy,
+      summaryHow: asset.summaryHow
+    };
+  }
+  return {
+    title: pack.title?.trim() || asset.title,
+    summaryWhat: pack.summaryWhat?.trim() || asset.summaryWhat,
+    summaryWhy: pack.summaryWhy?.trim() || asset.summaryWhy,
+    summaryHow: pack.summaryHow?.trim() || asset.summaryHow
+  };
 }
 
 export const journeys: { label: ProductJourney; slug: string }[] = [

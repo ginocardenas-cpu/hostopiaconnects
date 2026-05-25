@@ -1,10 +1,12 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import {
+  getAssetFieldsForLocale,
   getAssetsByProductCategory,
   journeyProducts,
   type ProductCategory
 } from "@/lib/assets";
+import { getProductPageCopy } from "@/lib/product-page-copy";
 
 interface ProductAssetsPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -16,7 +18,7 @@ function productCategoryFromSlug(slug: string): ProductCategory | undefined {
 }
 
 export default async function ProductAssetsPage({ params }: ProductAssetsPageProps) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const t = await getTranslations("productList");
   const productMeta = journeyProducts.find((p) => p.slug === slug);
   const category = productCategoryFromSlug(slug);
@@ -42,6 +44,10 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
     ?.toLowerCase()
     .replace(/\s+/g, "-") ?? "";
 
+  const copy = getProductPageCopy(locale, slug);
+  const displayLabel = copy?.label?.trim() || productMeta.label;
+  const displayDescription = copy?.description?.trim() || productMeta.description;
+
   return (
     <section className="max-w-6xl mx-auto px-6 py-16">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
@@ -59,13 +65,13 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
               fontSize: "clamp(2rem, 3.5vw, 2.6rem)"
             }}
           >
-            {productMeta.label}
+            {displayLabel}
           </h1>
           <p
-            className="text-sm md:text-base text-gray-600 max-w-xl"
+            className="text-sm md:text-base text-gray-600 max-w-xl whitespace-pre-wrap"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
-            {productMeta.description}
+            {displayDescription}
           </p>
         </div>
 
@@ -92,7 +98,9 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
         </p>
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
-          {assets.map((asset) => (
+          {assets.map((asset) => {
+            const fields = getAssetFieldsForLocale(asset, locale);
+            return (
             <Link
               key={asset.id}
               href={`/assets/${asset.slug}`}
@@ -123,13 +131,13 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
                     fontSize: "1.05rem"
                   }}
                 >
-                  {asset.title}
+                  {fields.title}
                 </h2>
                 <p
-                  className="text-sm text-gray-600 mb-3"
+                  className="text-sm text-gray-600 mb-3 whitespace-pre-wrap"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  {asset.summaryWhat}
+                  {fields.summaryWhat}
                 </p>
                 <span
                   className="inline-flex items-center gap-1 text-xs font-semibold text-[#2CADB2]"
@@ -140,7 +148,8 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
                 </span>
               </div>
             </Link>
-          ))}
+            );
+          })}
         </div>
       )}
     </section>
