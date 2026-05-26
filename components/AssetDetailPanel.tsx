@@ -3,7 +3,7 @@
 import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import type { Asset } from "@/lib/assets";
-import { getAssetSourceFileName } from "@/lib/assets";
+import { getAssetFieldsForLocale, getAssetSourceFileName } from "@/lib/assets";
 import { AddToCartButton } from "./AddToCartButton";
 import { AssetFeedback } from "./AssetFeedback";
 import { AssetPreviewButton } from "./AssetPreviewButton";
@@ -17,6 +17,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
   const t = useTranslations("asset");
   const locale = useLocale();
   const sourceFile = getAssetSourceFileName(asset);
+  const fields = getAssetFieldsForLocale(asset, locale);
   const copyPath = `/${locale}/assets/${asset.slug}`;
 
   return (
@@ -66,7 +67,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
 
       <div className="flex flex-wrap items-center gap-3 mb-5">
         <AddToCartButton assetId={asset.id} />
-        <AssetPreviewButton fileUrl={asset.fileUrl} title={asset.title} />
+        <AssetPreviewButton fileUrl={asset.fileUrl} title={fields.title} />
         <CopyLinkButton copyPath={copyPath} label={t("copyLink")} />
       </div>
 
@@ -83,7 +84,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
             >
               {t("whatItIs")}
             </h3>
-            <p className="leading-relaxed">{asset.summaryWhat}</p>
+            <p className="leading-relaxed">{fields.summaryWhat}</p>
           </section>
           <section>
             <h3
@@ -92,7 +93,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
             >
               {t("whyImportant")}
             </h3>
-            <p className="leading-relaxed">{asset.summaryWhy}</p>
+            <p className="leading-relaxed">{fields.summaryWhy}</p>
           </section>
           <section>
             <h3
@@ -101,7 +102,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
             >
               {t("howToUse")}
             </h3>
-            <p className="leading-relaxed whitespace-pre-line">{asset.summaryHow}</p>
+            <p className="leading-relaxed whitespace-pre-line">{fields.summaryHow}</p>
           </section>
         </div>
 

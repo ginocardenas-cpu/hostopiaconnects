@@ -1,6 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { getAssetBySlug, getAssetSourceFileName } from "@/lib/assets";
+import {
+  getAssetBySlug,
+  getAssetFieldsForLocale,
+  getAssetSourceFileName
+} from "@/lib/assets";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { AssetFeedback } from "@/components/AssetFeedback";
 import { AssetMarkSeen } from "@/components/AssetMarkSeen";
@@ -33,6 +37,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
   }
 
   const sourceFile = getAssetSourceFileName(asset);
+  const fields = getAssetFieldsForLocale(asset, locale);
 
   return (
     <section className="max-w-6xl mx-auto px-6 py-16">
@@ -72,7 +77,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
             fontSize: "clamp(1.8rem, 3.2vw, 2.6rem)",
           }}
         >
-          {asset.title}
+          {fields.title}
         </h1>
 
         <p
@@ -98,7 +103,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
 
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <AddToCartButton assetId={asset.id} />
-          <AssetPreviewButton fileUrl={asset.fileUrl} title={asset.title} />
+          <AssetPreviewButton fileUrl={asset.fileUrl} title={fields.title} />
           <CopyLinkButton copyPath={`/${locale}/assets/${slug}`} label={t("copyLink")} />
         </div>
         <div className="mb-8">
@@ -119,7 +124,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
               className="text-sm md:text-base text-gray-800 leading-relaxed"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              {asset.summaryWhat}
+              {fields.summaryWhat}
             </p>
           </section>
 
@@ -134,7 +139,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
               className="text-sm md:text-base text-gray-800 leading-relaxed"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              {asset.summaryWhy}
+              {fields.summaryWhy}
             </p>
           </section>
 
@@ -149,7 +154,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
               className="text-sm md:text-base text-gray-800 leading-relaxed whitespace-pre-line"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              {asset.summaryHow}
+              {fields.summaryHow}
             </p>
           </section>
         </div>

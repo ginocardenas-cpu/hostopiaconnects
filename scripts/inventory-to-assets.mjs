@@ -227,10 +227,20 @@ function rowFilename(row) {
     "Asset file",
     "Asset File",
     "File",
+    "Fichier",
+    "Datei",
   ];
   for (const k of keys) {
     const v = row[k];
     if (v !== undefined && String(v).trim()) return String(v).trim();
+  }
+  for (const rk of Object.keys(row)) {
+    const t = rk.trim().toLowerCase();
+    if (t === "filename" || t === "file" || t === "fichier" || t === "datei") {
+      if (t === "file" && /file\s*type/i.test(rk.toLowerCase())) continue;
+      const v = row[rk];
+      if (v !== undefined && String(v).trim()) return String(v).trim();
+    }
   }
   return "";
 }
@@ -256,40 +266,67 @@ function rowProductCategoryCell(row) {
   );
 }
 
+function rowUseCasesCell(row) {
+  return (
+    row["Use Cases"] ??
+    row["Use cases"] ??
+    row["Primary Use Cases"] ??
+    row["Primary Use Cases "] ??
+    row["Primary use cases"] ??
+    row["Casos de uso"] ??
+    row["Cas d'usage principaux"] ??
+    row["Hauptanwendungsfälle"] ??
+    ""
+  );
+}
+
 function cellSummary(row, kind) {
   const em = "\u2014"; // —
   const en = "\u2013"; // –
   const pairs =
     kind === "what"
       ? [
+          // V2 aligned with portal copy / localized inventory tabs
+          "What it is",
+          "Qué es",
+          "De quoi s'agit-il",
+          "Was es ist",
           [`Summary ${em} What`, `Summary ${en} What`],
           ["Summary — What", "Summary - What", "Summary – What"],
           ["Summary What", "What"],
-          // V2 localized Asset Inventory tabs (ES / FR / DE)
           ["Título | Resumen — Qué", "Título | Resumen - Qué", "Título | Resumen – Qué"],
           ["Titre | Résumé — Quoi", "Titre | Résumé - Quoi", "Titre | Résumé – Quoi"],
           ["Titel | Zusammenfassung — Was", "Titel | Zusammenfassung - Was", "Titel | Zusammenfassung – Was"],
         ]
       : kind === "why"
         ? [
+            "Why it's important",
+            "Por qué es importante",
+            "Pourquoi c'est important",
+            "Warum es wichtig ist",
             [`Summary ${em} Why`, `Summary ${en} Why`],
             ["Summary — Why", "Summary - Why", "Summary – Why"],
             ["Summary Why", "Why"],
-          ["Título | Resumen — Por qué", "Título | Resumen - Por qué", "Título | Resumen – Por qué"],
-          ["Titre | Résumé — Pourquoi", "Titre | Résumé - Pourquoi", "Titre | Résumé – Pourquoi"],
-          ["Titel | Zusammenfassung — Warum", "Titel | Zusammenfassung - Warum", "Titel | Zusammenfassung – Warum"],
+            ["Título | Resumen — Por qué", "Título | Resumen - Por qué", "Título | Resumen – Por qué"],
+            ["Titre | Résumé — Pourquoi", "Titre | Résumé - Pourquoi", "Titre | Résumé – Pourquoi"],
+            ["Titel | Zusammenfassung — Warum", "Titel | Zusammenfassung - Warum", "Titel | Zusammenfassung – Warum"],
           ]
         : [
+            "How to use it",
+            "Cómo usarlo",
+            "Comment l'utiliser",
+            "Anwendung",
             [`Summary ${em} How`, `Summary ${en} How`],
             ["Summary — How", "Summary - How", "Summary – How"],
             ["Summary How", "How"],
-          ["Título | Resumen — Cómo", "Título | Resumen - Cómo", "Título | Resumen – Cómo"],
-          ["Titre | Résumé — Comment", "Titre | Résumé - Comment", "Titre | Résumé – Comment"],
-          ["Titel | Zusammenfassung — Wie", "Titel | Zusammenfassung - Wie", "Titel | Zusammenfassung – Wie"],
+            ["Título | Resumen — Cómo", "Título | Resumen - Cómo", "Título | Resumen – Cómo"],
+            ["Titre | Résumé — Comment", "Titre | Résumé - Comment", "Titre | Résumé – Comment"],
+            ["Titel | Zusammenfassung — Wie", "Titel | Zusammenfassung - Wie", "Titel | Zusammenfassung – Wie"],
           ];
 
   for (const group of pairs) {
-    for (const k of group) {
+    const candidates = Array.isArray(group) ? group : [group];
+    for (const k of candidates) {
       if (row[k] !== undefined && String(row[k]).trim()) return decodeCell(String(row[k]).trim());
     }
   }
@@ -453,7 +490,7 @@ function rowToAsset(row, index) {
     row["Content Type"] ?? row["Content type"] ?? "",
     row["File Type"] ?? row["File type"] ?? ""
   );
-  const useCases = mapUseCases(row["Use Cases"] ?? row["Use cases"]);
+  const useCases = mapUseCases(rowUseCasesCell(row));
   const summaryWhat = cellSummary(row, "what");
   const summaryWhy = cellSummary(row, "why");
   const summaryHow = cellSummary(row, "how");

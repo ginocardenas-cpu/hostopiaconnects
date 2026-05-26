@@ -15,7 +15,7 @@ If you add tabs with **product slug + intro** columns (not the localized Asset I
 
 ### Localized asset cards (V2 inventory tabs)
 
-Workbooks with **`Asset Inventory English`**, **`… Spanish (MX)`**, **`… French (CAN)`**, **`… German`** (and similar) merge **title + What/Why/How** into each catalog row’s **`i18n`** field by **Filename** match. Product preview grids at **`/assets/product/[slug]`** use the current route locale when **`i18n[locale]`** is present.
+Workbooks with **`Asset Inventory English`**, **`… Spanish (MX)`**, **`… French (CAN)`**, **`… German`** (and similar) merge **title + What/Why/How** into each catalog row’s **`i18n`** field by **Filename** match. Use the same column intent as the portal: e.g. English **`What it is`**, **`Why it's important`**, **`How to use it`**; Spanish **`Qué es`**, **`Por qué es importante`**, **`Cómo usarlo`**; French **`De quoi s'agit-il`**, etc.; file columns may be **`File`**, **`Fichier`**, or **`Datei`** on localized tabs. Product preview grids and **asset detail** pages use the route locale when **`i18n[locale]`** is present.
 
 **CSV bulk path:** `npm run assets:import` runs **`scripts/csv-to-assets.js`** (see repo comments / `data/` if present).
 
