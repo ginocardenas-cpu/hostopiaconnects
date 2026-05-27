@@ -2,13 +2,16 @@
 
 import React from "react";
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useCart } from "@/components/CartProvider";
+import { getAssetDisplayForLocale } from "@/lib/assets";
+import { deckLangLabel } from "@/lib/html-deck-i18n";
 
 export default function CartPage() {
   const t = useTranslations("cart");
-  const { assets, removeItem, clear } = useCart();
-  const hasItems = assets.length > 0;
+  const locale = useLocale();
+  const { lineItems, removeItem, clear } = useCart();
+  const hasItems = lineItems.length > 0;
   const [submitted, setSubmitted] = React.useState(false);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
@@ -68,7 +71,9 @@ export default function CartPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {assets.map((asset) => (
+              {lineItems.map(({ asset, deckLang }) => {
+                const display = getAssetDisplayForLocale(asset, locale);
+                return (
                 <div
                   key={asset.id}
                   className="flex items-start justify-between gap-4 rounded-2xl border border-black/5 bg-white p-4"
@@ -78,21 +83,31 @@ export default function CartPage() {
                       className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mb-1"
                       style={{ fontFamily: "Raleway, sans-serif" }}
                     >
-                      {asset.contentType} · {asset.productCategory}
+                      {display.contentType} · {display.productCategory}
                     </p>
                     <Link
                       href={`/assets/${asset.slug}`}
                       className="text-sm font-semibold hover:text-[#2CADB2] transition-colors"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
-                      {asset.title}
+                      {display.title}
                     </Link>
                     <p
                       className="text-xs text-gray-600 mt-1"
                       style={{ fontFamily: "Raleway, sans-serif" }}
                     >
-                      {asset.summaryWhat}
+                      {display.summaryWhat}
                     </p>
+                    {deckLang && (
+                      <p
+                        className="text-[11px] font-medium text-[#2CADB2] mt-2"
+                        style={{ fontFamily: "Raleway, sans-serif" }}
+                      >
+                        {t("requestedDocumentLanguage", {
+                          language: deckLangLabel(deckLang),
+                        })}
+                      </p>
+                    )}
                   </div>
                   <button
                     type="button"
@@ -103,7 +118,8 @@ export default function CartPage() {
                     {t("remove")}
                   </button>
                 </div>
-              ))}
+              );
+              })}
             </div>
           )}
         </div>

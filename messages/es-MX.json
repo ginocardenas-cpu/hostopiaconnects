@@ -105,6 +105,7 @@
     "successTitle": "Tus recursos van en camino",
     "successBody": "Revisa tu bandeja de entrada: recibirás un correo con enlaces seguros para descargar los recursos que seleccionaste.",
     "remove": "Quitar",
+    "requestedDocumentLanguage": "Idioma del archivo solicitado: {language}",
     "requestReceived": "Solicitud recibida. En la implementación completa se enviaría un correo con enlaces seguros a los recursos seleccionados."
   },
   "howItWorks": {
@@ -146,6 +147,12 @@
     "previewUnavailable": "Este formato aún no se puede previsualizar en el navegador. Agrega el recurso a Mis recursos para solicitar una copia.",
     "previewPdfToolbarNote": "Si tu navegador muestra sus propios controles de PDF, es independiente de Hostopia Connects: no añadimos un botón Descargar en esta vista previa.",
     "previewFooterHint": "Para obtener archivos, usa Agregar a Mis recursos y luego solicita tu paquete en la página Mis recursos.",
+    "previewDocumentLanguage": "Idioma de vista previa",
+    "addChooseDocumentLanguage": "Elegir idioma del documento",
+    "addChooseDocumentLanguageHint": "Este HTML incluye inglés, español, francés y alemán en un solo archivo. Elige el idioma que quieres al solicitar este recurso.",
+    "addConfirmLanguage": "Agregar a Mis recursos",
+    "addCancel": "Cancelar",
+    "addedWithLanguage": "Agregado ({language})",
     "copyLink": "Copiar enlace",
     "sourceFile": "Archivo",
     "whatItIs": "Qué es",

@@ -129,9 +129,11 @@ function decodeCell(val) {
     .trim();
 }
 
-/** Prefer exact "Asset Inventory", else any sheet with "inventory" but not "new". */
+/** Prefer English-language inventory as canonical base when the workbook has per-locale tabs. */
 function findAssetInventorySheetName(wb) {
   const names = wb.SheetNames;
+  const english = names.find((n) => /asset\s*inventory/i.test(n) && /english/i.test(n));
+  if (english) return english;
   const exact = names.find((n) => n.trim().toLowerCase() === "asset inventory");
   if (exact) return exact;
   return names.find((n) => {
@@ -156,7 +158,8 @@ function scoreWorkbookFilename(fname) {
   let score = 0;
   if (lower.includes("updated")) score += 50;
   if (/2026/.test(lower)) score += 20;
-  if (/2026-05-2[5-9]|2026-0[6-9]|2027/.test(lower)) score += 15;
+  if (/2026-05-2[6-9]|2026-05-3[01]|2026-0[6-9]|2027/.test(lower)) score += 25;
+  else if (/2026-05-2[5-9]|2026-0[6-9]|2027/.test(lower)) score += 15;
   if (lower.includes("v2") || lower.includes("inventoryv2")) score += 10;
   if (lower.includes("inventory")) score += 5;
   return score;
@@ -194,6 +197,8 @@ function resolvePrimaryWorkbook(cliPath) {
   if (xlsxFiles[0].score > 0) return xlsxFiles[0].full;
 
   const fallbacks = [
+    path.join(CONNECT_DIR, "Hostopia_Asset_Inventory v2 - UPDATED 2026-05-26.xlsx"),
+    path.join(CONNECT_DIR, "Hostopia_Asset_Inventory V2 - UPDATED 2026-05-26.xlsx"),
     path.join(CONNECT_DIR, "Hostopia_Asset_Inventory v2 - UPDATED 2026-05-25.xlsx"),
     path.join(CONNECT_DIR, "Hostopia_Asset_Inventory V2 - UPDATED 2026-05-25.xlsx"),
     path.join(CONNECT_DIR, "Hostopia_Asset_Inventory v2 - UPDATED 2026-05-21.xlsx"),
@@ -278,6 +283,42 @@ function rowUseCasesCell(row) {
     row["Hauptanwendungsfälle"] ??
     ""
   );
+}
+
+/** Journey / customer journey column (localized tab headers). */
+function rowJourneyCell(row) {
+  return row.Journey ?? row.journey ?? row.Recorrido ?? row.Parcours ?? row.Kundenreise ?? "";
+}
+
+/** Content type column (localized). */
+function rowContentTypeCell(row) {
+  return (
+    row["Content Type"] ??
+    row["Content type"] ??
+    row["Tipo de contenido"] ??
+    row["Type de contenu"] ??
+    row["Content-Typ"] ??
+    ""
+  );
+}
+
+function rowLanguageCell(row) {
+  return row.Language ?? row.language ?? row["Sprache / Region"] ?? row["Langue / région"] ?? "";
+}
+
+function rowRegionCell(row) {
+  return row.Region ?? row.region ?? "";
+}
+
+/** Turn inventory use-case lists into a single display line (matches portal · separator). */
+function formatUseCasesDisplay(raw) {
+  const s = decodeCell(String(raw ?? "").trim());
+  if (!s) return "";
+  return s
+    .split(/[;]+/g)
+    .map((p) => decodeCell(p.trim()))
+    .filter(Boolean)
+    .join(" · ");
 }
 
 function cellSummary(row, kind) {
@@ -480,23 +521,40 @@ function parseLastUpdated(v) {
   return new Date().toISOString().slice(0, 10);
 }
 
+/** Map inventory Language / combined cells to catalog `AssetLanguage` enum. */
+function pickCatalogLanguage(row) {
+  const raw = rowLanguageCell(row);
+  let s = decodeCell(String(raw || "English").trim()) || "English";
+  const firstToken = s.split(/[·|/]/)[0].trim();
+  const candidate = ASSET_LANGUAGES.has(s) ? s : firstToken;
+  if (ASSET_LANGUAGES.has(candidate)) return candidate;
+  const low = firstToken.toLowerCase();
+  if (/deutsch|^de$/i.test(low)) return "German";
+  if (/español|^es$|espanol/i.test(low)) return "Spanish";
+  if (/français|^fr$|francais/i.test(low)) return "French";
+  if (/português|portuguese|^pt/i.test(low)) return "Portuguese";
+  if (/italiano|^it$/i.test(low)) return "Italian";
+  if (/english|^en$/i.test(low)) return "English";
+  return "English";
+}
+
 function rowToAsset(row, index) {
   const filename = decodeCell(rowFilename(row));
   const title = decodeCell(rowTitle(row)) || filename;
-  const journeyRaw = decodeCell(String(row.Journey ?? row.journey ?? "").trim());
+  const journeyRaw = decodeCell(String(rowJourneyCell(row) ?? "").trim());
   const journey = JOURNEYS.has(journeyRaw) ? journeyRaw : "Get Online";
   const productCategory = mapProductCategory(rowProductCategoryCell(row));
   const contentType = mapContentType(
-    row["Content Type"] ?? row["Content type"] ?? "",
+    rowContentTypeCell(row),
     row["File Type"] ?? row["File type"] ?? ""
   );
   const useCases = mapUseCases(rowUseCasesCell(row));
   const summaryWhat = cellSummary(row, "what");
   const summaryWhy = cellSummary(row, "why");
   const summaryHow = cellSummary(row, "how");
-  let language = String(row.Language ?? "English").trim() || "English";
+  let language = pickCatalogLanguage(row);
   if (!ASSET_LANGUAGES.has(language)) language = "English";
-  let region = String(row.Region ?? "Global").trim() || "Global";
+  let region = String(rowRegionCell(row) || "Global").trim() || "Global";
   if (!REGIONS.has(region)) region = "Global";
   const gated = parseGated(row.Gated ?? row.gated);
   const notes = String(row.Notes ?? "").trim();
@@ -588,10 +646,11 @@ function localeFromLocalizedAssetInventorySheet(sheetName) {
 }
 
 /**
- * Merge title + What/Why/How from non-English Asset Inventory sheets onto assets (matched by Filename basename).
+ * Merge per-locale inventory rows onto assets (matched by Filename basename).
+ * Carries title, summaries, and display labels from columns A–O style tabs (journey, category, type, use cases, language, region).
  */
 function mergeAssetI18nFromWorkbook(assets, wb) {
-  /** @type {Map<string, Record<string, { title?: string; summaryWhat?: string; summaryWhy?: string; summaryHow?: string }>>} */
+  /** @type {Map<string, Record<string, Record<string, unknown>>>} */
   const byFile = new Map();
 
   for (const sheetName of wb.SheetNames) {
@@ -613,7 +672,27 @@ function mergeAssetI18nFromWorkbook(assets, wb) {
       const summaryWhat = cellSummary(row, "what");
       const summaryWhy = cellSummary(row, "why");
       const summaryHow = cellSummary(row, "how");
-      if (!title && !summaryWhat && !summaryWhy && !summaryHow) continue;
+      const journeyDisplay = decodeCell(String(rowJourneyCell(row) || "").trim());
+      const productCategoryDisplay = decodeCell(String(rowProductCategoryCell(row) || "").trim());
+      const ct = decodeCell(String(rowContentTypeCell(row) || "").trim());
+      const ft = decodeCell(String(row["File Type"] ?? row["File type"] ?? "").trim());
+      const contentTypeDisplay = [ct, ft].filter(Boolean).join(" · ");
+      const useCasesDisplay = formatUseCasesDisplay(rowUseCasesCell(row));
+      const languageDisplay = decodeCell(String(rowLanguageCell(row) || "").trim());
+      const regionDisplay = decodeCell(String(rowRegionCell(row) || "").trim());
+
+      const hasAny =
+        title ||
+        summaryWhat ||
+        summaryWhy ||
+        summaryHow ||
+        journeyDisplay ||
+        productCategoryDisplay ||
+        contentTypeDisplay ||
+        useCasesDisplay ||
+        languageDisplay ||
+        regionDisplay;
+      if (!hasAny) continue;
 
       let locs = byFile.get(key);
       if (!locs) {
@@ -625,6 +704,12 @@ function mergeAssetI18nFromWorkbook(assets, wb) {
         ...(summaryWhat ? { summaryWhat } : {}),
         ...(summaryWhy ? { summaryWhy } : {}),
         ...(summaryHow ? { summaryHow } : {}),
+        ...(journeyDisplay ? { journeyDisplay } : {}),
+        ...(productCategoryDisplay ? { productCategoryDisplay } : {}),
+        ...(contentTypeDisplay ? { contentTypeDisplay } : {}),
+        ...(useCasesDisplay ? { useCasesDisplay } : {}),
+        ...(languageDisplay ? { languageDisplay } : {}),
+        ...(regionDisplay ? { regionDisplay } : {}),
       };
     }
   }
@@ -662,17 +747,7 @@ const APP_LOCALES = new Set([
   "en",
   "fr-CA",
   "es-MX",
-  "pt-BR",
   "de",
-  "it",
-  "el",
-  "ro",
-  "bg",
-  "hu",
-  "hr",
-  "nb",
-  "sv",
-  "sq",
 ]);
 
 function normalizeProductSlug(raw) {

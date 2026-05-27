@@ -78,6 +78,32 @@ export type AssetLocaleFields = {
   summaryWhat?: string;
   summaryWhy?: string;
   summaryHow?: string;
+  /** Raw journey label from that locale’s sheet (e.g. Recorrido). */
+  journeyDisplay?: string;
+  /** Raw product category label from the sheet (e.g. Correo empresarial). */
+  productCategoryDisplay?: string;
+  /** Raw content type (+ optional file type) from the sheet. */
+  contentTypeDisplay?: string;
+  /** Primary use cases line as in the sheet (e.g. Ventas · Marketing). */
+  useCasesDisplay?: string;
+  /** Language cell from the sheet (may differ from canonical `asset.language`). */
+  languageDisplay?: string;
+  /** Region cell from the sheet. */
+  regionDisplay?: string;
+};
+
+/** All user-visible strings for an asset for the active portal locale (inventory is source of truth when `i18n[locale]` is set). */
+export type AssetDisplayForLocale = {
+  title: string;
+  summaryWhat: string;
+  summaryWhy: string;
+  summaryHow: string;
+  journey: string;
+  productCategory: string;
+  contentType: string;
+  useCasesLine: string;
+  language: string;
+  region: string;
 };
 
 export interface Asset {
@@ -136,6 +162,29 @@ export function getAssetFieldsForLocale(
     summaryWhat: pack.summaryWhat?.trim() || asset.summaryWhat,
     summaryWhy: pack.summaryWhy?.trim() || asset.summaryWhy,
     summaryHow: pack.summaryHow?.trim() || asset.summaryHow
+  };
+}
+
+const USE_CASE_SEP = " · ";
+
+/**
+ * Journey, category, content type, use cases, language, and region for the active locale,
+ * falling back to canonical English fields on the asset when no overlay exists.
+ */
+export function getAssetDisplayForLocale(asset: Asset, locale: string): AssetDisplayForLocale {
+  const fields = getAssetFieldsForLocale(asset, locale);
+  const pack = asset.i18n?.[locale];
+  return {
+    title: fields.title,
+    summaryWhat: fields.summaryWhat,
+    summaryWhy: fields.summaryWhy,
+    summaryHow: fields.summaryHow,
+    journey: pack?.journeyDisplay?.trim() || asset.journey,
+    productCategory: pack?.productCategoryDisplay?.trim() || String(asset.productCategory),
+    contentType: pack?.contentTypeDisplay?.trim() || String(asset.contentType),
+    useCasesLine: pack?.useCasesDisplay?.trim() || asset.useCases.join(USE_CASE_SEP),
+    language: pack?.languageDisplay?.trim() || asset.language,
+    region: pack?.regionDisplay?.trim() || asset.region
   };
 }
 
@@ -273,6 +322,10 @@ export const sampleAssets: Asset[] = assetsData as Asset[];
 
 export function getAssetBySlug(slug: string): Asset | undefined {
   return sampleAssets.find((asset) => asset.slug === slug);
+}
+
+export function getAssetById(id: string): Asset | undefined {
+  return sampleAssets.find((asset) => asset.id === id);
 }
 
 export function getAssetsByJourney(journey: ProductJourney): Asset[] {

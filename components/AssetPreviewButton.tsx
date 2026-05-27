@@ -5,6 +5,8 @@ import { FileText, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
+import { HtmlDeckPreviewFrame } from "@/components/HtmlDeckPreviewFrame";
+import { isLikelyHtmlDeckAsset } from "@/lib/html-deck-i18n";
 
 function fileExtensionFromUrl(url: string): string {
   try {
@@ -30,10 +32,13 @@ function previewModeForExt(ext: string): PreviewMode {
 export function AssetPreviewButton({
   fileUrl,
   title,
+  fileName,
   className,
 }: {
   fileUrl: string;
   title: string;
+  /** Inventory Filename; used to detect Logo Design HTML decks with applyLang. */
+  fileName?: string;
   /** Tailwind + layout classes for the trigger (match surrounding buttons). */
   className?: string;
 }) {
@@ -41,6 +46,19 @@ export function AssetPreviewButton({
   const [open, setOpen] = useState(false);
   const ext = useMemo(() => fileExtensionFromUrl(fileUrl), [fileUrl]);
   const mode = useMemo(() => previewModeForExt(ext), [ext]);
+  const sourceName = useMemo(() => {
+    if (fileName?.trim()) return fileName.trim();
+    try {
+      const seg = fileUrl.split("?")[0]?.split("#")[0] ?? "";
+      return decodeURIComponent(seg.split("/").pop() ?? "");
+    } catch {
+      return fileUrl.split("/").pop() ?? "";
+    }
+  }, [fileName, fileUrl]);
+  const expectDeckI18n = useMemo(
+    () => ext === "html" && isLikelyHtmlDeckAsset(sourceName),
+    [ext, sourceName]
+  );
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -89,7 +107,14 @@ export function AssetPreviewButton({
           </div>
 
           <div className="min-h-0 flex-1 overflow-hidden bg-[#f4f4f2]">
-            {mode === "iframe" && (
+            {mode === "iframe" && ext === "html" && (
+              <HtmlDeckPreviewFrame
+                fileUrl={fileUrl}
+                title={title}
+                expectDeckI18n={expectDeckI18n}
+              />
+            )}
+            {mode === "iframe" && ext !== "html" && (
               <div className="flex h-[min(72vh,640px)] flex-col">
                 <iframe
                   title={title}

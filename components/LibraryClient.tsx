@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useRouter, usePathname } from "@/i18n/routing";
 import { AssetCard } from "@/components/AssetCard";
@@ -41,6 +41,7 @@ type SortOption = "newest" | "most-viewed" | "most-downloaded" | "a-z";
 
 export function LibraryClient() {
   const t = useTranslations("library");
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -368,7 +369,7 @@ export function LibraryClient() {
             {sorted.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {sorted.map((asset) => (
-                  <AssetCard key={asset.id} asset={asset} />
+                  <AssetCard key={asset.id} asset={asset} locale={locale} />
                 ))}
               </div>
             ) : (

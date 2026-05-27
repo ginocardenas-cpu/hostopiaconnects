@@ -15,17 +15,7 @@ const UI_LOCALE_FLAGS: Record<string, string> = {
   en: "🇺🇸",
   "fr-CA": "🇨🇦",
   "es-MX": "🇲🇽",
-  "pt-BR": "🇧🇷",
   de: "🇩🇪",
-  it: "🇮🇹",
-  el: "🇬🇷",
-  ro: "🇷🇴",
-  bg: "🇧🇬",
-  hu: "🇭🇺",
-  hr: "🇭🇷",
-  nb: "🇳🇴",
-  sv: "🇸🇪",
-  sq: "🇦🇱",
 };
 
 export function LanguageSwitcher() {
@@ -93,6 +83,7 @@ export function LanguageSwitcher() {
             </button>
           ))}
 
+          {tier2Locales.length > 0 && (
           <div className="mt-1 border-t border-gray-100 pt-1">
             <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
               {t("additionalLanguages")}
@@ -113,6 +104,7 @@ export function LanguageSwitcher() {
               </button>
             ))}
           </div>
+          )}
         </div>
       )}
     </div>

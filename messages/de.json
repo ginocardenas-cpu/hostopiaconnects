@@ -105,6 +105,7 @@
     "successTitle": "Ihre Ressourcen sind unterwegs",
     "successBody": "Prüfen Sie Ihren Posteingang auf eine E-Mail mit sicheren Links zum Herunterladen.",
     "remove": "Entfernen",
+    "requestedDocumentLanguage": "Angeforderte Dateisprache: {language}",
     "requestReceived": "Anfrage erhalten. In der Vollversion würde eine E-Mail mit sicheren Links an alle ausgewählten Ressourcen gesendet."
   },
   "howItWorks": {
@@ -146,6 +147,12 @@
     "previewUnavailable": "Dieses Format kann im Browser noch nicht in der Vorschau angezeigt werden. Fügen Sie die Ressource zu Meine Ressourcen hinzu, um eine Kopie anzufordern.",
     "previewPdfToolbarNote": "Wenn Ihr Browser eine eigene PDF-Symbolleiste zeigt, ist das getrennt von Hostopia Connects — wir fügen in dieser Vorschau keinen Download-Button hinzu.",
     "previewFooterHint": "Um Dateien zu erhalten, nutzen Sie Zu Meine Ressourcen hinzufügen und fordern Sie Ihr Paket auf der Seite Meine Ressourcen an.",
+    "previewDocumentLanguage": "Vorsprachensprache",
+    "addChooseDocumentLanguage": "Dokumentsprache wählen",
+    "addChooseDocumentLanguageHint": "Diese HTML-Datei enthält Englisch, Spanisch, Französisch und Deutsch. Wählen Sie die Sprache für Ihre Anfrage.",
+    "addConfirmLanguage": "Zu Meine Ressourcen hinzufügen",
+    "addCancel": "Abbrechen",
+    "addedWithLanguage": "Hinzugefügt ({language})",
     "copyLink": "Link kopieren",
     "sourceFile": "Datei",
     "whatItIs": "Was es ist",

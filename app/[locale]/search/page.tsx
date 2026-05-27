@@ -5,13 +5,15 @@ import { AssetCard } from "@/components/AssetCard";
 import { SearchBar } from "@/components/SearchBar";
 
 interface SearchPageProps {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{
     q?: string;
   }>;
 }
 
-export default async function SearchPage({ searchParams }: SearchPageProps) {
+export default async function SearchPage({ params, searchParams }: SearchPageProps) {
   const t = await getTranslations("search");
+  const { locale } = await params;
   const { q } = await searchParams;
   const query = q || "";
 
@@ -55,7 +57,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           results.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {results.map((asset) => (
-                <AssetCard key={asset.id} asset={asset} />
+                <AssetCard key={asset.id} asset={asset} locale={locale} />
               ))}
             </div>
           ) : (

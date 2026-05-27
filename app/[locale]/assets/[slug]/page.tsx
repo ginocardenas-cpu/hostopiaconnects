@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import {
   getAssetBySlug,
-  getAssetFieldsForLocale,
+  getAssetDisplayForLocale,
   getAssetSourceFileName
 } from "@/lib/assets";
 import { AddToCartButton } from "@/components/AddToCartButton";
@@ -37,7 +37,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
   }
 
   const sourceFile = getAssetSourceFileName(asset);
-  const fields = getAssetFieldsForLocale(asset, locale);
+  const display = getAssetDisplayForLocale(asset, locale);
 
   return (
     <section className="max-w-6xl mx-auto px-6 py-16">
@@ -48,25 +48,25 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
             className="inline-flex items-center rounded-full bg-[#ecebe6] px-3 py-1 font-semibold uppercase tracking-[0.14em] text-gray-600"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
-            {asset.journey}
+            {display.journey}
           </span>
           <span
             className="inline-flex items-center rounded-full bg-white px-3 py-1 border border-black/8 text-gray-600"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
-            {asset.productCategory}
+            {display.productCategory}
           </span>
           <span
             className="inline-flex items-center rounded-full bg-white px-3 py-1 border border-black/8 text-gray-600"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
-            {asset.contentType}
+            {display.contentType}
           </span>
           <span
             className="inline-flex items-center rounded-full bg-white px-3 py-1 border border-black/8 text-gray-600"
             style={{ fontFamily: "Raleway, sans-serif" }}
           >
-            {asset.language} · {asset.region}
+            {display.language} · {display.region}
           </span>
         </div>
 
@@ -77,7 +77,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
             fontSize: "clamp(1.8rem, 3.2vw, 2.6rem)",
           }}
         >
-          {fields.title}
+          {display.title}
         </h1>
 
         <p
@@ -102,8 +102,12 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
         </p>
 
         <div className="flex flex-wrap items-center gap-3 mb-4">
-          <AddToCartButton assetId={asset.id} />
-          <AssetPreviewButton fileUrl={asset.fileUrl} title={fields.title} />
+          <AddToCartButton assetId={asset.id} fileName={sourceFile} />
+          <AssetPreviewButton
+            fileUrl={asset.fileUrl}
+            title={display.title}
+            fileName={sourceFile}
+          />
           <CopyLinkButton copyPath={`/${locale}/assets/${slug}`} label={t("copyLink")} />
         </div>
         <div className="mb-8">
@@ -124,7 +128,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
               className="text-sm md:text-base text-gray-800 leading-relaxed"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              {fields.summaryWhat}
+              {display.summaryWhat}
             </p>
           </section>
 
@@ -139,7 +143,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
               className="text-sm md:text-base text-gray-800 leading-relaxed"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              {fields.summaryWhy}
+              {display.summaryWhy}
             </p>
           </section>
 
@@ -154,7 +158,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
               className="text-sm md:text-base text-gray-800 leading-relaxed whitespace-pre-line"
               style={{ fontFamily: "Raleway, sans-serif" }}
             >
-              {fields.summaryHow}
+              {display.summaryHow}
             </p>
           </section>
         </div>
@@ -178,14 +182,14 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
                 <dt className="text-[11px] font-medium uppercase tracking-wide text-gray-500 mb-1">
                   {t("primaryUseCases")}
                 </dt>
-                <dd className="text-gray-900">{asset.useCases.join(" · ")}</dd>
+                <dd className="text-gray-900">{display.useCasesLine}</dd>
               </div>
               <div>
                 <dt className="text-[11px] font-medium uppercase tracking-wide text-gray-500 mb-1">
                   {t("languageRegion")}
                 </dt>
                 <dd className="text-gray-900">
-                  {asset.language} · {asset.region}
+                  {display.language} · {display.region}
                 </dd>
               </div>
               <div>

@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { Sparkles, ArrowRight, FileText } from "lucide-react";
-import { getLatestAssets } from "@/lib/assets";
+import { getLatestAssets, getAssetDisplayForLocale } from "@/lib/assets";
 
 export async function generateMetadata() {
   const t = await getTranslations("featured");
@@ -11,8 +11,13 @@ export async function generateMetadata() {
   };
 }
 
-export default async function FeaturedPage() {
+export default async function FeaturedPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const t = await getTranslations("featured");
+  const { locale } = await params;
   const assets = getLatestAssets(12);
 
   return (
@@ -46,7 +51,9 @@ export default async function FeaturedPage() {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {assets.map((asset) => (
+        {assets.map((asset) => {
+          const display = getAssetDisplayForLocale(asset, locale);
+          return (
           <Link
             key={asset.id}
             href={`/assets/${asset.slug}`}
@@ -60,13 +67,13 @@ export default async function FeaturedPage() {
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
                   <FileText size={12} />
-                  {asset.contentType}
+                  {display.contentType}
                 </span>
                 <span
                   className="text-[11px] text-gray-500"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  {asset.productCategory}
+                  {display.productCategory}
                 </span>
               </div>
               <h2
@@ -76,13 +83,13 @@ export default async function FeaturedPage() {
                   fontSize: "1.05rem"
                 }}
               >
-                {asset.title}
+                {display.title}
               </h2>
               <p
                 className="text-sm text-gray-600 line-clamp-2 mb-3"
                 style={{ fontFamily: "Raleway, sans-serif" }}
               >
-                {asset.summaryWhat}
+                {display.summaryWhat}
               </p>
               <p
                 className="text-xs text-gray-500 mb-3"
@@ -99,7 +106,8 @@ export default async function FeaturedPage() {
               </span>
             </div>
           </Link>
-        ))}
+          );
+        })}
       </div>
 
       <div className="mt-12 text-center">

@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import {
-  getAssetFieldsForLocale,
+  getAssetDisplayForLocale,
   getAssetsByProductCategory,
   journeyProducts,
   type ProductCategory
@@ -99,7 +99,7 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
           {assets.map((asset) => {
-            const fields = getAssetFieldsForLocale(asset, locale);
+            const display = getAssetDisplayForLocale(asset, locale);
             return (
             <Link
               key={asset.id}
@@ -114,14 +114,13 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
                     style={{ fontFamily: "Raleway, sans-serif" }}
                   >
                     <span>▢</span>
-                    <span>{asset.contentType}</span>
+                    <span>{display.contentType}</span>
                   </span>
                   <span
                     className="text-[11px] text-gray-500"
                     style={{ fontFamily: "Raleway, sans-serif" }}
                   >
-                    {asset.language} ·{" "}
-                    {asset.region === "Global" ? "Global" : asset.region}
+                    {display.language} · {display.region}
                   </span>
                 </div>
                 <h2
@@ -131,13 +130,13 @@ export default async function ProductAssetsPage({ params }: ProductAssetsPagePro
                     fontSize: "1.05rem"
                   }}
                 >
-                  {fields.title}
+                  {display.title}
                 </h2>
                 <p
                   className="text-sm text-gray-600 mb-3 whitespace-pre-wrap"
                   style={{ fontFamily: "Raleway, sans-serif" }}
                 >
-                  {fields.summaryWhat}
+                  {display.summaryWhat}
                 </p>
                 <span
                   className="inline-flex items-center gap-1 text-xs font-semibold text-[#2CADB2]"

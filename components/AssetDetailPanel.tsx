@@ -3,7 +3,7 @@
 import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import type { Asset } from "@/lib/assets";
-import { getAssetFieldsForLocale, getAssetSourceFileName } from "@/lib/assets";
+import { getAssetDisplayForLocale, getAssetSourceFileName } from "@/lib/assets";
 import { AddToCartButton } from "./AddToCartButton";
 import { AssetFeedback } from "./AssetFeedback";
 import { AssetPreviewButton } from "./AssetPreviewButton";
@@ -17,7 +17,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
   const t = useTranslations("asset");
   const locale = useLocale();
   const sourceFile = getAssetSourceFileName(asset);
-  const fields = getAssetFieldsForLocale(asset, locale);
+  const display = getAssetDisplayForLocale(asset, locale);
   const copyPath = `/${locale}/assets/${asset.slug}`;
 
   return (
@@ -27,16 +27,16 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
     >
       <div className="flex flex-wrap items-center gap-2 mb-3 text-[11px]">
         <span className="inline-flex items-center rounded-full bg-[#ecebe6] px-3 py-1 font-semibold uppercase tracking-[0.14em] text-gray-600">
-          {asset.journey}
+          {display.journey}
         </span>
         <span className="inline-flex items-center rounded-full bg-white px-3 py-1 border border-black/8 text-gray-600">
-          {asset.productCategory}
+          {display.productCategory}
         </span>
         <span className="inline-flex items-center rounded-full bg-white px-3 py-1 border border-black/8 text-gray-600">
-          {asset.contentType}
+          {display.contentType}
         </span>
         <span className="inline-flex items-center rounded-full bg-white px-3 py-1 border border-black/8 text-gray-600">
-          {asset.language} · {asset.region}
+          {display.language} · {display.region}
         </span>
       </div>
 
@@ -47,7 +47,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
           fontSize: "clamp(1.1rem, 2vw, 1.4rem)",
         }}
       >
-        {asset.title}
+        {display.title}
       </h2>
 
       <p className="text-sm text-gray-500 mb-2 break-all">
@@ -66,8 +66,12 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
       </p>
 
       <div className="flex flex-wrap items-center gap-3 mb-5">
-        <AddToCartButton assetId={asset.id} />
-        <AssetPreviewButton fileUrl={asset.fileUrl} title={fields.title} />
+        <AddToCartButton assetId={asset.id} fileName={sourceFile} />
+        <AssetPreviewButton
+          fileUrl={asset.fileUrl}
+          title={display.title}
+          fileName={sourceFile}
+        />
         <CopyLinkButton copyPath={copyPath} label={t("copyLink")} />
       </div>
 
@@ -84,7 +88,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
             >
               {t("whatItIs")}
             </h3>
-            <p className="leading-relaxed">{fields.summaryWhat}</p>
+            <p className="leading-relaxed">{display.summaryWhat}</p>
           </section>
           <section>
             <h3
@@ -93,7 +97,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
             >
               {t("whyImportant")}
             </h3>
-            <p className="leading-relaxed">{fields.summaryWhy}</p>
+            <p className="leading-relaxed">{display.summaryWhy}</p>
           </section>
           <section>
             <h3
@@ -102,7 +106,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
             >
               {t("howToUse")}
             </h3>
-            <p className="leading-relaxed whitespace-pre-line">{fields.summaryHow}</p>
+            <p className="leading-relaxed whitespace-pre-line">{display.summaryHow}</p>
           </section>
         </div>
 
@@ -125,14 +129,14 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
                 <dt className="text-[10px] font-medium uppercase tracking-wide text-gray-500 mb-0.5">
                   {t("primaryUseCases")}
                 </dt>
-                <dd>{asset.useCases.join(" · ")}</dd>
+                <dd>{display.useCasesLine}</dd>
               </div>
               <div>
                 <dt className="text-[10px] font-medium uppercase tracking-wide text-gray-500 mb-0.5">
                   {t("languageRegion")}
                 </dt>
                 <dd>
-                  {asset.language} · {asset.region}
+                  {display.language} · {display.region}
                 </dd>
               </div>
               <div>
