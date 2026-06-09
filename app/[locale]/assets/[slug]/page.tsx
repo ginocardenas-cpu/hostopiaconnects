@@ -10,6 +10,7 @@ import { AssetFeedback } from "@/components/AssetFeedback";
 import { AssetMarkSeen } from "@/components/AssetMarkSeen";
 import { AssetPreviewButton } from "@/components/AssetPreviewButton";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
+import { formatDisplayDateLong } from "@/lib/format-date";
 
 interface AssetDetailPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -86,11 +87,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
           className="text-xs text-gray-500 mb-6 font-raleway"
         >
           {t("lastUpdated")}{" "}
-          {new Date(asset.lastUpdated).toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}{" "}
+          {formatDisplayDateLong(asset.lastUpdated, locale)}{" "}
           · {asset.gated ? t("gatedDownload") : t("directDownload")}
         </p>
 

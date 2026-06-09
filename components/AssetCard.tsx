@@ -2,6 +2,7 @@
 
 import { useLocale } from "next-intl";
 import { Asset, ProductCategory, getAssetDisplayForLocale } from "@/lib/assets";
+import { formatDisplayDateCompact } from "@/lib/format-date";
 import { Link } from "@/i18n/routing";
 
 interface AssetCardProps {
@@ -36,20 +37,6 @@ const contentTypeIcon: Record<string, string> = {
   Playbook: "fa-solid fa-book",
   Training: "fa-solid fa-graduation-cap",
   Tool: "fa-solid fa-wrench",
-};
-
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffTime = Math.abs(now.getTime() - date.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays < 7) return `${diffDays}d ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-  if (diffDays < 365) return `${Math.floor(diffDays / 30)}m ago`;
-  return date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
 };
 
 export function AssetCard({ asset, compact = false, locale: localeProp }: AssetCardProps) {
@@ -96,7 +83,7 @@ export function AssetCard({ asset, compact = false, locale: localeProp }: AssetC
 
         {/* Footer */}
         <div className="border-t border-gray-200 mt-3 pt-3 flex items-center justify-between text-xs">
-          <span className="text-gray-400 font-body">{formatDate(asset.lastUpdated)}</span>
+          <span className="text-gray-400 font-body">{formatDisplayDateCompact(asset.lastUpdated, locale)}</span>
           <div className="flex items-center gap-3">
             <span className="text-gray-400 inline-flex items-center gap-1">
               <i className="fa-solid fa-eye text-[9px]" /> {asset.viewCount}

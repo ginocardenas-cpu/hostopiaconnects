@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { Sparkles, ArrowRight, FileText } from "lucide-react";
 import { getLatestAssets, getAssetDisplayForLocale } from "@/lib/assets";
+import { formatDisplayDate } from "@/lib/format-date";
 
 export async function generateMetadata() {
   const t = await getTranslations("featured");
@@ -87,7 +88,7 @@ export default async function FeaturedPage({
               <p
                 className="text-xs text-gray-500 mb-3 font-raleway"
               >
-                {t("updated")} {new Date(asset.lastUpdated).toLocaleDateString()}
+                {t("updated")} {formatDisplayDate(asset.lastUpdated, locale)}
               </p>
               <span
                 className="inline-flex items-center gap-1 text-xs font-semibold text-teal font-montserrat"

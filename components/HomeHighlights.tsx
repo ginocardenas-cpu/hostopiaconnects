@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatDisplayDate } from "@/lib/format-date";
 import { Link } from "@/i18n/routing";
 import { Flame, Star, Download, ArrowRight, FileText, ChevronLeft, ChevronRight } from "lucide-react";
 import {
@@ -14,6 +15,7 @@ import {
 type TabKey = "new" | "popular" | "downloaded";
 
 export function HomeHighlights() {
+  const locale = useLocale();
   const t = useTranslations("highlights");
   const [active, setActive] = useState<TabKey>("new");
 
@@ -107,9 +109,7 @@ export function HomeHighlights() {
                           className="text-[11px] text-gray-500 truncate font-raleway"
                         >
                           {active === "new" &&
-                            `${t("updated")} ${new Date(
-                              asset.lastUpdated
-                            ).toLocaleDateString()}`}
+                            `${t("updated")} ${formatDisplayDate(asset.lastUpdated, locale)}`}
                           {active === "popular" &&
                             `${asset.viewCount.toLocaleString()} ${t("views")}`}
                           {active === "downloaded" &&

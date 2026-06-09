@@ -4,6 +4,7 @@ import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import type { Asset } from "@/lib/assets";
 import { getAssetDisplayForLocale, getAssetSourceFileName } from "@/lib/assets";
+import { formatDisplayDateLong } from "@/lib/format-date";
 import { AddToCartButton } from "./AddToCartButton";
 import { AssetFeedback } from "./AssetFeedback";
 import { AssetPreviewButton } from "./AssetPreviewButton";
@@ -56,11 +57,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
 
       <p className="text-xs text-gray-500 mb-4">
         {t("lastUpdated")}{" "}
-        {new Date(asset.lastUpdated).toLocaleDateString(undefined, {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })}{" "}
+        {formatDisplayDateLong(asset.lastUpdated, locale)}{" "}
         · {asset.gated ? t("gatedDownload") : t("directDownload")}
       </p>
 
