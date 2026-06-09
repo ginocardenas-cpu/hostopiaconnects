@@ -60,8 +60,7 @@ export function HtmlDeckPreviewFrame({
     <div className={cn("flex h-[min(72vh,640px)] flex-col", className)}>
       {supportsI18n && (
         <div
-          className="flex shrink-0 flex-wrap items-center gap-2 border-b border-black/8 bg-white px-4 py-2"
-          style={{ fontFamily: "Raleway, sans-serif" }}
+          className="flex shrink-0 flex-wrap items-center gap-2 border-b border-black/8 bg-white px-4 py-2 font-raleway"
         >
           <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-gray-500">
             {t("previewDocumentLanguage")}
@@ -73,12 +72,11 @@ export function HtmlDeckPreviewFrame({
                 type="button"
                 onClick={() => applyLang(opt.code)}
                 className={cn(
-                  "rounded-full px-3 py-1 text-[11px] font-semibold transition",
+                  "rounded-full px-3 py-1 text-[11px] font-semibold font-montserrat transition",
                   deckLang === opt.code
-                    ? "bg-[#2CADB2] text-white"
-                    : "bg-[#f7f6f2] text-gray-700 hover:bg-[#ecebe6]"
+                    ? "bg-teal text-white"
+                    : "bg-cream text-gray-700 hover:bg-cream-muted"
                 )}
-                style={{ fontFamily: "Montserrat, sans-serif" }}
               >
                 {opt.label}
               </button>

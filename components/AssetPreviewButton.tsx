@@ -66,10 +66,9 @@ export function AssetPreviewButton({
         <button
           type="button"
           className={cn(
-            "inline-flex items-center gap-2 rounded-full px-6 py-2 text-sm font-semibold border border-[#24282B]/20 bg-white transition hover:bg-[#f7f6f2] hover:border-[#2CADB2]",
+            "inline-flex items-center gap-2 rounded-full border border-charcoal/20 bg-white px-6 py-2 font-montserrat text-sm font-semibold text-charcoal transition hover:border-teal hover:bg-cream",
             className
           )}
-          style={{ fontFamily: "Montserrat, sans-serif", color: "#24282B" }}
         >
           <FileText size={16} aria-hidden />
           {t("preview")}
@@ -77,8 +76,7 @@ export function AssetPreviewButton({
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay
-          className="fixed inset-0 z-[100] bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
-          style={{ fontFamily: "Raleway, sans-serif" }}
+          className="fixed inset-0 z-[100] bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 font-raleway"
         />
         <Dialog.Content
           className={cn(
@@ -89,8 +87,7 @@ export function AssetPreviewButton({
         >
           <div className="flex shrink-0 items-start justify-between gap-4 border-b border-black/8 px-5 py-4">
             <Dialog.Title
-              className="pr-8 text-base font-bold leading-snug text-[#24282B] md:text-lg"
-              style={{ fontFamily: "Montserrat, sans-serif" }}
+              className="pr-8 text-base font-bold leading-snug text-charcoal md:text-lg font-montserrat"
             >
               {title}
             </Dialog.Title>
@@ -99,7 +96,7 @@ export function AssetPreviewButton({
             </Dialog.Description>
             <Dialog.Close
               type="button"
-              className="rounded-full p-2 text-gray-500 transition hover:bg-[#f7f6f2] hover:text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2CADB2]"
+              className="rounded-full p-2 text-gray-500 transition hover:bg-cream hover:text-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal"
               aria-label={t("previewClose")}
             >
               <X className="h-5 w-5" aria-hidden />
@@ -124,8 +121,7 @@ export function AssetPreviewButton({
                 />
                 {ext === "pdf" && (
                   <p
-                    className="shrink-0 border-t border-black/8 bg-white px-4 py-2 text-xs text-gray-600"
-                    style={{ fontFamily: "Raleway, sans-serif" }}
+                    className="shrink-0 border-t border-black/8 bg-white px-4 py-2 text-xs text-gray-600 font-raleway"
                   >
                     {t("previewPdfToolbarNote")}
                   </p>
@@ -150,8 +146,7 @@ export function AssetPreviewButton({
             )}
             {mode === "none" && (
               <div
-                className="flex max-h-[min(72vh,640px)] items-center justify-center px-6 py-16 text-center text-sm text-gray-700"
-                style={{ fontFamily: "Raleway, sans-serif" }}
+                className="flex max-h-[min(72vh,640px)] items-center justify-center px-6 py-16 text-center text-sm text-gray-700 font-raleway"
               >
                 {t("previewUnavailable")}
               </div>
@@ -159,8 +154,7 @@ export function AssetPreviewButton({
           </div>
 
           <div
-            className="shrink-0 border-t border-black/8 bg-white px-5 py-3 text-center text-xs text-gray-600"
-            style={{ fontFamily: "Raleway, sans-serif" }}
+            className="shrink-0 border-t border-black/8 bg-white px-5 py-3 text-center text-xs text-gray-600 font-raleway"
           >
             {t("previewFooterHint")}
           </div>

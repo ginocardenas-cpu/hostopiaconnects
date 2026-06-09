@@ -10,10 +10,10 @@ import { SearchBar } from "@/components/SearchBar";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const linkClassName =
-  "block py-3 text-sm font-heading font-semibold uppercase tracking-wider text-[#24282B]/80 hover:text-[#2CADB2] transition-colors border-b border-gray-100 last:border-0";
+  "block py-3 text-sm font-heading font-semibold uppercase tracking-wider text-charcoal/80 hover:text-teal transition-colors border-b border-gray-100 last:border-0";
 
 const desktopLinkClassName =
-  "text-xs font-heading font-semibold uppercase tracking-wider text-[#24282B]/70 hover:text-[#2CADB2] transition-colors";
+  "text-xs font-heading font-semibold uppercase tracking-wider text-charcoal/70 hover:text-teal transition-colors";
 
 export function LocaleHeader() {
   const t = useTranslations("nav");
@@ -87,7 +87,7 @@ export function LocaleHeader() {
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             <button
               type="button"
-              className="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-100 hover:text-[#2CADB2] transition-colors"
+              className="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-100 hover:text-teal transition-colors"
               aria-expanded={mobileOpen}
               aria-controls="mobile-primary-nav"
               aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}

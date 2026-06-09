@@ -12,13 +12,13 @@ export function CartNav() {
   return (
     <Link
       href="/cart"
-      className="relative inline-flex items-center gap-1.5 text-[#24282B]/60 hover:text-[#2CADB2] transition-colors text-xs font-heading"
+      className="relative inline-flex items-center gap-1.5 text-charcoal/60 hover:text-teal transition-colors text-xs font-heading"
       aria-label={t("myResources")}
     >
       <i className="fa-solid fa-briefcase text-sm" />
       <span className="hidden lg:inline">{t("myResources")}</span>
       {count > 0 && (
-        <span className="absolute -top-1.5 -right-2 inline-flex items-center justify-center rounded-full bg-[#F8CF41] text-[#24282B] text-[9px] font-bold min-w-[18px] h-[18px] px-1">
+        <span className="absolute -top-1.5 -right-2 inline-flex items-center justify-center rounded-full bg-gold text-charcoal text-[9px] font-bold min-w-[18px] h-[18px] px-1">
           {count}
         </span>
       )}

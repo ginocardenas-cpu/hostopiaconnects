@@ -96,7 +96,7 @@ export function SearchBar({ wideTrigger = false }: SearchBarProps) {
           type="button"
           onClick={openSearch}
           aria-label={t("openSearchAria")}
-          className="w-full flex items-center gap-3 px-4 py-3 sm:py-3.5 rounded-xl border border-gray-200 bg-white text-left text-gray-600 shadow-sm hover:border-[#2CADB2]/60 hover:text-[#2CADB2] transition-colors min-h-[48px]"
+          className="w-full flex items-center gap-3 px-4 py-3 sm:py-3.5 rounded-xl border border-gray-200 bg-white text-left text-gray-600 shadow-sm hover:border-teal/60 hover:text-teal transition-colors min-h-[48px]"
         >
           <i className="fa-solid fa-magnifying-glass text-gray-400 shrink-0" />
           <span className="text-sm text-gray-500 truncate flex-1 font-body">{t("placeholder")}</span>
@@ -112,7 +112,7 @@ export function SearchBar({ wideTrigger = false }: SearchBarProps) {
           className={cn(
             "inline-flex items-center justify-center shrink-0 rounded-lg border transition-colors",
             "h-11 w-11 min-h-[44px] min-w-[44px] md:h-10 md:w-auto md:min-h-[2.5rem] md:min-w-0",
-            "border-gray-200 bg-white text-gray-600 hover:border-[#2CADB2]/60 hover:text-[#2CADB2]",
+            "border-gray-200 bg-white text-gray-600 hover:border-teal/60 hover:text-teal",
             "md:px-3 md:gap-2"
           )}
         >
@@ -182,7 +182,7 @@ export function SearchBar({ wideTrigger = false }: SearchBarProps) {
                           href={`/search?q=${encodeURIComponent(search)}`}
                           onClick={handleResultClick}
                         >
-                          <div className="flex items-center gap-3 px-3 py-3 sm:py-2 rounded-lg hover:bg-[#f0fbfa] transition-colors cursor-pointer min-h-[44px] sm:min-h-0">
+                          <div className="flex items-center gap-3 px-3 py-3 sm:py-2 rounded-lg hover:bg-teal-light transition-colors cursor-pointer min-h-[44px] sm:min-h-0">
                             <i className="fa-solid fa-magnifying-glass text-xs text-gray-400 shrink-0" />
                             <span className="text-sm text-gray-700">{search}</span>
                           </div>
@@ -213,7 +213,7 @@ export function SearchBar({ wideTrigger = false }: SearchBarProps) {
                                 href={`/library?product=${journeyProduct?.slug || product}`}
                                 onClick={handleResultClick}
                               >
-                                <div className="flex items-center gap-3 px-3 py-3 sm:py-2 rounded-lg hover:bg-[#f0fbfa] transition-colors cursor-pointer min-h-[44px] sm:min-h-0">
+                                <div className="flex items-center gap-3 px-3 py-3 sm:py-2 rounded-lg hover:bg-teal-light transition-colors cursor-pointer min-h-[44px] sm:min-h-0">
                                   <span className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#d1f0ee] text-[#0f766e] shrink-0">
                                     <i className="fa-solid fa-cube text-xs" />
                                   </span>
@@ -234,7 +234,7 @@ export function SearchBar({ wideTrigger = false }: SearchBarProps) {
                         <div className="space-y-1">
                           {suggestions.assets.map((asset) => (
                             <Link key={asset.slug} href={`/assets/${asset.slug}`} onClick={handleResultClick}>
-                              <div className="flex items-start gap-3 px-3 py-3 sm:py-2 rounded-lg hover:bg-[#f0fbfa] transition-colors cursor-pointer min-h-[44px] sm:min-h-0">
+                              <div className="flex items-start gap-3 px-3 py-3 sm:py-2 rounded-lg hover:bg-teal-light transition-colors cursor-pointer min-h-[44px] sm:min-h-0">
                                 <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 text-gray-500 flex-shrink-0 mt-0.5">
                                   <i
                                     className={`${contentTypeIcon[asset.contentType] || "fa-solid fa-file"} text-xs`}
@@ -265,7 +265,7 @@ export function SearchBar({ wideTrigger = false }: SearchBarProps) {
                               href={`/library?type=${encodeURIComponent(type)}`}
                               onClick={handleResultClick}
                             >
-                              <div className="flex items-center gap-3 px-3 py-3 sm:py-2 rounded-lg hover:bg-[#f0fbfa] transition-colors cursor-pointer min-h-[44px] sm:min-h-0">
+                              <div className="flex items-center gap-3 px-3 py-3 sm:py-2 rounded-lg hover:bg-teal-light transition-colors cursor-pointer min-h-[44px] sm:min-h-0">
                                 <i
                                   className={`${contentTypeIcon[type] || "fa-solid fa-file"} text-xs text-gray-500 shrink-0`}
                                 />

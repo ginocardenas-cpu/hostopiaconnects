@@ -14,7 +14,7 @@ interface AssetCardProps {
 
 // Product category to color mapping (canonical enum from catalog)
 const categoryColorMap: Record<ProductCategory, string> = {
-  Domains: "#2CADB2",
+  Domains: "#2cadb2",
   Logo: "#8B5CF6",
   Email: "#3B82F6",
   SSL: "#10B981",
@@ -72,8 +72,7 @@ export function AssetCard({ asset, compact = false, locale: localeProp }: AssetC
         {/* Top badges */}
         <div className="flex gap-2 mb-3">
           <span
-            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
-            style={{ backgroundColor: "#d1f0ee", color: "#0f766e" }}
+            className="inline-flex items-center rounded-full bg-teal-light px-2.5 py-0.5 text-xs font-semibold text-teal-dark"
           >
             {display.productCategory}
           </span>

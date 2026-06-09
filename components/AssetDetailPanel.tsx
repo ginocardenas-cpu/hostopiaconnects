@@ -22,11 +22,10 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
 
   return (
     <div
-      className="rounded-2xl border border-[#2CADB2]/20 bg-white p-6 shadow-sm max-h-[min(85vh,720px)] overflow-y-auto"
-      style={{ fontFamily: "Raleway, sans-serif" }}
+      className="rounded-2xl border border-teal/20 bg-white p-6 shadow-sm max-h-[min(85vh,720px)] overflow-y-auto font-raleway"
     >
       <div className="flex flex-wrap items-center gap-2 mb-3 text-[11px]">
-        <span className="inline-flex items-center rounded-full bg-[#ecebe6] px-3 py-1 font-semibold uppercase tracking-[0.14em] text-gray-600">
+        <span className="inline-flex items-center rounded-full bg-cream-muted px-3 py-1 font-semibold uppercase tracking-[0.14em] text-gray-600">
           {display.journey}
         </span>
         <span className="inline-flex items-center rounded-full bg-white px-3 py-1 border border-black/8 text-gray-600">
@@ -41,7 +40,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
       </div>
 
       <h2
-        className="font-black leading-tight mb-2 text-[#24282B]"
+        className="font-black leading-tight mb-2 text-charcoal"
         style={{
           fontFamily: "Montserrat, sans-serif",
           fontSize: "clamp(1.1rem, 2vw, 1.4rem)",
@@ -83,8 +82,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
         <div className="space-y-4 text-sm text-gray-800 border-t border-black/6 pt-4">
           <section>
             <h3
-              className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 mb-2"
-              style={{ fontFamily: "Montserrat, sans-serif" }}
+              className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 mb-2 font-montserrat"
             >
               {t("whatItIs")}
             </h3>
@@ -92,8 +90,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
           </section>
           <section>
             <h3
-              className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 mb-2"
-              style={{ fontFamily: "Montserrat, sans-serif" }}
+              className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 mb-2 font-montserrat"
             >
               {t("whyImportant")}
             </h3>
@@ -101,8 +98,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
           </section>
           <section>
             <h3
-              className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 mb-2"
-              style={{ fontFamily: "Montserrat, sans-serif" }}
+              className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 mb-2 font-montserrat"
             >
               {t("howToUse")}
             </h3>
@@ -113,8 +109,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
         <aside className="space-y-4 border-t border-black/6 pt-4 sm:border-t-0 sm:border-l sm:pl-4 sm:pt-0">
           <div className="rounded-2xl border border-black/6 bg-[#f0efeb] p-4">
             <h3
-              className="text-xs font-bold uppercase tracking-[0.16em] mb-3 text-gray-700"
-              style={{ fontFamily: "Montserrat, sans-serif" }}
+              className="text-xs font-bold uppercase tracking-[0.16em] mb-3 text-gray-700 font-montserrat"
             >
               {t("atAGlance")}
             </h3>
@@ -147,7 +142,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
               </div>
             </dl>
           </div>
-          <div className="rounded-2xl border border-dashed border-[#5ab8b3] bg-[#e8f7f6] p-3 text-[11px] text-gray-700 leading-relaxed">
+          <div className="rounded-2xl border border-dashed border-teal/70 bg-teal-light p-3 text-[11px] text-gray-700 leading-relaxed">
             <p>{t("previewHint")}</p>
           </div>
         </aside>
@@ -156,8 +151,7 @@ export function AssetDetailPanel({ asset }: AssetDetailPanelProps) {
       <p className="mt-5 text-center">
         <Link
           href={`/assets/${asset.slug}`}
-          className="text-sm font-semibold text-[#2CADB2] hover:underline"
-          style={{ fontFamily: "Montserrat, sans-serif" }}
+          className="text-sm font-semibold text-teal hover:underline font-montserrat"
         >
           Open full page →
         </Link>

@@ -29,8 +29,10 @@
     --ring: 182 58% 43%;
   }
 
-  html {
-    scroll-behavior: smooth;
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
@@ -47,20 +49,68 @@
   }
 }
 
-.section-label {
-  font-family: "Raleway", sans-serif;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--teal);
-}
+@layer utilities {
+  .section-label {
+    font-family: "Raleway", sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
 
-.body-copy {
-  font-family: "Raleway", sans-serif;
-  font-size: 1rem;
-  line-height: 1.75;
-  color: rgb(107, 114, 128);
+  .heading-display {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1.05;
+    color: var(--charcoal);
+  }
+
+  .heading-page {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.25rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    color: var(--charcoal);
+  }
+
+  .heading-section {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+    line-height: 1.2;
+    color: var(--charcoal);
+  }
+
+  .body-copy {
+    font-family: "Raleway", sans-serif;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: rgb(107, 114, 128);
+  }
+
+  .teal-underline {
+    text-decoration: underline;
+    text-decoration-color: var(--teal);
+    text-underline-offset: 6px;
+    text-decoration-thickness: 4px;
+  }
+
+  .gold-underline {
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-underline-offset: 6px;
+    text-decoration-thickness: 4px;
+  }
+
+  .btn-primary-gold {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-gold px-8 py-4 font-raleway text-sm font-semibold uppercase tracking-wide text-charcoal shadow-sm transition-colors duration-200 hover:bg-gold-dark hover:shadow-md;
+  }
+
+  .btn-primary-teal {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-teal px-8 py-4 font-raleway text-sm font-semibold uppercase tracking-wide text-white shadow-sm transition-colors duration-200 hover:bg-teal-dark;
+  }
 }
 
 a {
@@ -68,7 +118,6 @@ a {
   text-decoration: none;
 }
 
-/* Flag emojis: Montserrat/Raleway often omit color glyphs — force emoji-capable fonts */
 .emoji-flag {
   font-family: system-ui, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji",
     "EmojiOne Color", "Android Emoji", sans-serif;
@@ -89,6 +138,13 @@ a {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--teal-dark);
+}
+
+.divider {
+  width: 60px;
+  height: 3px;
+  background: var(--teal);
+  margin: 0 auto 2rem;
 }
 
 @keyframes fadeIn {

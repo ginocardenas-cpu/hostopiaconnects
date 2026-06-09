@@ -16,7 +16,7 @@ const staticStyle = {
   fontSize: "inherit",
   lineHeight: 1 as const,
   fontWeight: 900,
-  color: "#2CADB2",
+  color: "#2cadb2",
   display: "inline-block",
   verticalAlign: "baseline"
 };

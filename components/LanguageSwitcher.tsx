@@ -47,11 +47,11 @@ export function LanguageSwitcher() {
   const label = localeNames[locale] ?? locale;
 
   return (
-    <div ref={ref} className="relative text-xs" style={{ fontFamily: "Montserrat, sans-serif" }}>
+    <div ref={ref} className="relative text-xs font-montserrat">
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/90 px-3 py-1 font-semibold text-gray-700 shadow-sm hover:border-[#2CADB2]/60 hover:text-[#2CADB2] transition-colors"
+        className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/90 px-3 py-1 font-semibold text-gray-700 shadow-sm hover:border-teal/60 hover:text-teal transition-colors"
         aria-label={label}
         aria-expanded={open}
       >
@@ -72,8 +72,8 @@ export function LanguageSwitcher() {
               key={loc}
               type="button"
               onClick={() => handleChange(loc)}
-              className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-[11px] hover:bg-[#2CADB2]/10 ${
-                locale === loc ? "font-bold text-[#2CADB2]" : "text-gray-700"
+              className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-[11px] hover:bg-teal/10 ${
+                locale === loc ? "font-bold text-teal" : "text-gray-700"
               }`}
             >
               <span className="text-lg emoji-flag leading-none shrink-0" aria-hidden>
@@ -93,8 +93,8 @@ export function LanguageSwitcher() {
                 key={loc}
                 type="button"
                 onClick={() => handleChange(loc)}
-                className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-[11px] hover:bg-[#2CADB2]/10 ${
-                  locale === loc ? "font-bold text-[#2CADB2]" : "text-gray-700"
+                className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-[11px] hover:bg-teal/10 ${
+                  locale === loc ? "font-bold text-teal" : "text-gray-700"
                 }`}
               >
                 <span className="text-lg emoji-flag leading-none shrink-0" aria-hidden>

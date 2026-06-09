@@ -138,7 +138,7 @@ export function LibraryClient() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Filter by keyword…"
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body outline-none focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2]"
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body outline-none focus:border-teal focus:ring-1 focus:ring-teal"
         />
       </div>
 
@@ -153,7 +153,7 @@ export function LibraryClient() {
             setSelectedJourney(e.target.value);
             setSelectedProduct(""); // reset product when journey changes
           }}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-[#2CADB2]"
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-teal"
         >
           <option value="">{t("allJourneys")}</option>
           {journeys.map((j) => (
@@ -172,7 +172,7 @@ export function LibraryClient() {
         <select
           value={selectedProduct}
           onChange={(e) => setSelectedProduct(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-[#2CADB2]"
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-teal"
         >
           <option value="">{t("allProducts")}</option>
           {availableProducts.map((p) => (
@@ -191,7 +191,7 @@ export function LibraryClient() {
         <select
           value={selectedType}
           onChange={(e) => setSelectedType(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-[#2CADB2]"
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-teal"
         >
           <option value="">{t("allTypes")}</option>
           {ALL_CONTENT_TYPES.map((ct) => (
@@ -210,7 +210,7 @@ export function LibraryClient() {
         <select
           value={selectedUseCase}
           onChange={(e) => setSelectedUseCase(e.target.value)}
-          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-[#2CADB2]"
+          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-teal"
         >
           <option value="">{t("allUseCases")}</option>
           {ALL_USE_CASES.map((uc) => (
@@ -231,7 +231,7 @@ export function LibraryClient() {
       {hasFilters && (
         <button
           onClick={clearAll}
-          className="w-full text-center text-sm font-semibold text-[#2CADB2] hover:text-[#249599] transition-colors"
+          className="w-full text-center text-sm font-semibold text-teal hover:text-teal-dark transition-colors"
         >
           {t("clearAll")}
         </button>
@@ -240,11 +240,11 @@ export function LibraryClient() {
   );
 
   return (
-    <div className="min-h-screen bg-[#f7f6f2]">
+    <div className="min-h-screen bg-cream">
       {/* Page header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-8">
-          <h1 className="font-heading font-bold text-3xl text-[#24282B]">
+          <h1 className="font-heading font-bold text-3xl text-charcoal">
             {t("title")}
           </h1>
           <p className="text-gray-600 mt-1 font-body">
@@ -263,7 +263,7 @@ export function LibraryClient() {
             <i className="fa-solid fa-sliders text-xs" />
             <span>Filters</span>
             {activeFilterCount > 0 && (
-              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#2CADB2] text-white text-xs">
+              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-teal text-white text-xs">
                 {activeFilterCount}
               </span>
             )}
@@ -321,7 +321,7 @@ export function LibraryClient() {
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value as SortOption)}
-                  className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-body bg-white outline-none focus:border-[#2CADB2]"
+                  className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-body bg-white outline-none focus:border-teal"
                 >
                   <option value="newest">{t("newest")}</option>
                   <option value="most-viewed">{t("mostViewed")}</option>
@@ -383,7 +383,7 @@ export function LibraryClient() {
                 {hasFilters && (
                   <button
                     onClick={clearAll}
-                    className="mt-4 inline-flex items-center px-4 py-2 rounded-lg bg-[#2CADB2] text-white text-sm font-semibold hover:bg-[#249599] transition-colors"
+                    className="mt-4 inline-flex items-center px-4 py-2 rounded-lg bg-teal text-white text-sm font-semibold hover:bg-teal-dark transition-colors"
                   >
                     {t("clearAll")}
                   </button>
@@ -412,7 +412,7 @@ function FilterPill({
       {label}
       <button
         onClick={onRemove}
-        className="hover:text-[#24282B] transition-colors leading-none"
+        className="hover:text-charcoal transition-colors leading-none"
         aria-label={`Remove ${label} filter`}
       >
         ✕

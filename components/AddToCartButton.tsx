@@ -58,12 +58,7 @@ export function AddToCartButton({ assetId, fileName = "" }: AddToCartButtonProps
       <button
         type="button"
         onClick={handleClick}
-        className="inline-flex items-center justify-center rounded-full px-6 py-2 text-sm font-bold shadow-md transition hover:shadow-lg disabled:opacity-60 disabled:cursor-default"
-        style={{
-          fontFamily: "Montserrat, sans-serif",
-          backgroundColor: "#F8CF41",
-          color: "#24282B",
-        }}
+        className="inline-flex items-center justify-center rounded-full bg-gold px-6 py-2 font-montserrat text-sm font-bold text-charcoal shadow-md transition hover:bg-gold-dark hover:shadow-lg disabled:cursor-default disabled:opacity-60"
         disabled={inCart}
       >
         {inCart ? addedLabel : t("addToResources")}
@@ -73,12 +68,10 @@ export function AddToCartButton({ assetId, fileName = "" }: AddToCartButtonProps
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-[110] bg-black/40" />
           <Dialog.Content
-            className="fixed left-[50%] top-[50%] z-[111] w-[min(92vw,24rem)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-black/10 bg-white p-6 shadow-xl"
-            style={{ fontFamily: "Raleway, sans-serif" }}
+            className="fixed left-[50%] top-[50%] z-[111] w-[min(92vw,24rem)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-black/10 bg-white p-6 shadow-xl font-raleway"
           >
             <Dialog.Title
-              className="text-base font-bold text-[#24282B] mb-2"
-              style={{ fontFamily: "Montserrat, sans-serif" }}
+              className="text-base font-bold text-charcoal mb-2 font-montserrat"
             >
               {t("addChooseDocumentLanguage")}
             </Dialog.Title>
@@ -91,12 +84,11 @@ export function AddToCartButton({ assetId, fileName = "" }: AddToCartButtonProps
                   key={opt.code}
                   type="button"
                   onClick={() => setPendingLang(opt.code)}
-                  className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+                  className={`rounded-full px-4 py-2 text-xs font-semibold font-montserrat transition ${
                     pendingLang === opt.code
-                      ? "bg-[#2CADB2] text-white"
-                      : "bg-[#f7f6f2] text-gray-700 hover:bg-[#ecebe6]"
+                      ? "bg-teal text-white"
+                      : "bg-cream text-gray-700 hover:bg-cream-muted"
                   }`}
-                  style={{ fontFamily: "Montserrat, sans-serif" }}
                 >
                   {opt.label}
                 </button>
@@ -105,19 +97,14 @@ export function AddToCartButton({ assetId, fileName = "" }: AddToCartButtonProps
             <div className="flex justify-end gap-2">
               <Dialog.Close
                 type="button"
-                className="rounded-full px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-[#f7f6f2]"
+                className="rounded-full px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-cream"
               >
                 {t("addCancel")}
               </Dialog.Close>
               <button
                 type="button"
                 onClick={() => handleAdd(pendingLang)}
-                className="rounded-full px-5 py-2 text-sm font-bold shadow-sm"
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  backgroundColor: "#F8CF41",
-                  color: "#24282B",
-                }}
+                className="rounded-full bg-gold px-5 py-2 font-montserrat text-sm font-bold text-charcoal shadow-sm hover:bg-gold-dark"
               >
                 {t("addConfirmLanguage")}
               </button>

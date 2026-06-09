@@ -48,13 +48,13 @@ export default async function LocaleLayout({
                   {tFooter("tagline")}
                 </p>
                 <div className="flex items-center gap-5 mt-1">
-                  <a href="https://www.linkedin.com/company/hostopia" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#2CADB2] transition-colors" aria-label="LinkedIn">
+                  <a href="https://www.linkedin.com/company/hostopia" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal transition-colors" aria-label="LinkedIn">
                     <i className="fa-brands fa-linkedin-in text-base" />
                   </a>
-                  <a href="https://www.facebook.com/Hostopia-104896838563842" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#2CADB2] transition-colors" aria-label="Facebook">
+                  <a href="https://www.facebook.com/Hostopia-104896838563842" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal transition-colors" aria-label="Facebook">
                     <i className="fa-brands fa-facebook-f text-base" />
                   </a>
-                  <a href="https://twitter.com/Hostopia_Global" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#2CADB2] transition-colors" aria-label="X / Twitter">
+                  <a href="https://twitter.com/Hostopia_Global" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal transition-colors" aria-label="X / Twitter">
                     <i className="fa-brands fa-x-twitter text-base" />
                   </a>
                 </div>

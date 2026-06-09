@@ -26,8 +26,7 @@ export default function CartPage() {
         <div className="flex-1">
           <div className="mb-6">
             <p
-              className="uppercase tracking-[0.18em] text-xs text-gray-500 mb-3"
-              style={{ fontFamily: "Raleway, sans-serif" }}
+              className="uppercase tracking-[0.18em] text-xs text-gray-500 mb-3 font-raleway"
             >
               {t("title")}
             </p>
@@ -41,30 +40,27 @@ export default function CartPage() {
               {t("reviewTitle")}
             </h1>
             <p
-              className="text-sm text-gray-600"
-              style={{ fontFamily: "Raleway, sans-serif" }}
+              className="text-sm text-gray-600 font-raleway"
             >
               {t("reviewIntro")}
             </p>
             <p
-              className="mt-3 text-sm font-semibold text-[#2CADB2]"
-              style={{ fontFamily: "Raleway, sans-serif" }}
+              className="mt-3 text-sm font-semibold text-teal font-raleway"
             >
               {t("downloadsEmail")}
             </p>
           </div>
 
           {!hasItems ? (
-            <div className="rounded-2xl border border-dashed border-[#2CADB2]/40 bg-[#f0fbfa] p-6 text-sm text-gray-700">
-              <p style={{ fontFamily: "Raleway, sans-serif" }}>
+            <div className="rounded-2xl border border-dashed border-teal/40 bg-teal-light p-6 text-sm text-gray-700">
+              <p className="font-raleway">
                 {t("empty")}. {t("emptyHint")}{" "}
                 <span className="font-semibold">{t("addToMyResourcesBtn")}</span>{" "}
                 {t("emptyHintSuffix")}
               </p>
               <Link
                 href="/"
-                className="inline-flex items-center gap-1 mt-4 text-xs text-[#2CADB2] hover:underline"
-                style={{ fontFamily: "Raleway, sans-serif" }}
+                className="inline-flex items-center gap-1 mt-4 text-xs text-teal hover:underline font-raleway"
               >
                 {t("backToHome")}
               </Link>
@@ -80,28 +76,24 @@ export default function CartPage() {
                 >
                   <div>
                     <p
-                      className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mb-1"
-                      style={{ fontFamily: "Raleway, sans-serif" }}
+                      className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mb-1 font-raleway"
                     >
                       {display.contentType} · {display.productCategory}
                     </p>
                     <Link
                       href={`/assets/${asset.slug}`}
-                      className="text-sm font-semibold hover:text-[#2CADB2] transition-colors"
-                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                      className="text-sm font-semibold hover:text-teal transition-colors font-montserrat"
                     >
                       {display.title}
                     </Link>
                     <p
-                      className="text-xs text-gray-600 mt-1"
-                      style={{ fontFamily: "Raleway, sans-serif" }}
+                      className="text-xs text-gray-600 mt-1 font-raleway"
                     >
                       {display.summaryWhat}
                     </p>
                     {deckLang && (
                       <p
-                        className="text-[11px] font-medium text-[#2CADB2] mt-2"
-                        style={{ fontFamily: "Raleway, sans-serif" }}
+                        className="text-[11px] font-medium text-teal mt-2 font-raleway"
                       >
                         {t("requestedDocumentLanguage", {
                           language: deckLangLabel(deckLang),
@@ -112,8 +104,7 @@ export default function CartPage() {
                   <button
                     type="button"
                     onClick={() => removeItem(asset.id)}
-                    className="text-[11px] text-gray-500 hover:text-red-600"
-                    style={{ fontFamily: "Raleway, sans-serif" }}
+                    className="text-[11px] text-gray-500 hover:text-red-600 font-raleway"
                   >
                     {t("remove")}
                   </button>
@@ -136,8 +127,7 @@ export default function CartPage() {
               {t("requestBundleTitle")}
             </h2>
             <p
-              className="text-xs text-gray-600 mb-4"
-              style={{ fontFamily: "Raleway, sans-serif" }}
+              className="text-xs text-gray-600 mb-4 font-raleway"
             >
               {t("requestBundleIntro")}
             </p>
@@ -146,8 +136,7 @@ export default function CartPage() {
               <div>
                 <label
                   htmlFor="fullName"
-                  className="block text-xs font-semibold mb-1 text-gray-700"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
+                  className="block text-xs font-semibold mb-1 text-gray-700 font-raleway"
                 >
                   {t("fullName")}
                 </label>
@@ -155,14 +144,13 @@ export default function CartPage() {
                   id="fullName"
                   name="fullName"
                   required
-                  className="w-full rounded-md border border-black/10 bg-[#f7f6f2] px-3 py-2 text-xs outline-none focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2]"
+                  className="w-full rounded-md border border-black/10 bg-cream px-3 py-2 text-xs outline-none focus:border-teal focus:ring-1 focus:ring-teal"
                 />
               </div>
               <div>
                 <label
                   htmlFor="company"
-                  className="block text-xs font-semibold mb-1 text-gray-700"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
+                  className="block text-xs font-semibold mb-1 text-gray-700 font-raleway"
                 >
                   {t("company")}
                 </label>
@@ -170,14 +158,13 @@ export default function CartPage() {
                   id="company"
                   name="company"
                   required
-                  className="w-full rounded-md border border-black/10 bg-[#f7f6f2] px-3 py-2 text-xs outline-none focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2]"
+                  className="w-full rounded-md border border-black/10 bg-cream px-3 py-2 text-xs outline-none focus:border-teal focus:ring-1 focus:ring-teal"
                 />
               </div>
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-xs font-semibold mb-1 text-gray-700"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
+                  className="block text-xs font-semibold mb-1 text-gray-700 font-raleway"
                 >
                   {t("emailAddress")}
                 </label>
@@ -186,7 +173,7 @@ export default function CartPage() {
                   name="email"
                   type="email"
                   required
-                  className="w-full rounded-md border border-black/10 bg-[#f7f6f2] px-3 py-2 text-xs outline-none focus:border-[#2CADB2] focus:ring-1 focus:ring-[#2CADB2]"
+                  className="w-full rounded-md border border-black/10 bg-cream px-3 py-2 text-xs outline-none focus:border-teal focus:ring-1 focus:ring-teal"
                 />
               </div>
 
@@ -199,8 +186,7 @@ export default function CartPage() {
                 />
                 <label
                   htmlFor="optIn"
-                  className="text-[11px] text-gray-600"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
+                  className="text-[11px] text-gray-600 font-raleway"
                 >
                   {t("optInLabel")}
                 </label>
@@ -209,36 +195,28 @@ export default function CartPage() {
               <button
                 type="submit"
                 disabled={!hasItems}
-                className="mt-2 inline-flex w-full items-center justify-center rounded-full px-6 py-2 text-xs font-bold shadow-md transition hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  backgroundColor: "#F8CF41",
-                  color: "#24282B"
-                }}
+                className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-gold px-6 py-2 font-montserrat text-xs font-bold text-charcoal shadow-md transition hover:bg-gold-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t("submitButton")}
               </button>
 
               {!hasItems && !submitted && (
                 <p
-                  className="text-[11px] text-gray-500 mt-1"
-                  style={{ fontFamily: "Raleway, sans-serif" }}
+                  className="text-[11px] text-gray-500 mt-1 font-raleway"
                 >
                   {t("submitHint")}
                 </p>
               )}
 
               {submitted && (
-                <div className="mt-3 rounded-xl border border-[#2CADB2]/40 bg-[#f0fbfa] px-3 py-2">
+                <div className="mt-3 rounded-xl border border-teal/40 bg-teal-light px-3 py-2">
                   <p
-                    className="text-[11px] font-semibold text-[#2CADB2]"
-                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                    className="text-[11px] font-semibold text-teal font-montserrat"
                   >
                     {t("successTitle")}
                   </p>
                   <p
-                    className="mt-1 text-[11px] text-gray-700"
-                    style={{ fontFamily: "Raleway, sans-serif" }}
+                    className="mt-1 text-[11px] text-gray-700 font-raleway"
                   >
                     {t("successBody")}
                   </p>

@@ -47,7 +47,7 @@ export function LibraryLanguageFilter({
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-[#2CADB2] flex items-center justify-between gap-2 text-left"
+        className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-teal flex items-center justify-between gap-2 text-left"
       >
         <span className="flex items-center gap-2 min-w-0">
           <span className="text-lg emoji-flag leading-none shrink-0" aria-hidden>
@@ -71,8 +71,8 @@ export function LibraryLanguageFilter({
               type="button"
               role="option"
               aria-selected={!value}
-              className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-[#2CADB2]/10 ${
-                !value ? "bg-[#2CADB2]/10 font-semibold text-[#2CADB2]" : ""
+              className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-teal/10 ${
+                !value ? "bg-teal/10 font-semibold text-teal" : ""
               }`}
               onClick={() => {
                 onChange("");
@@ -91,9 +91,9 @@ export function LibraryLanguageFilter({
                 type="button"
                 role="option"
                 aria-selected={value === lang}
-                className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-[#2CADB2]/10 ${
+                className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-teal/10 ${
                   value === lang
-                    ? "bg-[#2CADB2]/10 font-semibold text-[#2CADB2]"
+                    ? "bg-teal/10 font-semibold text-teal"
                     : ""
                 }`}
                 onClick={() => {
