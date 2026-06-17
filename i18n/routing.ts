@@ -1,15 +1,18 @@
 import { createNavigation } from "next-intl/navigation";
 import { defineRouting } from "next-intl/routing";
+import {
+  PORTAL_LOCALE_LABELS,
+  PORTAL_LOCALE_ORDER,
+  type PortalLocaleCode,
+} from "@/lib/language-display";
 
 /**
  * Supported portal UI locales (URL prefix + message catalog).
  * Keep in sync with `messages/{locale}.json` and the header language switcher.
- *
- * Currently: US English, Canadian French, Mexican Spanish, German, Brazilian Portuguese.
  */
-export const allLocales = ["en", "fr-CA", "es-MX", "de", "pt-BR"] as const;
+export const allLocales = [...PORTAL_LOCALE_ORDER] as const;
 
-export type AppLocale = (typeof allLocales)[number];
+export type AppLocale = PortalLocaleCode;
 
 export const routing = defineRouting({
   locales: [...allLocales],
@@ -21,15 +24,9 @@ export const { Link, redirect, usePathname, useRouter } =
   createNavigation(routing);
 
 /** Human-readable locale labels (header switcher). */
-export const localeNames: Record<string, string> = {
-  en: "US English (US/Canada)",
-  "fr-CA": "CA Français (Canada)",
-  "es-MX": "MX Español (México)",
-  de: "DE Deutsch",
-  "pt-BR": "BR Português (Brasil)",
-};
+export const localeNames: Record<string, string> = { ...PORTAL_LOCALE_LABELS };
 
-/** Short labels for the compact language switcher dropdown. */
+/** Short labels for compact UI. */
 export const localeShortNames: Record<string, string> = {
   en: "EN",
   "fr-CA": "FR",
@@ -38,8 +35,7 @@ export const localeShortNames: Record<string, string> = {
   "pt-BR": "PT",
 };
 
-/** Locales listed first in the language switcher (all supported locales today). */
-export const tier1Locales: AppLocale[] = ["en", "fr-CA", "es-MX", "de", "pt-BR"];
+export const tier1Locales: AppLocale[] = [...PORTAL_LOCALE_ORDER];
 
 /** Reserved for future “extra” locales in the switcher; empty = single list only. */
 export const tier2Locales: AppLocale[] = [];

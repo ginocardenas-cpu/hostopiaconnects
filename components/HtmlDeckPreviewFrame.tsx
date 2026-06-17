@@ -105,11 +105,11 @@ export function HtmlDeckPreviewFrame({
   return (
     <div className={cn("flex h-[min(72vh,640px)] flex-col", className)}>
       {supportsI18n && (
-        <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-black/8 bg-white px-4 py-2 font-raleway">
+        <div className="flex shrink-0 flex-wrap items-center gap-3 border-b border-black/8 bg-white px-4 py-2 font-raleway">
           <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-gray-500">
             {t("previewDocumentLanguage")}
           </span>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {DECK_LANG_OPTIONS.map((opt) => (
               <button
                 key={opt.code}

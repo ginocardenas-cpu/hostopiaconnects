@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef, useId } from "react";
 import { allAssetLanguages, type AssetLanguage } from "@/lib/assets";
 import { ASSET_LANGUAGE_FLAGS } from "@/lib/assetLanguageFlags";
+import {
+  assetLanguageLabel,
+  orderedLibraryLanguages,
+} from "@/lib/language-display";
+
+const libraryLanguages = orderedLibraryLanguages(allAssetLanguages);
 
 const ALL_LANG_FLAG = "🌐";
 
@@ -53,7 +59,9 @@ export function LibraryLanguageFilter({
           <span className="text-lg emoji-flag leading-none shrink-0" aria-hidden>
             {selected ? ASSET_LANGUAGE_FLAGS[selected] : ALL_LANG_FLAG}
           </span>
-          <span className="truncate">{value || t("allLanguages")}</span>
+          <span className="truncate">
+            {selected ? assetLanguageLabel(selected) : t("allLanguages")}
+          </span>
         </span>
         <i
           className={`fa-solid fa-chevron-${open ? "up" : "down"} text-[10px] text-gray-400 shrink-0`}
@@ -85,7 +93,7 @@ export function LibraryLanguageFilter({
               {t("allLanguages")}
             </button>
           </li>
-          {allAssetLanguages.map((lang) => (
+          {libraryLanguages.map((lang) => (
             <li key={lang} role="presentation">
               <button
                 type="button"
@@ -104,7 +112,7 @@ export function LibraryLanguageFilter({
                 <span className="text-lg emoji-flag leading-none" aria-hidden>
                   {ASSET_LANGUAGE_FLAGS[lang]}
                 </span>
-                {lang}
+                {assetLanguageLabel(lang)}
               </button>
             </li>
           ))}

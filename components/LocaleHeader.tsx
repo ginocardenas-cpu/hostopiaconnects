@@ -84,7 +84,7 @@ export function LocaleHeader() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <div className="flex items-center flex-shrink-0 gap-3 sm:gap-4 md:gap-5">
             <button
               type="button"
               className="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-100 hover:text-teal transition-colors"
@@ -96,9 +96,19 @@ export function LocaleHeader() {
               {mobileOpen ? <X size={22} strokeWidth={2.25} /> : <Menu size={22} strokeWidth={2.25} />}
             </button>
 
-            <SearchBar />
-            <CartNav />
-            <LanguageSwitcher />
+            <div className="flex items-center gap-3 sm:gap-4">
+              <SearchBar />
+              <CartNav />
+            </div>
+
+            <div
+              className="hidden sm:block h-6 w-px shrink-0 bg-gray-200 mx-0.5 md:mx-1"
+              aria-hidden
+            />
+
+            <div className="pl-0 sm:pl-1 md:pl-3">
+              <LanguageSwitcher />
+            </div>
           </div>
         </div>
 

@@ -4,20 +4,20 @@
  */
 
 import deckI18nManifest from "./asset-deck-i18n.json";
+import {
+  DECK_LANG_LABELS,
+  DECK_LANG_OPTIONS,
+  DECK_LANG_ORDER,
+  type DeckLangCode,
+} from "./language-display";
 
-export type DeckLang = "en" | "es" | "de" | "fr" | "pt";
+export type DeckLang = DeckLangCode;
 
 export type AssetDeliverable = "Deck" | "Slick" | "Overview";
 
-export const SUPPORTED_LANGS: DeckLang[] = ["en", "es", "de", "fr", "pt"];
+export const SUPPORTED_LANGS: DeckLang[] = [...DECK_LANG_ORDER];
 
-export const DECK_LANG_OPTIONS: { code: DeckLang; label: string }[] = [
-  { code: "en", label: "English" },
-  { code: "es", label: "Español" },
-  { code: "de", label: "Deutsch" },
-  { code: "fr", label: "Français" },
-  { code: "pt", label: "Português (BR)" },
-];
+export { DECK_LANG_OPTIONS };
 
 /** Longest-first product matchers → storage prefix (§5). */
 const PRODUCT_MATCHERS: { pattern: RegExp; prefix: string }[] = [
@@ -120,7 +120,7 @@ export function resolveAssetPreviewMeta(fileName: string): {
 }
 
 export function deckLangLabel(code: DeckLang): string {
-  return DECK_LANG_OPTIONS.find((o) => o.code === code)?.label ?? code;
+  return DECK_LANG_LABELS[code] ?? code;
 }
 
 /** Pre-seed before iframe insert — same-origin only (§3). */
