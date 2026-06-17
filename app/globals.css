@@ -118,14 +118,6 @@ a {
   text-decoration: none;
 }
 
-.emoji-flag {
-  font-family: system-ui, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji",
-    "EmojiOne Color", "Android Emoji", sans-serif;
-  line-height: 1;
-  font-style: normal;
-  font-weight: normal;
-}
-
 ::-webkit-scrollbar {
   width: 6px;
 }

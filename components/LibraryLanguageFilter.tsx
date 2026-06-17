@@ -1,16 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef, useId } from "react";
-import { allAssetLanguages, type AssetLanguage } from "@/lib/assets";
-import { ASSET_LANGUAGE_FLAGS } from "@/lib/assetLanguageFlags";
+import { type AssetLanguage } from "@/lib/assets";
 import {
   assetLanguageLabel,
   orderedLibraryLanguages,
 } from "@/lib/language-display";
+import { allAssetLanguages } from "@/lib/assets";
 
 const libraryLanguages = orderedLibraryLanguages(allAssetLanguages);
-
-const ALL_LANG_FLAG = "🌐";
 
 type TLibrary = (key: string) => string;
 
@@ -55,13 +53,8 @@ export function LibraryLanguageFilter({
         onClick={() => setOpen((o) => !o)}
         className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm font-body bg-white outline-none focus:border-teal flex items-center justify-between gap-2 text-left"
       >
-        <span className="flex items-center gap-2 min-w-0">
-          <span className="text-lg emoji-flag leading-none shrink-0" aria-hidden>
-            {selected ? ASSET_LANGUAGE_FLAGS[selected] : ALL_LANG_FLAG}
-          </span>
-          <span className="truncate">
-            {selected ? assetLanguageLabel(selected) : t("allLanguages")}
-          </span>
+        <span className="truncate">
+          {selected ? assetLanguageLabel(selected) : t("allLanguages")}
         </span>
         <i
           className={`fa-solid fa-chevron-${open ? "up" : "down"} text-[10px] text-gray-400 shrink-0`}
@@ -79,7 +72,7 @@ export function LibraryLanguageFilter({
               type="button"
               role="option"
               aria-selected={!value}
-              className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-teal/10 ${
+              className={`w-full px-3 py-2 text-sm text-left hover:bg-teal/10 ${
                 !value ? "bg-teal/10 font-semibold text-teal" : ""
               }`}
               onClick={() => {
@@ -87,9 +80,6 @@ export function LibraryLanguageFilter({
                 setOpen(false);
               }}
             >
-              <span className="text-lg emoji-flag leading-none" aria-hidden>
-                {ALL_LANG_FLAG}
-              </span>
               {t("allLanguages")}
             </button>
           </li>
@@ -99,7 +89,7 @@ export function LibraryLanguageFilter({
                 type="button"
                 role="option"
                 aria-selected={value === lang}
-                className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left hover:bg-teal/10 ${
+                className={`w-full px-3 py-2 text-sm text-left hover:bg-teal/10 ${
                   value === lang
                     ? "bg-teal/10 font-semibold text-teal"
                     : ""
@@ -109,9 +99,6 @@ export function LibraryLanguageFilter({
                   setOpen(false);
                 }}
               >
-                <span className="text-lg emoji-flag leading-none" aria-hidden>
-                  {ASSET_LANGUAGE_FLAGS[lang]}
-                </span>
                 {assetLanguageLabel(lang)}
               </button>
             </li>

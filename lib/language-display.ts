@@ -19,14 +19,6 @@ export const PORTAL_LOCALE_LABELS: Record<PortalLocaleCode, string> = {
   "pt-BR": "Portuguese (Brazilian)",
 };
 
-export const PORTAL_LOCALE_FLAGS: Record<PortalLocaleCode, string> = {
-  en: "🇺🇸",
-  "fr-CA": "🇨🇦",
-  "es-MX": "🇲🇽",
-  de: "🇩🇪",
-  "pt-BR": "🇧🇷",
-};
-
 /** Document preview language codes — same sequence as portal locales. */
 export type DeckLangCode = "en" | "fr" | "es" | "de" | "pt";
 

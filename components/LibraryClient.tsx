@@ -18,7 +18,7 @@ import {
   type AssetLanguage,
 } from "@/lib/assets";
 import { LibraryLanguageFilter } from "@/components/LibraryLanguageFilter";
-import { ASSET_LANGUAGE_FLAGS } from "@/lib/assetLanguageFlags";
+import { assetLanguageLabel } from "@/lib/language-display";
 
 const ALL_CONTENT_TYPES: ContentType[] = [
   "Video",
@@ -354,8 +354,7 @@ export function LibraryClient() {
                 )}
                 {selectedLanguage && (
                   <FilterPill
-                    icon={ASSET_LANGUAGE_FLAGS[selectedLanguage as AssetLanguage]}
-                    label={selectedLanguage}
+                    label={assetLanguageLabel(selectedLanguage as AssetLanguage)}
                     onRemove={() => setSelectedLanguage("")}
                   />
                 )}
