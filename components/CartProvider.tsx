@@ -1,8 +1,20 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { type Asset, getAssetById } from "@/lib/assets";
 import type { DeckLang } from "@/lib/html-deck-i18n";
+import {
+  clearCartStorage,
+  loadCartFromStorage,
+  saveCartToStorage,
+} from "@/lib/cart-storage";
 
 export interface CartItem {
   assetId: string;
@@ -19,6 +31,7 @@ interface CartContextValue {
   items: CartItem[];
   lineItems: CartLineItem[];
   assets: Asset[];
+  hydrated: boolean;
   addItem: (assetId: string, options?: { deckLang?: DeckLang }) => void;
   removeItem: (assetId: string) => void;
   clear: () => void;
@@ -28,6 +41,17 @@ const CartContext = createContext<CartContextValue | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setItems(loadCartFromStorage());
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    saveCartToStorage(items);
+  }, [items, hydrated]);
 
   const addItem = (assetId: string, options?: { deckLang?: DeckLang }) => {
     setItems((prev) => {
@@ -46,7 +70,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prev) => prev.filter((item) => item.assetId !== assetId));
   };
 
-  const clear = () => setItems([]);
+  const clear = () => {
+    setItems([]);
+    clearCartStorage();
+  };
 
   const lineItems = useMemo((): CartLineItem[] => {
     const rows: CartLineItem[] = [];
@@ -63,9 +90,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     items,
     lineItems,
     assets,
+    hydrated,
     addItem,
     removeItem,
-    clear
+    clear,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
@@ -78,4 +106,3 @@ export function useCart() {
   }
   return ctx;
 }
-
