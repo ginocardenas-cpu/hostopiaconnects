@@ -3,6 +3,8 @@
  * @see docs/portal-i18n-integration-brief.md
  */
 
+import deckI18nManifest from "./asset-deck-i18n.json";
+
 export type DeckLang = "en" | "es" | "de" | "fr" | "pt";
 
 export type AssetDeliverable = "Deck" | "Slick" | "Overview";
@@ -58,7 +60,15 @@ export function isExcludedLegacyAsset(fileName: string): boolean {
   return /professional\s+logo\s+design\s+presentation\s+es\s+final/i.test(fileName.trim());
 }
 
-/** All 51 HTML bundles honor the applyLang contract except the legacy Logo ES file. */
+const FILES_WITH_APPLY_LANG = new Set(deckI18nManifest.filesWithApplyLang);
+
+/** True when the synced bundle exposes window.applyLang (from asset-deck-i18n.json). */
+export function assetSupportsDeckI18n(fileName: string): boolean {
+  const base = fileName.trim().replace(/^.*[/\\]/, "");
+  return FILES_WITH_APPLY_LANG.has(base);
+}
+
+/** All 51 HTML bundles except the legacy Logo ES file. */
 export function isHtmlDeckAsset(fileName: string): boolean {
   const name = fileName.trim();
   if (!/\.html?$/i.test(name)) return false;
@@ -158,6 +168,22 @@ export function detectDeckI18nInIframe(iframe: HTMLIFrameElement | null): boolea
   try {
     const win = iframe?.contentWindow as DeckWindow | null;
     return typeof win?.applyLang === "function";
+  } catch {
+    return false;
+  }
+}
+
+/** True when iframe loaded a missing asset (Next/static 404 page). */
+export function detectIframeMissingAsset(iframe: HTMLIFrameElement | null): boolean {
+  if (!iframe) return false;
+  try {
+    const doc = iframe.contentDocument;
+    if (!doc) return false;
+    const title = (doc.title || "").toLowerCase();
+    const bodyText = (doc.body?.innerText || "").slice(0, 500).toLowerCase();
+    if (title.includes("404") && bodyText.includes("not found")) return true;
+    if (bodyText.includes("this page could not be found")) return true;
+    return false;
   } catch {
     return false;
   }

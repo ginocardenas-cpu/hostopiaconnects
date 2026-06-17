@@ -8,7 +8,7 @@ import {
   appLocaleToDeckLang,
   DECK_LANG_OPTIONS,
   deckLangLabel,
-  isHtmlDeckAsset,
+  assetSupportsDeckI18n,
   type DeckLang,
 } from "@/lib/html-deck-i18n";
 
@@ -25,7 +25,7 @@ export function AddToCartButton({ assetId, fileName = "" }: AddToCartButtonProps
   const cartEntry = items.find((item) => item.assetId === assetId);
   const inCart = Boolean(cartEntry);
   const needsLangPick = useMemo(
-    () => isHtmlDeckAsset(fileName),
+    () => assetSupportsDeckI18n(fileName),
     [fileName]
   );
 

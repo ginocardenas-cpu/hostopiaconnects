@@ -8,7 +8,7 @@ import {
   applyAssetLang,
   DECK_LANG_OPTIONS,
   detectDeckI18nInIframe,
-  isHtmlDeckAsset,
+  detectIframeMissingAsset,
   preseedAssetLang,
   resolveAssetPreviewMeta,
   type DeckLang,
@@ -45,37 +45,44 @@ export function HtmlDeckPreviewFrame({
     () => resolveAssetPreviewMeta(sourceName),
     [sourceName]
   );
-  const expectsI18n = useMemo(() => isHtmlDeckAsset(sourceName), [sourceName]);
 
   const [deckLang, setDeckLang] = useState<DeckLang>(() =>
     appLocaleToDeckLang(portalLocale)
   );
-  const [supportsI18n, setSupportsI18n] = useState(expectsI18n);
+  const [supportsI18n, setSupportsI18n] = useState(false);
+  const [missingFile, setMissingFile] = useState(false);
 
   useEffect(() => {
     setDeckLang(appLocaleToDeckLang(portalLocale));
+    setSupportsI18n(false);
+    setMissingFile(false);
   }, [portalLocale, fileUrl]);
 
   useEffect(() => {
-    if (previewMeta) {
+    if (previewMeta && supportsI18n) {
       preseedAssetLang(previewMeta.storageKey, deckLang);
     }
-  }, [previewMeta, deckLang, fileUrl]);
+  }, [previewMeta, deckLang, fileUrl, supportsI18n]);
 
-  const syncIframeLang = useCallback(
-    (lang: DeckLang) => {
-      applyAssetLang(iframeRef.current, lang, { hideToggle: true });
-    },
-    []
-  );
+  const syncIframeLang = useCallback((lang: DeckLang) => {
+    applyAssetLang(iframeRef.current, lang, { hideToggle: true });
+  }, []);
 
   const handleIframeLoad = useCallback(() => {
-    const detected = detectDeckI18nInIframe(iframeRef.current);
-    if (detected || expectsI18n) {
-      setSupportsI18n(true);
-      syncIframeLang(deckLang);
+    const iframe = iframeRef.current;
+    if (detectIframeMissingAsset(iframe)) {
+      setMissingFile(true);
+      setSupportsI18n(false);
+      return;
     }
-  }, [deckLang, expectsI18n, syncIframeLang]);
+
+    const detected = detectDeckI18nInIframe(iframe);
+    setSupportsI18n(detected);
+    if (detected) {
+      const lang = deckLang;
+      syncIframeLang(lang);
+    }
+  }, [deckLang, syncIframeLang]);
 
   useEffect(() => {
     if (supportsI18n) {
@@ -85,13 +92,14 @@ export function HtmlDeckPreviewFrame({
 
   const applyLang = useCallback(
     (lang: DeckLang) => {
+      if (!supportsI18n) return;
       setDeckLang(lang);
       if (previewMeta) {
         preseedAssetLang(previewMeta.storageKey, lang);
       }
       syncIframeLang(lang);
     },
-    [previewMeta, syncIframeLang]
+    [previewMeta, supportsI18n, syncIframeLang]
   );
 
   return (
@@ -120,14 +128,30 @@ export function HtmlDeckPreviewFrame({
           </div>
         </div>
       )}
-      <iframe
-        ref={iframeRef}
-        title={title}
-        src={fileUrl}
-        onLoad={handleIframeLoad}
-        className="h-full w-full flex-1 border-0 bg-white"
-        sandbox="allow-scripts allow-same-origin allow-popups-to-escape-sandbox"
-      />
+      <div className="relative min-h-0 flex-1">
+        {missingFile && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white px-6 text-center font-raleway">
+            <div className="max-w-md">
+              <p className="text-base font-semibold text-charcoal font-montserrat">
+                {t("previewFileMissingTitle")}
+              </p>
+              <p className="mt-2 text-sm text-gray-600">{t("previewFileMissingBody")}</p>
+              <p className="mt-3 break-all text-xs text-gray-400">{sourceName}</p>
+            </div>
+          </div>
+        )}
+        <iframe
+          ref={iframeRef}
+          title={title}
+          src={fileUrl}
+          onLoad={handleIframeLoad}
+          className={cn(
+            "h-full w-full border-0 bg-white",
+            missingFile && "invisible"
+          )}
+          sandbox="allow-scripts allow-same-origin allow-popups-to-escape-sandbox"
+        />
+      </div>
     </div>
   );
 }

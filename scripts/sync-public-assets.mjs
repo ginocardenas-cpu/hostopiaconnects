@@ -70,6 +70,15 @@ function buildSourceIndex() {
   return byStem;
 }
 
+function htmlHasApplyLang(filePath) {
+  try {
+    const content = fs.readFileSync(filePath, "utf8");
+    return /function\s+applyLang|window\.applyLang\s*=/.test(content);
+  } catch {
+    return false;
+  }
+}
+
 function main() {
   if (!fs.existsSync(catalogPath)) {
     console.error("Missing lib/assets.data.json — run npm run assets:from-inventory first.");
@@ -81,6 +90,7 @@ function main() {
   const index = buildSourceIndex();
   let copied = 0;
   let missing = [];
+  const deckI18nFiles = [];
 
   for (const asset of catalog) {
     const targetName = asset.fileName?.trim();
@@ -100,7 +110,17 @@ function main() {
     }
     fs.copyFileSync(source, dest);
     copied++;
+    if (htmlHasApplyLang(dest)) {
+      deckI18nFiles.push(targetName);
+    }
   }
+
+  const metaPath = path.join(root, "lib", "asset-deck-i18n.json");
+  fs.writeFileSync(
+    metaPath,
+    JSON.stringify({ filesWithApplyLang: deckI18nFiles.sort() }, null, 2) + "\n"
+  );
+  console.log(`${deckI18nFiles.length} file(s) expose applyLang → lib/asset-deck-i18n.json`);
 
   console.log(`Synced ${copied} file(s) to public/assets/`);
   if (missing.length) {
