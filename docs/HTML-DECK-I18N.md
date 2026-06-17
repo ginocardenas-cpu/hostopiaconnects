@@ -1,23 +1,26 @@
-# HTML deck i18n (Logo Design)
+# HTML deck i18n (all 51 assets)
 
-Some Logo Design assets ship as a single `.html` file with built-in translations (`data-i18n`, `LANG.en|es|fr|de`, `window.applyLang`).
+All 51 HTML bundles honor the same preview contract. See **`docs/portal-i18n-integration-brief.md`** for the full hand-off.
 
 ## Portal behavior
 
 | Step | Behavior |
 |------|----------|
-| **Preview** | `HtmlDeckPreviewFrame` loads the deck in an iframe and shows EN / ES / FR / DE toggles. The initial language follows the portal route (`/es-MX/` → Spanish). The in-document `#lang-toggle` is hidden. |
-| **Add to My Resources** | For filenames matching `Professional Logo Design` + `.html`, a dialog asks which **document language** to fulfill. The choice is stored on the cart line as `deckLang`. |
-| **My Resources** | Each line shows `Requested file language: …` when `deckLang` is set. |
+| **Preview** | `HtmlDeckPreviewFrame` loads the bundle in an iframe. Portal toolbar offers EN / ES / DE / FR / PT. Calls `applyAssetLang()` on load and on language change. Hides in-asset `#lang-toggle`. |
+| **Pre-seed** | `preseedAssetLang(storageKey, lang)` before paint when storage key resolves from filename (§5 map in brief). |
+| **Add to My Resources** | HTML bundles prompt for **document language** (`deckLang`: `en` \| `es` \| `de` \| `fr` \| `pt`). |
+| **Legacy exclusion** | `Professional Logo Design Presentation ES FINAL 2026-05-14.html` is excluded — use the 5-language deck instead. |
 
-Portal UI locale (`en`, `es-MX`, `fr-CA`, `de`) is separate from deck codes (`en`, `es`, `fr`, `de`). Mapping lives in `lib/html-deck-i18n.ts` (`appLocaleToDeckLang`).
+Portal UI locale (`en`, `es-MX`, `fr-CA`, `de`, `pt-BR`) maps to deck codes via `appLocaleToDeckLang()` in `lib/html-deck-i18n.ts`.
+
+## Sync files for deploy
+
+```bash
+npm run assets:sync-public
+```
+
+Copies bundles from `Assets/HostopiaConnects/` → `public/assets/` by product + deliverable match.
 
 ## Fulfillment (future)
 
-When generating download bundles, inject a startup script that calls `applyLang(deckLang)` and removes `#lang-toggle`, so the delivered file is single-language with no switcher—same pattern as static exports.
-
-## Extending to more assets
-
-1. Ensure the HTML exposes `applyLang` and `LANG.*`.
-2. Broaden `isLikelyHtmlDeckAsset()` in `lib/html-deck-i18n.ts` (or detect at runtime via `detectDeckI18nInIframe`).
-3. Copy files under `public/assets/` with stable URLs referenced from the inventory.
+When generating download bundles, inject a startup script that calls `applyLang(deckLang)` and removes `#lang-toggle`.

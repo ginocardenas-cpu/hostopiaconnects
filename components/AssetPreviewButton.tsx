@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { HtmlDeckPreviewFrame } from "@/components/HtmlDeckPreviewFrame";
-import { isLikelyHtmlDeckAsset } from "@/lib/html-deck-i18n";
 
 function fileExtensionFromUrl(url: string): string {
   try {
@@ -37,7 +36,7 @@ export function AssetPreviewButton({
 }: {
   fileUrl: string;
   title: string;
-  /** Inventory Filename; used to detect Logo Design HTML decks with applyLang. */
+  /** Inventory Filename; wires preview-mode applyLang for HTML bundles. */
   fileName?: string;
   /** Tailwind + layout classes for the trigger (match surrounding buttons). */
   className?: string;
@@ -55,10 +54,6 @@ export function AssetPreviewButton({
       return fileUrl.split("/").pop() ?? "";
     }
   }, [fileName, fileUrl]);
-  const expectDeckI18n = useMemo(
-    () => ext === "html" && isLikelyHtmlDeckAsset(sourceName),
-    [ext, sourceName]
-  );
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -108,7 +103,7 @@ export function AssetPreviewButton({
               <HtmlDeckPreviewFrame
                 fileUrl={fileUrl}
                 title={title}
-                expectDeckI18n={expectDeckI18n}
+                fileName={sourceName}
               />
             )}
             {mode === "iframe" && ext !== "html" && (

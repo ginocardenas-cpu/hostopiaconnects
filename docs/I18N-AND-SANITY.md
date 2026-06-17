@@ -1,8 +1,8 @@
 # Internationalization (i18n) and Sanity CMS
 
-## Current i18n setup (four portal locales)
+## Current i18n setup (five portal locales)
 
-- **Locales:** `en` (default), `fr-CA`, `es-MX`, `de` — defined in **`i18n/routing.ts`** (`allLocales`, `localeNames`, `tier1Locales` / `tier2Locales`).
+- **Locales:** `en` (default), `fr-CA`, `es-MX`, `de`, `pt-BR` — defined in **`i18n/routing.ts`** (`allLocales`, `localeNames`, `tier1Locales` / `tier2Locales`).
 - **URLs:** All routes use a locale prefix, e.g. `/en`, `/es-MX`, `/fr-CA`, `/de`, `/en/cart`, `/es-MX/how-it-works`.
 - **Middleware:** `middleware.ts` uses `next-intl` with that routing config (unknown locale segments are not valid routes).
 - **Translations:** UI strings live in **`messages/{locale}.json`** for each supported locale. Keep keys aligned with **`messages/en.json`**.

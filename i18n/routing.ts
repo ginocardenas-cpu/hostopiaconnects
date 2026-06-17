@@ -5,9 +5,9 @@ import { defineRouting } from "next-intl/routing";
  * Supported portal UI locales (URL prefix + message catalog).
  * Keep in sync with `messages/{locale}.json` and the header language switcher.
  *
- * Currently: US English, Canadian French, Mexican Spanish, German.
+ * Currently: US English, Canadian French, Mexican Spanish, German, Brazilian Portuguese.
  */
-export const allLocales = ["en", "fr-CA", "es-MX", "de"] as const;
+export const allLocales = ["en", "fr-CA", "es-MX", "de", "pt-BR"] as const;
 
 export type AppLocale = (typeof allLocales)[number];
 
@@ -26,6 +26,7 @@ export const localeNames: Record<string, string> = {
   "fr-CA": "CA Français (Canada)",
   "es-MX": "MX Español (México)",
   de: "DE Deutsch",
+  "pt-BR": "BR Português (Brasil)",
 };
 
 /** Short labels for the compact language switcher dropdown. */
@@ -34,10 +35,11 @@ export const localeShortNames: Record<string, string> = {
   "fr-CA": "FR",
   "es-MX": "ES",
   de: "DE",
+  "pt-BR": "PT",
 };
 
 /** Locales listed first in the language switcher (all supported locales today). */
-export const tier1Locales: AppLocale[] = ["en", "fr-CA", "es-MX", "de"];
+export const tier1Locales: AppLocale[] = ["en", "fr-CA", "es-MX", "de", "pt-BR"];
 
 /** Reserved for future “extra” locales in the switcher; empty = single list only. */
 export const tier2Locales: AppLocale[] = [];

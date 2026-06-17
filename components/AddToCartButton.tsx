@@ -8,13 +8,13 @@ import {
   appLocaleToDeckLang,
   DECK_LANG_OPTIONS,
   deckLangLabel,
-  isLikelyHtmlDeckAsset,
+  isHtmlDeckAsset,
   type DeckLang,
 } from "@/lib/html-deck-i18n";
 
 interface AddToCartButtonProps {
   assetId: string;
-  /** Inventory Filename — enables language picker for Logo Design HTML decks. */
+  /** Inventory Filename — enables language picker for HTML bundles with applyLang. */
   fileName?: string;
 }
 
@@ -25,7 +25,7 @@ export function AddToCartButton({ assetId, fileName = "" }: AddToCartButtonProps
   const cartEntry = items.find((item) => item.assetId === assetId);
   const inCart = Boolean(cartEntry);
   const needsLangPick = useMemo(
-    () => isLikelyHtmlDeckAsset(fileName),
+    () => isHtmlDeckAsset(fileName),
     [fileName]
   );
 

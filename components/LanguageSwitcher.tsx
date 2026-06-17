@@ -16,6 +16,7 @@ const UI_LOCALE_FLAGS: Record<string, string> = {
   "fr-CA": "🇨🇦",
   "es-MX": "🇲🇽",
   de: "🇩🇪",
+  "pt-BR": "🇧🇷",
 };
 
 export function LanguageSwitcher() {

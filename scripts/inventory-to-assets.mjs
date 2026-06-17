@@ -748,6 +748,7 @@ const APP_LOCALES = new Set([
   "fr-CA",
   "es-MX",
   "de",
+  "pt-BR",
 ]);
 
 function normalizeProductSlug(raw) {
