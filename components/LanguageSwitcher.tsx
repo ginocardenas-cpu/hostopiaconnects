@@ -38,7 +38,7 @@ export function LanguageSwitcher() {
   const label = localeNames[locale] ?? locale;
 
   return (
-    <div ref={ref} className="relative text-xs font-montserrat">
+    <div ref={ref} className="relative inline-block text-xs font-montserrat">
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
@@ -46,13 +46,13 @@ export function LanguageSwitcher() {
         aria-label={label}
         aria-expanded={open}
       >
-        <span className="max-w-[11rem] sm:max-w-[14rem] truncate">{label}</span>
+        <span className="whitespace-nowrap">{label}</span>
         <span className="ml-0.5 text-[10px] text-gray-500 shrink-0">{open ? "▴" : "▾"}</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-1 w-72 max-w-[85vw] rounded-xl border border-black/10 bg-white py-2 shadow-lg max-h-[min(70vh,420px)] overflow-y-auto">
-          <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
+        <div className="absolute right-0 z-50 mt-1 min-w-full w-max max-w-[85vw] rounded-xl border border-black/10 bg-white py-2 shadow-lg max-h-[min(70vh,420px)] overflow-y-auto">
+          <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400 whitespace-nowrap">
             {t("primaryLanguages")}
           </p>
           {tier1Locales.map((loc) => (
@@ -60,7 +60,7 @@ export function LanguageSwitcher() {
               key={loc}
               type="button"
               onClick={() => handleChange(loc)}
-              className={`flex w-full items-center px-3 py-1.5 text-left text-[11px] hover:bg-teal/10 ${
+              className={`block w-full px-3 py-1.5 text-left text-[11px] whitespace-nowrap hover:bg-teal/10 ${
                 locale === loc ? "font-bold text-teal" : "text-gray-700"
               }`}
             >
@@ -70,7 +70,7 @@ export function LanguageSwitcher() {
 
           {tier2Locales.length > 0 && (
             <div className="mt-1 border-t border-gray-100 pt-1">
-              <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
+              <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400 whitespace-nowrap">
                 {t("additionalLanguages")}
               </p>
               {tier2Locales.map((loc) => (
@@ -78,7 +78,7 @@ export function LanguageSwitcher() {
                   key={loc}
                   type="button"
                   onClick={() => handleChange(loc)}
-                  className={`flex w-full items-center px-3 py-1.5 text-left text-[11px] hover:bg-teal/10 ${
+                  className={`block w-full px-3 py-1.5 text-left text-[11px] whitespace-nowrap hover:bg-teal/10 ${
                     locale === loc ? "font-bold text-teal" : "text-gray-700"
                   }`}
                 >
