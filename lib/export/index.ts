@@ -24,14 +24,17 @@ export { generatePinnedHtmlBuffer } from "./generate-html";
 export {
   generateExportBuffer,
   writeExportToCache,
-  readEditableManifest,
-  writeEditableManifest,
-  findCachedExport,
-  findManifestEntry,
   buildExportMeta,
   editableOutputPath,
   htmlSourcePath,
 } from "./generate";
+export {
+  readEditableManifest,
+  writeEditableManifest,
+  findCachedExport,
+  findManifestEntry,
+  assetNeedsExport,
+} from "./cache";
 export { resolveDownloadForAsset, type ResolvedDownload } from "./resolve";
 export {
   listExportableAssets,

@@ -11,7 +11,7 @@ import {
   assetNeedsExport,
   editableOutputPath,
   findManifestEntry,
-} from "./generate";
+} from "./cache";
 
 export interface ResolvedDownload {
   fileUrl: string;
