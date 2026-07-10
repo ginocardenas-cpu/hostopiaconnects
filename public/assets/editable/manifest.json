@@ -1,0 +1,505 @@
+{
+  "generatedAt": "2026-07-10T00:21:51.627Z",
+  "entries": [
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "en",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/en/Professional Logo Design Overview - en.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/en/Professional%20Logo%20Design%20Overview%20-%20en.pdf",
+      "fileName": "Professional Logo Design Overview - en.pdf",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "en",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/en/Professional Logo Design Overview - en.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/en/Professional%20Logo%20Design%20Overview%20-%20en.docx",
+      "fileName": "Professional Logo Design Overview - en.docx",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "en",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/en/Professional Logo Design Overview - en.html",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/en/Professional%20Logo%20Design%20Overview%20-%20en.html",
+      "fileName": "Professional Logo Design Overview - en.html",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "fr",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/fr/Professional Logo Design Overview - fr.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/fr/Professional%20Logo%20Design%20Overview%20-%20fr.pdf",
+      "fileName": "Professional Logo Design Overview - fr.pdf",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "fr",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/fr/Professional Logo Design Overview - fr.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/fr/Professional%20Logo%20Design%20Overview%20-%20fr.docx",
+      "fileName": "Professional Logo Design Overview - fr.docx",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "fr",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/fr/Professional Logo Design Overview - fr.html",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/fr/Professional%20Logo%20Design%20Overview%20-%20fr.html",
+      "fileName": "Professional Logo Design Overview - fr.html",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "es",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/es/Professional Logo Design Overview - es.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/es/Professional%20Logo%20Design%20Overview%20-%20es.pdf",
+      "fileName": "Professional Logo Design Overview - es.pdf",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "es",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/es/Professional Logo Design Overview - es.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/es/Professional%20Logo%20Design%20Overview%20-%20es.docx",
+      "fileName": "Professional Logo Design Overview - es.docx",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "es",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/es/Professional Logo Design Overview - es.html",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/es/Professional%20Logo%20Design%20Overview%20-%20es.html",
+      "fileName": "Professional Logo Design Overview - es.html",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "de",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/de/Professional Logo Design Overview - de.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/de/Professional%20Logo%20Design%20Overview%20-%20de.pdf",
+      "fileName": "Professional Logo Design Overview - de.pdf",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "de",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/de/Professional Logo Design Overview - de.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/de/Professional%20Logo%20Design%20Overview%20-%20de.docx",
+      "fileName": "Professional Logo Design Overview - de.docx",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "de",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/de/Professional Logo Design Overview - de.html",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/de/Professional%20Logo%20Design%20Overview%20-%20de.html",
+      "fileName": "Professional Logo Design Overview - de.html",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "pt",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/pt/Professional Logo Design Overview - pt.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/pt/Professional%20Logo%20Design%20Overview%20-%20pt.pdf",
+      "fileName": "Professional Logo Design Overview - pt.pdf",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "pt",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/pt/Professional Logo Design Overview - pt.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/pt/Professional%20Logo%20Design%20Overview%20-%20pt.docx",
+      "fileName": "Professional Logo Design Overview - pt.docx",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-overview-1",
+      "slug": "professional-logo-design-overview-1",
+      "lang": "pt",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-overview-1/pt/Professional Logo Design Overview - pt.html",
+      "fileUrl": "/assets/editable/professional-logo-design-overview-1/pt/Professional%20Logo%20Design%20Overview%20-%20pt.html",
+      "fileName": "Professional Logo Design Overview - pt.html",
+      "sourceHtmlMtime": 1781722625057.0784
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "en",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/en/Professional Logo Design Sales Presentation - en.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/en/Professional%20Logo%20Design%20Sales%20Presentation%20-%20en.pdf",
+      "fileName": "Professional Logo Design Sales Presentation - en.pdf",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "en",
+      "format": "pptx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/en/Professional Logo Design Sales Presentation - en.pptx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/en/Professional%20Logo%20Design%20Sales%20Presentation%20-%20en.pptx",
+      "fileName": "Professional Logo Design Sales Presentation - en.pptx",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "en",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/en/Professional Logo Design Sales Presentation - en.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/en/Professional%20Logo%20Design%20Sales%20Presentation%20-%20en.docx",
+      "fileName": "Professional Logo Design Sales Presentation - en.docx",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "en",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/en/Professional Logo Design Sales Presentation - en.html",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/en/Professional%20Logo%20Design%20Sales%20Presentation%20-%20en.html",
+      "fileName": "Professional Logo Design Sales Presentation - en.html",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "fr",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/fr/Professional Logo Design Sales Presentation - fr.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/fr/Professional%20Logo%20Design%20Sales%20Presentation%20-%20fr.pdf",
+      "fileName": "Professional Logo Design Sales Presentation - fr.pdf",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "fr",
+      "format": "pptx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/fr/Professional Logo Design Sales Presentation - fr.pptx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/fr/Professional%20Logo%20Design%20Sales%20Presentation%20-%20fr.pptx",
+      "fileName": "Professional Logo Design Sales Presentation - fr.pptx",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "fr",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/fr/Professional Logo Design Sales Presentation - fr.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/fr/Professional%20Logo%20Design%20Sales%20Presentation%20-%20fr.docx",
+      "fileName": "Professional Logo Design Sales Presentation - fr.docx",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "fr",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/fr/Professional Logo Design Sales Presentation - fr.html",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/fr/Professional%20Logo%20Design%20Sales%20Presentation%20-%20fr.html",
+      "fileName": "Professional Logo Design Sales Presentation - fr.html",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "es",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/es/Professional Logo Design Sales Presentation - es.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/es/Professional%20Logo%20Design%20Sales%20Presentation%20-%20es.pdf",
+      "fileName": "Professional Logo Design Sales Presentation - es.pdf",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "es",
+      "format": "pptx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/es/Professional Logo Design Sales Presentation - es.pptx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/es/Professional%20Logo%20Design%20Sales%20Presentation%20-%20es.pptx",
+      "fileName": "Professional Logo Design Sales Presentation - es.pptx",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "es",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/es/Professional Logo Design Sales Presentation - es.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/es/Professional%20Logo%20Design%20Sales%20Presentation%20-%20es.docx",
+      "fileName": "Professional Logo Design Sales Presentation - es.docx",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "es",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/es/Professional Logo Design Sales Presentation - es.html",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/es/Professional%20Logo%20Design%20Sales%20Presentation%20-%20es.html",
+      "fileName": "Professional Logo Design Sales Presentation - es.html",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "de",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/de/Professional Logo Design Sales Presentation - de.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/de/Professional%20Logo%20Design%20Sales%20Presentation%20-%20de.pdf",
+      "fileName": "Professional Logo Design Sales Presentation - de.pdf",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "de",
+      "format": "pptx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/de/Professional Logo Design Sales Presentation - de.pptx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/de/Professional%20Logo%20Design%20Sales%20Presentation%20-%20de.pptx",
+      "fileName": "Professional Logo Design Sales Presentation - de.pptx",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "de",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/de/Professional Logo Design Sales Presentation - de.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/de/Professional%20Logo%20Design%20Sales%20Presentation%20-%20de.docx",
+      "fileName": "Professional Logo Design Sales Presentation - de.docx",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "de",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/de/Professional Logo Design Sales Presentation - de.html",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/de/Professional%20Logo%20Design%20Sales%20Presentation%20-%20de.html",
+      "fileName": "Professional Logo Design Sales Presentation - de.html",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "pt",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/pt/Professional Logo Design Sales Presentation - pt.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/pt/Professional%20Logo%20Design%20Sales%20Presentation%20-%20pt.pdf",
+      "fileName": "Professional Logo Design Sales Presentation - pt.pdf",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "pt",
+      "format": "pptx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/pt/Professional Logo Design Sales Presentation - pt.pptx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/pt/Professional%20Logo%20Design%20Sales%20Presentation%20-%20pt.pptx",
+      "fileName": "Professional Logo Design Sales Presentation - pt.pptx",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "pt",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/pt/Professional Logo Design Sales Presentation - pt.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/pt/Professional%20Logo%20Design%20Sales%20Presentation%20-%20pt.docx",
+      "fileName": "Professional Logo Design Sales Presentation - pt.docx",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-presentation-2",
+      "slug": "professional-logo-design-sales-presentation-2",
+      "lang": "pt",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-presentation-2/pt/Professional Logo Design Sales Presentation - pt.html",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-presentation-2/pt/Professional%20Logo%20Design%20Sales%20Presentation%20-%20pt.html",
+      "fileName": "Professional Logo Design Sales Presentation - pt.html",
+      "sourceHtmlMtime": 1781724016905.357
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "en",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/en/Professional Logo Design Sales Slick - en.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/en/Professional%20Logo%20Design%20Sales%20Slick%20-%20en.pdf",
+      "fileName": "Professional Logo Design Sales Slick - en.pdf",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "en",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/en/Professional Logo Design Sales Slick - en.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/en/Professional%20Logo%20Design%20Sales%20Slick%20-%20en.docx",
+      "fileName": "Professional Logo Design Sales Slick - en.docx",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "en",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/en/Professional Logo Design Sales Slick - en.html",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/en/Professional%20Logo%20Design%20Sales%20Slick%20-%20en.html",
+      "fileName": "Professional Logo Design Sales Slick - en.html",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "fr",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/fr/Professional Logo Design Sales Slick - fr.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/fr/Professional%20Logo%20Design%20Sales%20Slick%20-%20fr.pdf",
+      "fileName": "Professional Logo Design Sales Slick - fr.pdf",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "fr",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/fr/Professional Logo Design Sales Slick - fr.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/fr/Professional%20Logo%20Design%20Sales%20Slick%20-%20fr.docx",
+      "fileName": "Professional Logo Design Sales Slick - fr.docx",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "fr",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/fr/Professional Logo Design Sales Slick - fr.html",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/fr/Professional%20Logo%20Design%20Sales%20Slick%20-%20fr.html",
+      "fileName": "Professional Logo Design Sales Slick - fr.html",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "es",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/es/Professional Logo Design Sales Slick - es.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/es/Professional%20Logo%20Design%20Sales%20Slick%20-%20es.pdf",
+      "fileName": "Professional Logo Design Sales Slick - es.pdf",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "es",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/es/Professional Logo Design Sales Slick - es.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/es/Professional%20Logo%20Design%20Sales%20Slick%20-%20es.docx",
+      "fileName": "Professional Logo Design Sales Slick - es.docx",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "es",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/es/Professional Logo Design Sales Slick - es.html",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/es/Professional%20Logo%20Design%20Sales%20Slick%20-%20es.html",
+      "fileName": "Professional Logo Design Sales Slick - es.html",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "de",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/de/Professional Logo Design Sales Slick - de.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/de/Professional%20Logo%20Design%20Sales%20Slick%20-%20de.pdf",
+      "fileName": "Professional Logo Design Sales Slick - de.pdf",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "de",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/de/Professional Logo Design Sales Slick - de.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/de/Professional%20Logo%20Design%20Sales%20Slick%20-%20de.docx",
+      "fileName": "Professional Logo Design Sales Slick - de.docx",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "de",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/de/Professional Logo Design Sales Slick - de.html",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/de/Professional%20Logo%20Design%20Sales%20Slick%20-%20de.html",
+      "fileName": "Professional Logo Design Sales Slick - de.html",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "pt",
+      "format": "pdf",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/pt/Professional Logo Design Sales Slick - pt.pdf",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/pt/Professional%20Logo%20Design%20Sales%20Slick%20-%20pt.pdf",
+      "fileName": "Professional Logo Design Sales Slick - pt.pdf",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "pt",
+      "format": "docx",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/pt/Professional Logo Design Sales Slick - pt.docx",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/pt/Professional%20Logo%20Design%20Sales%20Slick%20-%20pt.docx",
+      "fileName": "Professional Logo Design Sales Slick - pt.docx",
+      "sourceHtmlMtime": 1781722659893.2437
+    },
+    {
+      "assetId": "professional-logo-design-sales-slick-3",
+      "slug": "professional-logo-design-sales-slick-3",
+      "lang": "pt",
+      "format": "html",
+      "publicPath": "public/assets/editable/professional-logo-design-sales-slick-3/pt/Professional Logo Design Sales Slick - pt.html",
+      "fileUrl": "/assets/editable/professional-logo-design-sales-slick-3/pt/Professional%20Logo%20Design%20Sales%20Slick%20-%20pt.html",
+      "fileName": "Professional Logo Design Sales Slick - pt.html",
+      "sourceHtmlMtime": 1781722659893.2437
+    }
+  ]
+}

@@ -1,5 +1,11 @@
 import JSZip from "jszip";
 
+export interface DownloadDescriptor {
+  fileUrl: string;
+  fileName: string;
+  requiresGeneration?: boolean;
+}
+
 /** Trigger a same-origin file download via a temporary anchor. */
 export function triggerFileDownload(fileUrl: string, fileName: string): void {
   const anchor = document.createElement("a");
@@ -26,6 +32,26 @@ function triggerBlobDownload(blob: Blob, fileName: string): void {
   }
 }
 
+async function fetchFileBlob(file: DownloadDescriptor): Promise<Blob> {
+  const response = await fetch(file.fileUrl, {
+    credentials: "same-origin",
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${file.fileName}`);
+  }
+  return response.blob();
+}
+
+/** Download a file, using fetch when served from the export API. */
+export async function downloadFile(file: DownloadDescriptor): Promise<void> {
+  if (file.requiresGeneration || file.fileUrl.startsWith("/api/export")) {
+    const blob = await fetchFileBlob(file);
+    triggerBlobDownload(blob, file.fileName);
+    return;
+  }
+  triggerFileDownload(file.fileUrl, file.fileName);
+}
+
 /** Ensure every entry in the zip has a unique path. */
 function uniqueZipPaths(fileNames: string[]): string[] {
   const seen = new Map<string, number>();
@@ -40,13 +66,13 @@ function uniqueZipPaths(fileNames: string[]): string[] {
 }
 
 export async function downloadFilesAsZip(
-  files: { fileUrl: string; fileName: string }[],
+  files: DownloadDescriptor[],
   zipFileName = "hostopia-connects-resources.zip"
 ): Promise<void> {
   if (files.length === 0) return;
 
   if (files.length === 1) {
-    triggerFileDownload(files[0].fileUrl, files[0].fileName);
+    await downloadFile(files[0]);
     return;
   }
 
@@ -55,11 +81,8 @@ export async function downloadFilesAsZip(
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const response = await fetch(file.fileUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ${file.fileName}`);
-    }
-    zip.file(paths[i], await response.arrayBuffer());
+    const blob = await fetchFileBlob(file);
+    zip.file(paths[i], await blob.arrayBuffer());
   }
 
   const blob = await zip.generateAsync({

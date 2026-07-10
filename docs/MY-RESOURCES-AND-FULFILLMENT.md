@@ -75,6 +75,7 @@ Related UI copy lives in **`messages/en.json`** under `howItWorks` and `cart` (a
 | My Resources review page | Implemented (`/cart`) |
 | Lead form UI | Implemented |
 | Form-gated immediate download | Implemented |
+| HTML export (language + format) | Implemented (`/api/export`, `public/assets/editable/`) |
 | Bundle request API (logging) | Implemented (`/api/bundle-request`) |
 | CRM / lead sync | **Not built** |
 | Server-side tracking counters | **Not built** (fields exist on `Asset`) |

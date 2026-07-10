@@ -1,8 +1,11 @@
+import { parseExportFormat } from "@/lib/export/formats";
+import type { ExportFormat } from "@/lib/export/formats";
 import type { DeckLang } from "@/lib/html-deck-i18n";
 
 export interface BundleRequestItem {
   assetId: string;
   deckLang?: DeckLang;
+  exportFormat?: ExportFormat;
 }
 
 export interface BundleRequestLead {
@@ -25,6 +28,9 @@ export interface BundleDownloadItem {
   fileUrl: string;
   fileName: string;
   deckLang?: DeckLang;
+  exportFormat?: ExportFormat;
+  /** Fetch via API when static pre-generated file is not cached */
+  requiresGeneration?: boolean;
 }
 
 export interface BundleRequestResponse {
@@ -60,12 +66,15 @@ export function parseBundleRequestPayload(
   const items: BundleRequestItem[] = [];
   for (const row of itemsRaw) {
     if (!row || typeof row !== "object") continue;
-    const assetId = String((row as BundleRequestItem).assetId ?? "").trim();
+    const rowItem = row as Record<string, unknown>;
+    const assetId = String(rowItem.assetId ?? "").trim();
     if (!assetId) continue;
-    const deckLang = (row as BundleRequestItem).deckLang;
+    const deckLang = rowItem.deckLang as DeckLang | undefined;
+    const exportFormat = parseExportFormat(rowItem.exportFormat);
     items.push({
       assetId,
       ...(deckLang ? { deckLang } : {}),
+      ...(exportFormat ? { exportFormat } : {}),
     });
   }
 

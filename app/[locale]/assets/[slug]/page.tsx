@@ -92,7 +92,11 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
         </p>
 
         <div className="flex flex-wrap items-center gap-3 mb-4">
-          <AddToCartButton assetId={asset.id} fileName={sourceFile} />
+          <AddToCartButton
+            assetId={asset.id}
+            fileName={sourceFile}
+            contentType={asset.contentType}
+          />
           <AssetPreviewButton
             fileUrl={asset.fileUrl}
             title={display.title}

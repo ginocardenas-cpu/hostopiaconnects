@@ -21,6 +21,11 @@ npm run assets:sync-public
 
 Copies bundles from `Assets/HostopiaConnects/` → `public/assets/` by product + deliverable match.
 
-## Fulfillment (future)
+## Fulfillment (export)
 
-When generating download bundles, inject a startup script that calls `applyLang(deckLang)` and removes `#lang-toggle`.
+When users add HTML bundles to My Resources, they choose **document language** (`deckLang`) and **download format** (PDF, PPTX, DOCX, or pinned HTML). After the lead form, `/api/bundle-request` resolves a download URL:
+
+- Pre-generated files under `public/assets/editable/` when present (`npm run assets:export-all`)
+- On-demand generation via `GET /api/export?assetId=&deckLang=&format=` as fallback
+
+Pinned HTML downloads inject a startup script that calls `applyLang(deckLang)` and hides `#lang-toggle`.

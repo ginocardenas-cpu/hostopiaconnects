@@ -9,6 +9,8 @@ import {
   getAssetFieldsForLocale,
   getAssetSourceFileName,
 } from "@/lib/assets";
+import { defaultExportFormat } from "@/lib/export/formats";
+import { resolveDownloadForAsset } from "@/lib/export/resolve";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -39,13 +41,26 @@ export async function POST(request: Request) {
     }
 
     const fields = getAssetFieldsForLocale(asset, locale);
+    const fileName = getAssetSourceFileName(asset);
+    const exportFormat =
+      item.exportFormat ?? defaultExportFormat(asset.contentType, fileName);
+
+    const resolved = resolveDownloadForAsset(asset, {
+      deckLang: item.deckLang,
+      exportFormat,
+    });
+
     downloads.push({
       assetId: asset.id,
       slug: asset.slug,
       title: fields.title,
-      fileUrl: asset.fileUrl,
-      fileName: getAssetSourceFileName(asset),
+      fileUrl: resolved.fileUrl,
+      fileName: resolved.fileName,
+      exportFormat,
       ...(item.deckLang ? { deckLang: item.deckLang } : {}),
+      ...(resolved.requiresGeneration
+        ? { requiresGeneration: true }
+        : {}),
     });
   }
 
@@ -63,6 +78,8 @@ export async function POST(request: Request) {
         slug: d.slug,
         fileName: d.fileName,
         deckLang: d.deckLang ?? null,
+        exportFormat: d.exportFormat ?? null,
+        requiresGeneration: d.requiresGeneration ?? false,
       })),
     })
   );

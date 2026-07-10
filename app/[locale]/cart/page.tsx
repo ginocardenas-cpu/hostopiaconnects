@@ -7,10 +7,11 @@ import { useCart } from "@/components/CartProvider";
 import { getAssetDisplayForLocale } from "@/lib/assets";
 import { deckLangLabel } from "@/lib/html-deck-i18n";
 import type { BundleDownloadItem, BundleRequestResponse } from "@/lib/bundle-request";
-import { triggerFileDownload, downloadFilesAsZip } from "@/lib/trigger-download";
+import { downloadFile, downloadFilesAsZip } from "@/lib/trigger-download";
 
 export default function CartPage() {
   const t = useTranslations("cart");
+  const tAsset = useTranslations("asset");
   const locale = useLocale();
   const { lineItems, items, removeItem, clear } = useCart();
   const hasItems = lineItems.length > 0;
@@ -21,6 +22,8 @@ export default function CartPage() {
   const [submitError, setSubmitError] = React.useState<string | null>(null);
   const [zipping, setZipping] = React.useState(false);
   const [zipError, setZipError] = React.useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = React.useState<string | null>(null);
+  const [downloadError, setDownloadError] = React.useState<string | null>(null);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
     event
@@ -45,9 +48,10 @@ export default function CartPage() {
             email: formData.get("email"),
             optIn: formData.get("optIn") === "on",
           },
-          items: items.map(({ assetId, deckLang }) => ({
+          items: items.map(({ assetId, deckLang, exportFormat }) => ({
             assetId,
             ...(deckLang ? { deckLang } : {}),
+            ...(exportFormat ? { exportFormat } : {}),
           })),
           locale,
         }),
@@ -105,6 +109,7 @@ export default function CartPage() {
                   downloads.map((d) => ({
                     fileUrl: d.fileUrl,
                     fileName: d.fileName,
+                    requiresGeneration: d.requiresGeneration,
                   })),
                   "hostopia-connects-resources.zip"
                 );
@@ -124,6 +129,9 @@ export default function CartPage() {
           </button>
           {zipError && (
             <p className="mt-2 text-[11px] text-red-600 font-raleway">{zipError}</p>
+          )}
+          {downloadError && (
+            <p className="mt-2 text-[11px] text-red-600 font-raleway">{downloadError}</p>
           )}
         </div>
 
@@ -147,13 +155,35 @@ export default function CartPage() {
                     })}
                   </p>
                 )}
+                {item.exportFormat && (
+                  <p className="text-[11px] font-medium text-teal mt-1 font-raleway">
+                    {t("requestedExportFormat", {
+                      format: tAsset(`exportFormat_${item.exportFormat}`),
+                    })}
+                  </p>
+                )}
               </div>
               <button
                 type="button"
-                onClick={() => triggerFileDownload(item.fileUrl, item.fileName)}
+                disabled={downloadingId === item.assetId}
+                onClick={async () => {
+                  setDownloadError(null);
+                  setDownloadingId(item.assetId);
+                  try {
+                    await downloadFile({
+                      fileUrl: item.fileUrl,
+                      fileName: item.fileName,
+                      requiresGeneration: item.requiresGeneration,
+                    });
+                  } catch {
+                    setDownloadError(t("downloadError"));
+                  } finally {
+                    setDownloadingId(null);
+                  }
+                }}
                 className="shrink-0 inline-flex items-center justify-center rounded-full border border-teal/40 bg-white px-4 py-2 font-montserrat text-xs font-bold text-teal hover:bg-teal/10"
               >
-                {t("downloadFile")}
+                {downloadingId === item.assetId ? t("preparingDownload") : t("downloadFile")}
               </button>
             </li>
           ))}
@@ -210,7 +240,7 @@ export default function CartPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {lineItems.map(({ asset, deckLang }) => {
+              {lineItems.map(({ asset, deckLang, exportFormat }) => {
                 const display = getAssetDisplayForLocale(asset, locale);
                 return (
                   <div
@@ -234,6 +264,13 @@ export default function CartPage() {
                         <p className="text-[11px] font-medium text-teal mt-2 font-raleway">
                           {t("requestedDocumentLanguage", {
                             language: deckLangLabel(deckLang),
+                          })}
+                        </p>
+                      )}
+                      {exportFormat && (
+                        <p className="text-[11px] font-medium text-teal mt-1 font-raleway">
+                          {t("requestedExportFormat", {
+                            format: tAsset(`exportFormat_${exportFormat}`),
                           })}
                         </p>
                       )}
