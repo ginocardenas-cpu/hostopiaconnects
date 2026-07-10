@@ -10,6 +10,7 @@ import {
 } from "./formats";
 import {
   assetNeedsExport,
+  editableOutputPath,
   findCachedExport,
   htmlSourcePath,
 } from "./generate";
@@ -57,6 +58,17 @@ export function resolveDownloadForAsset(
     return {
       fileUrl: cached.fileUrl,
       fileName: cached.fileName,
+      requiresGeneration: false,
+    };
+  }
+
+  // Fallback: pre-generated file on disk without manifest row (or stale manifest).
+  const { absPath, fileName: editableName, fileUrl: editableUrl } =
+    editableOutputPath(asset, deckLang, format, root);
+  if (fs.existsSync(absPath)) {
+    return {
+      fileUrl: editableUrl,
+      fileName: editableName,
       requiresGeneration: false,
     };
   }

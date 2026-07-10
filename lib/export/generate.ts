@@ -189,12 +189,8 @@ export function findCachedExport(
   const absPath = path.join(root, entry.publicPath);
   if (!fs.existsSync(absPath)) return null;
 
-  const htmlPath = htmlSourcePath(asset, root);
-  if (!fs.existsSync(htmlPath)) return entry;
-
-  const currentMtime = fs.statSync(htmlPath).mtimeMs;
-  if (currentMtime > entry.sourceHtmlMtime) return null;
-
+  // Prefer serving pre-generated files when present. Mtime checks are unreliable
+  // after git clone / Vercel deploy (fresh filesystem timestamps).
   return entry;
 }
 

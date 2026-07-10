@@ -33,7 +33,11 @@ function triggerBlobDownload(blob: Blob, fileName: string): void {
 }
 
 async function fetchFileBlob(file: DownloadDescriptor): Promise<Blob> {
-  const response = await fetch(file.fileUrl, {
+  const url = file.fileUrl.startsWith("http")
+    ? file.fileUrl
+    : new URL(file.fileUrl, window.location.origin).href;
+
+  const response = await fetch(url, {
     credentials: "same-origin",
   });
   if (!response.ok) {
@@ -44,12 +48,23 @@ async function fetchFileBlob(file: DownloadDescriptor): Promise<Blob> {
 
 /** Download a file, using fetch when served from the export API. */
 export async function downloadFile(file: DownloadDescriptor): Promise<void> {
-  if (file.requiresGeneration || file.fileUrl.startsWith("/api/export")) {
+  const isApiExport =
+    file.requiresGeneration || file.fileUrl.startsWith("/api/export");
+
+  if (isApiExport) {
     const blob = await fetchFileBlob(file);
     triggerBlobDownload(blob, file.fileName);
     return;
   }
-  triggerFileDownload(file.fileUrl, file.fileName);
+
+  // Static files: fetch first so we can force Content-Disposition download
+  // (anchor-only download is flaky for cross-path static assets on some hosts).
+  try {
+    const blob = await fetchFileBlob(file);
+    triggerBlobDownload(blob, file.fileName);
+  } catch {
+    triggerFileDownload(file.fileUrl, file.fileName);
+  }
 }
 
 /** Ensure every entry in the zip has a unique path. */
@@ -81,7 +96,16 @@ export async function downloadFilesAsZip(
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const blob = await fetchFileBlob(file);
+    let blob: Blob;
+    if (file.requiresGeneration || file.fileUrl.startsWith("/api/export")) {
+      blob = await fetchFileBlob(file);
+    } else {
+      try {
+        blob = await fetchFileBlob(file);
+      } catch {
+        throw new Error(`Failed to fetch ${file.fileName}`);
+      }
+    }
     zip.file(paths[i], await blob.arrayBuffer());
   }
 

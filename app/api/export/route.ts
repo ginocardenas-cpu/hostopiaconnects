@@ -10,6 +10,7 @@ import {
 } from "@/lib/export/formats";
 import { getAssetSourceFileName } from "@/lib/assets";
 import {
+  editableOutputPath,
   findCachedExport,
   readEditableManifest,
   writeEditableManifest,
@@ -45,6 +46,15 @@ export async function GET(request: Request) {
   const cached = findCachedExport(asset, deckLang, format);
   if (cached) {
     return NextResponse.redirect(new URL(cached.fileUrl, request.url));
+  }
+
+  const { absPath, fileUrl: editableUrl } = editableOutputPath(
+    asset,
+    deckLang,
+    format
+  );
+  if (fs.existsSync(absPath)) {
+    return NextResponse.redirect(new URL(editableUrl, request.url));
   }
 
   try {
