@@ -171,26 +171,35 @@ export function writeEditableManifest(
   fs.writeFileSync(p, JSON.stringify(manifest, null, 2));
 }
 
-export function findCachedExport(
-  asset: Asset,
+export function findManifestEntry(
+  assetId: string,
   deckLang: DeckLang,
   format: ExportFormat,
   root = process.cwd()
 ): EditableManifestEntry | null {
   const manifest = readEditableManifest(root);
   if (!manifest) return null;
-
-  const entry = manifest.entries.find(
-    (e) =>
-      e.assetId === asset.id && e.lang === deckLang && e.format === format
+  return (
+    manifest.entries.find(
+      (e) =>
+        e.assetId === assetId && e.lang === deckLang && e.format === format
+    ) ?? null
   );
+}
+
+export function findCachedExport(
+  asset: Asset,
+  deckLang: DeckLang,
+  format: ExportFormat,
+  root = process.cwd()
+): EditableManifestEntry | null {
+  const entry = findManifestEntry(asset.id, deckLang, format, root);
   if (!entry) return null;
 
   const absPath = path.join(root, entry.publicPath);
-  if (!fs.existsSync(absPath)) return null;
+  if (fs.existsSync(absPath)) return entry;
 
-  // Prefer serving pre-generated files when present. Mtime checks are unreliable
-  // after git clone / Vercel deploy (fresh filesystem timestamps).
+  // On Vercel, public assets may be CDN-only while manifest still valid.
   return entry;
 }
 

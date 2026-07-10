@@ -110,6 +110,9 @@ export default function CartPage() {
                     fileUrl: d.fileUrl,
                     fileName: d.fileName,
                     requiresGeneration: d.requiresGeneration,
+                    assetId: d.assetId,
+                    deckLang: d.deckLang,
+                    exportFormat: d.exportFormat,
                   })),
                   "hostopia-connects-resources.zip"
                 );
@@ -174,6 +177,9 @@ export default function CartPage() {
                       fileUrl: item.fileUrl,
                       fileName: item.fileName,
                       requiresGeneration: item.requiresGeneration,
+                      assetId: item.assetId,
+                      deckLang: item.deckLang,
+                      exportFormat: item.exportFormat,
                     });
                   } catch {
                     setDownloadError(t("downloadError"));

@@ -27,6 +27,7 @@ export {
   readEditableManifest,
   writeEditableManifest,
   findCachedExport,
+  findManifestEntry,
   buildExportMeta,
   editableOutputPath,
   htmlSourcePath,
