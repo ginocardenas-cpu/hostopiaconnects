@@ -1,11 +1,14 @@
 import { parseExportFormat } from "@/lib/export/formats";
 import type { ExportFormat } from "@/lib/export/formats";
 import type { DeckLang } from "@/lib/html-deck-i18n";
+import type { BrandProfile } from "@/lib/brand-profile";
+import { parseBrandProfileJson } from "@/lib/brand-profile";
 
 export interface BundleRequestItem {
   assetId: string;
   deckLang?: DeckLang;
   exportFormat?: ExportFormat;
+  brandProfile?: BrandProfile;
 }
 
 export interface BundleRequestLead {
@@ -29,6 +32,8 @@ export interface BundleDownloadItem {
   fileName: string;
   deckLang?: DeckLang;
   exportFormat?: ExportFormat;
+  brandProfile?: BrandProfile;
+  useExportPost?: boolean;
   /** Fetch via API when static pre-generated file is not cached */
   requiresGeneration?: boolean;
 }
@@ -71,10 +76,12 @@ export function parseBundleRequestPayload(
     if (!assetId) continue;
     const deckLang = rowItem.deckLang as DeckLang | undefined;
     const exportFormat = parseExportFormat(rowItem.exportFormat);
+    const brandProfile = parseBrandProfileJson(rowItem.brandProfile);
     items.push({
       assetId,
       ...(deckLang ? { deckLang } : {}),
       ...(exportFormat ? { exportFormat } : {}),
+      ...(brandProfile ? { brandProfile } : {}),
     });
   }
 

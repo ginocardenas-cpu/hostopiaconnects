@@ -41,6 +41,7 @@ export function LocaleHeader() {
   const navItems = [
     { href: "/", label: t("home") },
     { href: "/library", label: t("library") },
+    { href: "/brand-studio", label: t("brandStudio") },
     { href: "/how-it-works", label: t("howItWorks") },
   ] as const;
 

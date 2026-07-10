@@ -10,6 +10,8 @@ import {
   getAssetSourceFileName,
 } from "@/lib/assets";
 import { defaultExportFormat } from "@/lib/export/formats";
+import type { BrandProfile } from "@/lib/brand-profile";
+import { isBrandProfileCustomized } from "@/lib/brand-profile";
 import { resolveDownloadForAsset } from "@/lib/export/resolve";
 
 export async function POST(request: Request) {
@@ -48,6 +50,7 @@ export async function POST(request: Request) {
     const resolved = resolveDownloadForAsset(asset, {
       deckLang: item.deckLang,
       exportFormat,
+      brandProfile: item.brandProfile,
     });
 
     downloads.push({
@@ -58,6 +61,8 @@ export async function POST(request: Request) {
       fileName: resolved.fileName,
       exportFormat,
       ...(item.deckLang ? { deckLang: item.deckLang } : {}),
+      ...(resolved.brandProfile ? { brandProfile: resolved.brandProfile } : {}),
+      ...(resolved.useExportPost ? { useExportPost: true } : {}),
       ...(resolved.requiresGeneration
         ? { requiresGeneration: true }
         : {}),

@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-import { getAssetById } from "@/lib/assets";
+import { getAssetById, getAssetSourceFileName } from "@/lib/assets";
+import { parseBrandProfileJson } from "@/lib/brand-profile";
 import { normalizeLang } from "@/lib/html-deck-i18n";
 import {
   EXPORT_FORMAT_MIME,
   parseExportFormat,
   isHtmlExportable,
 } from "@/lib/export/formats";
-import { getAssetSourceFileName } from "@/lib/assets";
 import {
   editableOutputPath,
   findCachedExport,
+  generateExportBuffer,
   readEditableManifest,
   writeEditableManifest,
   writeExportToCache,
@@ -20,11 +21,14 @@ import {
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const assetId = searchParams.get("assetId")?.trim();
-  const deckLang = normalizeLang(searchParams.get("deckLang") || "en");
-  const format = parseExportFormat(searchParams.get("format"));
+async function handleExport(request: Request, body?: Record<string, unknown>) {
+  const url = new URL(request.url);
+  const record = body ?? Object.fromEntries(url.searchParams.entries());
+
+  const assetId = String(record.assetId ?? "").trim();
+  const deckLang = normalizeLang(String(record.deckLang ?? "en"));
+  const format = parseExportFormat(record.format);
+  const brandProfile = parseBrandProfileJson(record.brandProfile);
 
   if (!assetId || !format) {
     return NextResponse.json(
@@ -38,47 +42,60 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unknown asset" }, { status: 404 });
   }
 
-  const fileName = getAssetSourceFileName(asset);
-  if (!isHtmlExportable(fileName)) {
+  const sourceName = getAssetSourceFileName(asset);
+  if (!isHtmlExportable(sourceName)) {
     return NextResponse.redirect(new URL(asset.fileUrl, request.url));
   }
 
-  const cached = findCachedExport(asset, deckLang, format);
-  if (cached) {
-    return NextResponse.redirect(new URL(cached.fileUrl, request.url));
-  }
+  const { fileName: downloadName } = editableOutputPath(asset, deckLang, format);
 
-  const { absPath, fileUrl: editableUrl } = editableOutputPath(
-    asset,
-    deckLang,
-    format
-  );
-  if (fs.existsSync(absPath)) {
-    return NextResponse.redirect(new URL(editableUrl, request.url));
+  if (!brandProfile) {
+    const cached = findCachedExport(asset, deckLang, format);
+    if (cached) {
+      return NextResponse.redirect(new URL(cached.fileUrl, request.url));
+    }
+
+    const { absPath, fileUrl: editableUrl } = editableOutputPath(
+      asset,
+      deckLang,
+      format
+    );
+    if (fs.existsSync(absPath)) {
+      return NextResponse.redirect(new URL(editableUrl, request.url));
+    }
   }
 
   try {
-    const entry = await writeExportToCache({ asset, deckLang, format });
-    const manifest = readEditableManifest();
-    const filtered =
-      manifest?.entries.filter(
-        (e) =>
-          !(
-            e.assetId === asset.id &&
-            e.lang === deckLang &&
-            e.format === format
-          )
-      ) ?? [];
-    writeEditableManifest([...filtered, entry]);
+    let buffer: Buffer;
 
-    const absPath = path.join(process.cwd(), entry.publicPath);
-    const buffer = fs.readFileSync(absPath);
+    if (brandProfile) {
+      buffer = await generateExportBuffer({
+        asset,
+        deckLang,
+        format,
+        brandProfile,
+      });
+    } else {
+      const entry = await writeExportToCache({ asset, deckLang, format });
+      const manifest = readEditableManifest();
+      const filtered =
+        manifest?.entries.filter(
+          (e) =>
+            !(
+              e.assetId === asset.id &&
+              e.lang === deckLang &&
+              e.format === format
+            )
+        ) ?? [];
+      writeEditableManifest([...filtered, entry]);
+      buffer = fs.readFileSync(path.join(process.cwd(), entry.publicPath));
+    }
 
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": EXPORT_FORMAT_MIME[format],
-        "Content-Disposition": `attachment; filename="${entry.fileName.replace(/"/g, "")}"`,
-        "Cache-Control": "private, max-age=3600",
+        "Content-Disposition": `attachment; filename="${downloadName.replace(/"/g, "")}"`,
+        "Cache-Control": brandProfile ? "private, no-store" : "private, max-age=3600",
       },
     });
   } catch (err) {
@@ -86,6 +103,10 @@ export async function GET(request: Request) {
     console.error("[api/export]", message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+export async function GET(request: Request) {
+  return handleExport(request);
 }
 
 export async function POST(request: Request) {
@@ -96,22 +117,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const record = body as Record<string, unknown>;
-  const assetId = String(record.assetId ?? "").trim();
-  const deckLang = normalizeLang(String(record.deckLang ?? "en"));
-  const format = parseExportFormat(record.format);
-
-  if (!assetId || !format) {
-    return NextResponse.json(
-      { error: "Missing assetId or format" },
-      { status: 400 }
-    );
+  if (!body || typeof body !== "object") {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const url = new URL(request.url);
-  url.searchParams.set("assetId", assetId);
-  url.searchParams.set("deckLang", deckLang);
-  url.searchParams.set("format", format);
-
-  return GET(new Request(url.toString(), { method: "GET" }));
+  return handleExport(request, body as Record<string, unknown>);
 }

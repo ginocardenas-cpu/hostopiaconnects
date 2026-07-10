@@ -36,8 +36,8 @@ export function defaultExportFormat(
     if (ext === "html" || ext === "htm") return "html";
     return "pdf";
   }
-  if (contentType === "Presentation") return "pptx";
-  return "docx";
+  if (contentType === "Presentation") return "pdf";
+  return "pdf";
 }
 
 export function availableExportFormats(
@@ -49,9 +49,9 @@ export function availableExportFormats(
     return [fmt];
   }
   if (contentType === "Presentation") {
-    return ["pdf", "pptx", "docx", "html"];
+    return ["pdf", "html"];
   }
-  return ["pdf", "docx", "html"];
+  return ["pdf", "html", "docx"];
 }
 
 export function exportFileName(

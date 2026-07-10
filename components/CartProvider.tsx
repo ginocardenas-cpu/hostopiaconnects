@@ -17,18 +17,23 @@ import {
   saveCartToStorage,
 } from "@/lib/cart-storage";
 
+import type { BrandProfile } from "@/lib/brand-profile";
+
 export interface CartItem {
   assetId: string;
   /** Requested language for bundled HTML decks (applyLang export). */
   deckLang?: DeckLang;
   /** Requested download format for HTML bundles. */
   exportFormat?: ExportFormat;
+  /** Snapshot of brand customization applied at add-to-cart time. */
+  brandProfile?: BrandProfile;
 }
 
 export interface CartLineItem {
   asset: Asset;
   deckLang?: DeckLang;
   exportFormat?: ExportFormat;
+  brandProfile?: BrandProfile;
 }
 
 interface CartContextValue {
@@ -38,7 +43,11 @@ interface CartContextValue {
   hydrated: boolean;
   addItem: (
     assetId: string,
-    options?: { deckLang?: DeckLang; exportFormat?: ExportFormat }
+    options?: {
+      deckLang?: DeckLang;
+      exportFormat?: ExportFormat;
+      brandProfile?: BrandProfile;
+    }
   ) => void;
   removeItem: (assetId: string) => void;
   clear: () => void;
@@ -62,7 +71,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addItem = (
     assetId: string,
-    options?: { deckLang?: DeckLang; exportFormat?: ExportFormat }
+    options?: {
+      deckLang?: DeckLang;
+      exportFormat?: ExportFormat;
+      brandProfile?: BrandProfile;
+    }
   ) => {
     setItems((prev) => {
       if (prev.some((item) => item.assetId === assetId)) return prev;
@@ -73,6 +86,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
           ...(options?.deckLang ? { deckLang: options.deckLang } : {}),
           ...(options?.exportFormat
             ? { exportFormat: options.exportFormat }
+            : {}),
+          ...(options?.brandProfile
+            ? { brandProfile: options.brandProfile }
             : {}),
         },
       ];
@@ -97,6 +113,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           asset,
           deckLang: item.deckLang,
           exportFormat: item.exportFormat,
+          brandProfile: item.brandProfile,
         });
       }
     }

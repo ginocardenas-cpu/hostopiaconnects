@@ -48,10 +48,11 @@ export default function CartPage() {
             email: formData.get("email"),
             optIn: formData.get("optIn") === "on",
           },
-          items: items.map(({ assetId, deckLang, exportFormat }) => ({
+          items: items.map(({ assetId, deckLang, exportFormat, brandProfile }) => ({
             assetId,
             ...(deckLang ? { deckLang } : {}),
             ...(exportFormat ? { exportFormat } : {}),
+            ...(brandProfile ? { brandProfile } : {}),
           })),
           locale,
         }),
@@ -113,6 +114,8 @@ export default function CartPage() {
                     assetId: d.assetId,
                     deckLang: d.deckLang,
                     exportFormat: d.exportFormat,
+                    brandProfile: d.brandProfile,
+                    useExportPost: d.useExportPost,
                   })),
                   "hostopia-connects-resources.zip"
                 );
@@ -180,6 +183,8 @@ export default function CartPage() {
                       assetId: item.assetId,
                       deckLang: item.deckLang,
                       exportFormat: item.exportFormat,
+                      brandProfile: item.brandProfile,
+                      useExportPost: item.useExportPost,
                     });
                   } catch {
                     setDownloadError(t("downloadError"));

@@ -1,5 +1,8 @@
 import fs from "fs";
 import type { DeckLang } from "@/lib/html-deck-i18n";
+import type { BrandProfile } from "@/lib/brand-profile";
+import { isBrandProfileCustomized } from "@/lib/brand-profile";
+import { buildBrandPinScript } from "@/lib/brand-apply";
 
 const PIN_SCRIPT = (lang: DeckLang) => `<!-- Hostopia Connects export: language pinned to ${lang} -->
 <script id="__hostopia_export_lang">
@@ -28,18 +31,23 @@ const PIN_SCRIPT = (lang: DeckLang) => `<!-- Hostopia Connects export: language 
 })();
 </script>`;
 
-/** Read HTML bundle and inject language pin script before </body>. */
+/** Read HTML bundle and inject language (+ optional brand) pin scripts before </body>. */
 export function generatePinnedHtmlBuffer(
   htmlPath: string,
-  lang: DeckLang
+  lang: DeckLang,
+  brandProfile?: BrandProfile
 ): Buffer {
   const raw = fs.readFileSync(htmlPath, "utf8");
-  const script = PIN_SCRIPT(lang);
+  const scripts = [PIN_SCRIPT(lang)];
+  if (brandProfile && isBrandProfileCustomized(brandProfile)) {
+    scripts.push(buildBrandPinScript(brandProfile));
+  }
+  const injection = scripts.join("\n");
   let html = raw;
   if (/<\/body>/i.test(html)) {
-    html = html.replace(/<\/body>/i, `${script}\n</body>`);
+    html = html.replace(/<\/body>/i, `${injection}\n</body>`);
   } else {
-    html = `${html}\n${script}`;
+    html = `${html}\n${injection}`;
   }
   return Buffer.from(html, "utf8");
 }

@@ -4,8 +4,11 @@ import { fileURLToPath } from "url";
 import { pathToFileURL } from "url";
 import type { Page, Browser } from "playwright";
 import type { DeckLang } from "@/lib/html-deck-i18n";
+import type { BrandProfile } from "@/lib/brand-profile";
+import { isBrandProfileCustomized } from "@/lib/brand-profile";
 import type { ExportContentModel } from "./content-model";
 import { launchBrowser } from "./playwright";
+import { applyBrandOnPage } from "./apply-brand";
 
 function loadExtractFnSource(): string {
   const candidates = [
@@ -68,9 +71,13 @@ export async function applyLangOnPage(page: Page, lang: DeckLang): Promise<void>
 
 export async function extractFromPage(
   page: Page,
-  lang: DeckLang
+  lang: DeckLang,
+  brandProfile?: BrandProfile
 ): Promise<ExportContentModel> {
   await applyLangOnPage(page, lang);
+  if (brandProfile && isBrandProfileCustomized(brandProfile)) {
+    await applyBrandOnPage(page, brandProfile);
+  }
   return page.evaluate(
     `(${EXTRACT_FN_SOURCE})()`
   ) as Promise<ExportContentModel>;

@@ -1,4 +1,5 @@
 import JSZip from "jszip";
+import type { BrandProfile } from "@/lib/brand-profile";
 import type { ExportFormat } from "@/lib/export/formats";
 import type { DeckLang } from "@/lib/html-deck-i18n";
 
@@ -9,6 +10,8 @@ export interface DownloadDescriptor {
   assetId?: string;
   deckLang?: DeckLang;
   exportFormat?: ExportFormat;
+  brandProfile?: BrandProfile;
+  useExportPost?: boolean;
 }
 
 function isFetchDownloadUrl(fileUrl: string): boolean {
@@ -64,17 +67,35 @@ async function fetchFileBlob(file: DownloadDescriptor): Promise<Blob> {
   return response.blob();
 }
 
-function exportFallbackUrl(file: DownloadDescriptor): string | null {
-  if (!file.assetId || !file.exportFormat) return null;
-  const params = new URLSearchParams({
-    assetId: file.assetId,
-    deckLang: file.deckLang ?? "en",
-    format: file.exportFormat,
+async function postExportBlob(file: DownloadDescriptor): Promise<Blob> {
+  if (!file.assetId || !file.exportFormat) {
+    throw new Error("Missing export metadata");
+  }
+
+  const response = await fetch("/api/export", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      assetId: file.assetId,
+      deckLang: file.deckLang ?? "en",
+      format: file.exportFormat,
+      ...(file.brandProfile ? { brandProfile: file.brandProfile } : {}),
+    }),
   });
-  return `/api/export?${params.toString()}`;
+
+  if (!response.ok) {
+    throw new Error(`Failed to export (${response.status})`);
+  }
+
+  return response.blob();
 }
 
 async function resolveFileBlob(file: DownloadDescriptor): Promise<Blob> {
+  if (file.useExportPost) {
+    return postExportBlob(file);
+  }
+
   const tryFetch = async (url: string) => {
     const response = await fetch(new URL(url, window.location.origin).href, {
       credentials: "same-origin",
@@ -90,9 +111,8 @@ async function resolveFileBlob(file: DownloadDescriptor): Promise<Blob> {
     try {
       return await tryFetch(file.fileUrl);
     } catch {
-      const fallback = exportFallbackUrl(file);
-      if (fallback) {
-        return await tryFetch(fallback);
+      if (file.assetId && file.exportFormat) {
+        return postExportBlob(file);
       }
       throw new Error(`Failed to download ${file.fileName}`);
     }

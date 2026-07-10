@@ -3,8 +3,9 @@ import { Link } from "@/i18n/routing";
 import {
   getAssetBySlug,
   getAssetDisplayForLocale,
-  getAssetSourceFileName
+  getAssetSourceFileName,
 } from "@/lib/assets";
+import { assetSupportsDeckI18n } from "@/lib/html-deck-i18n";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { AssetFeedback } from "@/components/AssetFeedback";
 import { AssetMarkSeen } from "@/components/AssetMarkSeen";
@@ -38,6 +39,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
 
   const sourceFile = getAssetSourceFileName(asset);
   const display = getAssetDisplayForLocale(asset, locale);
+  const supportsCustomize = assetSupportsDeckI18n(sourceFile);
 
   return (
     <section className="max-w-6xl mx-auto px-6 py-16">
@@ -102,6 +104,14 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
             title={display.title}
             fileName={sourceFile}
           />
+          {supportsCustomize ? (
+            <Link
+              href={`/assets/${slug}/customize`}
+              className="inline-flex items-center justify-center rounded-full border border-teal/40 bg-white px-5 py-2.5 text-xs font-bold text-teal font-montserrat hover:bg-teal/10 transition"
+            >
+              {t("customizeDesign")}
+            </Link>
+          ) : null}
           <CopyLinkButton copyPath={`/${locale}/assets/${slug}`} label={t("copyLink")} />
         </div>
         <div className="mb-8">

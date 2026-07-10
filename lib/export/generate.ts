@@ -35,10 +35,13 @@ export {
   assetNeedsExport,
 } from "./cache";
 
+import type { BrandProfile } from "@/lib/brand-profile";
+
 export interface GenerateExportOptions {
   asset: Asset;
   deckLang: DeckLang;
   format: ExportFormat;
+  brandProfile?: BrandProfile;
   root?: string;
 }
 
@@ -62,18 +65,18 @@ export function buildExportMeta(
 export async function generateExportBufferFromPage(
   options: GenerateExportOptions & { page: import("playwright").Page }
 ): Promise<Buffer> {
-  const { asset, deckLang, format, page, root = process.cwd() } = options;
+  const { asset, deckLang, format, page, brandProfile, root = process.cwd() } = options;
   const htmlPath = htmlSourcePath(asset, root);
 
   if (format === "html") {
-    return generatePinnedHtmlBuffer(htmlPath, deckLang);
+    return generatePinnedHtmlBuffer(htmlPath, deckLang, brandProfile);
   }
 
   if (format === "pdf") {
-    return generatePdfBuffer(page, deckLang);
+    return generatePdfBuffer(page, deckLang, brandProfile);
   }
 
-  const content = await extractFromPage(page, deckLang);
+  const content = await extractFromPage(page, deckLang, brandProfile);
   const meta = buildExportMeta(
     asset,
     deckLang,
@@ -101,7 +104,7 @@ export async function generateExportBuffer(
   }
 
   if (format === "html") {
-    return generatePinnedHtmlBuffer(htmlPath, deckLang);
+    return generatePinnedHtmlBuffer(htmlPath, deckLang, options.brandProfile);
   }
 
   const { page, browser, ownBrowser } = await loadBundlePage(htmlPath);
