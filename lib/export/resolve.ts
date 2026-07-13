@@ -1,7 +1,7 @@
 import type { Asset } from "@/lib/assets";
 import { getAssetSourceFileName } from "@/lib/assets";
 import type { BrandProfile } from "@/lib/brand-profile";
-import { isBrandProfileCustomized } from "@/lib/brand-profile";
+import { shouldApplyBrandOnExport } from "@/lib/brand-profile";
 import type { DeckLang } from "@/lib/html-deck-i18n";
 import {
   defaultExportFormat,
@@ -66,8 +66,7 @@ export function resolveDownloadForAsset(
   const format =
     options.exportFormat ?? defaultExportFormat(asset.contentType, fileName);
   const brandProfile = options.brandProfile;
-  const customized =
-    brandProfile && isBrandProfileCustomized(brandProfile);
+  const applyBrand = shouldApplyBrandOnExport(brandProfile);
 
   if (!isHtmlExportable(fileName)) {
     return {
@@ -95,7 +94,7 @@ export function resolveDownloadForAsset(
     root
   );
 
-  if (customized) {
+  if (applyBrand && brandProfile) {
     return {
       fileUrl: buildExportApiUrl(asset.id, deckLang, format),
       fileName: manifestEntry?.fileName ?? editableName,

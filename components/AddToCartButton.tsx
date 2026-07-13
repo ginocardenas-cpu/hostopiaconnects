@@ -9,6 +9,8 @@ import {
   defaultExportFormat,
   type ExportFormat,
 } from "@/lib/export/formats";
+import { shouldApplyBrandOnExport } from "@/lib/brand-profile";
+import { useBrandProfile } from "./BrandProfileProvider";
 import { useCart } from "./CartProvider";
 import {
   appLocaleToDeckLang,
@@ -33,6 +35,7 @@ export function AddToCartButton({
   const t = useTranslations("asset");
   const portalLocale = useLocale();
   const { addItem, items } = useCart();
+  const { profile } = useBrandProfile();
   const cartEntry = items.find((item) => item.assetId === assetId);
   const inCart = Boolean(cartEntry);
   const needsLangPick = useMemo(
@@ -54,15 +57,12 @@ export function AddToCartButton({
   );
 
   const handleAdd = (deckLang?: DeckLang, exportFormat?: ExportFormat) => {
-    addItem(
-      assetId,
-      deckLang || exportFormat
-        ? {
-            ...(deckLang ? { deckLang } : {}),
-            ...(exportFormat ? { exportFormat } : {}),
-          }
-        : undefined
-    );
+    const attachBrand = shouldApplyBrandOnExport(profile);
+    addItem(assetId, {
+      ...(deckLang ? { deckLang } : {}),
+      ...(exportFormat ? { exportFormat } : {}),
+      ...(attachBrand ? { brandProfile: profile } : {}),
+    });
     setLangDialogOpen(false);
   };
 

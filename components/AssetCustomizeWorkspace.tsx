@@ -11,7 +11,7 @@ import {
   defaultExportFormat,
   type ExportFormat,
 } from "@/lib/export/formats";
-import { isBrandProfileCustomized } from "@/lib/brand-profile";
+import { shouldApplyBrandOnExport } from "@/lib/brand-profile";
 import { useBrandProfile } from "@/components/BrandProfileProvider";
 import { useCart } from "@/components/CartProvider";
 import { BrandPreviewFrame } from "@/components/BrandPreviewFrame";
@@ -55,7 +55,7 @@ export function AssetCustomizeWorkspace({
   );
 
   const inCart = items.some((item) => item.assetId === asset.id);
-  const customized = isBrandProfileCustomized(draftProfile);
+  const applyBrand = shouldApplyBrandOnExport(draftProfile);
 
   const handleApplyDraft = () => {
     updateProfile(draftProfile);
@@ -67,7 +67,7 @@ export function AssetCustomizeWorkspace({
     addItem(asset.id, {
       deckLang,
       exportFormat,
-      ...(customized ? { brandProfile: draftProfile } : {}),
+      ...(applyBrand ? { brandProfile: draftProfile } : {}),
     });
   };
 
@@ -93,6 +93,7 @@ export function AssetCustomizeWorkspace({
                 ...prev,
                 ...patch,
                 colors: { ...prev.colors, ...(patch.colors ?? {}) },
+                content: { ...prev.content, ...(patch.content ?? {}) },
                 cta: patch.cta
                   ? {
                       ...prev.cta,

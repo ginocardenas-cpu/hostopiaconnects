@@ -5,7 +5,7 @@ import { pathToFileURL } from "url";
 import type { Page, Browser } from "playwright";
 import type { DeckLang } from "@/lib/html-deck-i18n";
 import type { BrandProfile } from "@/lib/brand-profile";
-import { isBrandProfileCustomized } from "@/lib/brand-profile";
+import { shouldApplyBrandOnExport } from "@/lib/brand-profile";
 import type { ExportContentModel } from "./content-model";
 import { launchBrowser } from "./playwright";
 import { applyBrandOnPage } from "./apply-brand";
@@ -75,7 +75,7 @@ export async function extractFromPage(
   brandProfile?: BrandProfile
 ): Promise<ExportContentModel> {
   await applyLangOnPage(page, lang);
-  if (brandProfile && isBrandProfileCustomized(brandProfile)) {
+  if (brandProfile && shouldApplyBrandOnExport(brandProfile)) {
     await applyBrandOnPage(page, brandProfile);
   }
   return page.evaluate(

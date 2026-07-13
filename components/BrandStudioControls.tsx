@@ -109,8 +109,12 @@ export function BrandStudioControls({
               type="text"
               value={profile.companyName}
               onChange={(e) => onChange({ companyName: e.target.value })}
+              placeholder={t("companyNamePlaceholder")}
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm"
             />
+            <span className="mt-1 block text-[11px] text-gray-500">
+              {t("companyNameHint")}
+            </span>
           </label>
 
           <label className="block text-sm">
@@ -200,6 +204,60 @@ export function BrandStudioControls({
               />
             ))}
           </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 font-montserrat mb-1">
+          {t("contentSection")}
+        </h2>
+        <p className="text-xs text-gray-500 mb-4">{t("contentSectionHint")}</p>
+        <div className="space-y-4">
+          <label className="block text-sm">
+            <span className="mb-1 block text-gray-600">{t("contentDescription")}</span>
+            <textarea
+              value={profile.content.presentationDescription}
+              onChange={(e) =>
+                onChange({
+                  content: {
+                    ...profile.content,
+                    presentationDescription: e.target.value,
+                  },
+                })
+              }
+              rows={3}
+              placeholder={t("contentDescriptionPlaceholder")}
+              className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm resize-y"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-gray-600">{t("contentAudience")}</span>
+            <input
+              type="text"
+              value={profile.content.audience}
+              onChange={(e) =>
+                onChange({
+                  content: { ...profile.content, audience: e.target.value },
+                })
+              }
+              placeholder={t("contentAudiencePlaceholder")}
+              className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-gray-600">{t("contentContact")}</span>
+            <input
+              type="email"
+              value={profile.content.contactEmail}
+              onChange={(e) =>
+                onChange({
+                  content: { ...profile.content, contactEmail: e.target.value },
+                })
+              }
+              placeholder={t("contentContactPlaceholder")}
+              className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm"
+            />
+          </label>
         </div>
       </section>
 

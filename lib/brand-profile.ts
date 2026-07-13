@@ -35,13 +35,25 @@ export interface BrandCtaSettings {
   links: BrandCtaLink[];
 }
 
+/** Editable deck copy mapped onto HTML data-i18n keys. */
+export interface BrandContentFields {
+  /** Replaces cover.sub (yellow presentation description) */
+  presentationDescription: string;
+  /** Replaces meta.audience.v */
+  audience: string;
+  /** Replaces cta.contact mailto target / visible email */
+  contactEmail: string;
+}
+
 export interface BrandProfile {
   id: string;
   name: string;
+  /** Replaces "Product Template" in chrome (`brand` / `cta.brand`) */
   companyName: string;
   logoDataUrl?: string;
   colors: BrandColors;
   fontFamily: string;
+  content: BrandContentFields;
   cta: BrandCtaSettings;
   updatedAt: string;
 }
@@ -67,6 +79,12 @@ export const DEFAULT_CTA_LINKS: BrandCtaLink[] = [
   { type: "x", value: "", enabled: false },
 ];
 
+export const DEFAULT_BRAND_CONTENT: BrandContentFields = {
+  presentationDescription: "",
+  audience: "",
+  contactEmail: "",
+};
+
 export function createDefaultBrandProfile(): BrandProfile {
   const now = new Date().toISOString();
   return {
@@ -75,6 +93,7 @@ export function createDefaultBrandProfile(): BrandProfile {
     companyName: "Hostopia Connects",
     colors: { ...HOSTOPIA_DEFAULT_COLORS },
     fontFamily: "Montserrat",
+    content: { ...DEFAULT_BRAND_CONTENT },
     cta: { enabled: false, links: DEFAULT_CTA_LINKS.map((l) => ({ ...l })) },
     updatedAt: now,
   };
@@ -91,6 +110,17 @@ function migrateColors(raw: unknown): BrandColors {
     accentSecondary: c.accentSecondary ?? base.accentSecondary,
     slide: c.slide ?? c.background ?? base.slide,
     text: c.text ?? base.text,
+  };
+}
+
+function migrateContent(raw: unknown): BrandContentFields {
+  const base = DEFAULT_BRAND_CONTENT;
+  if (!raw || typeof raw !== "object") return { ...base };
+  const c = raw as Partial<BrandContentFields>;
+  return {
+    presentationDescription: String(c.presentationDescription ?? "").trim(),
+    audience: String(c.audience ?? "").trim(),
+    contactEmail: String(c.contactEmail ?? "").trim(),
   };
 }
 
@@ -129,6 +159,7 @@ export function normalizeBrandProfile(input: Partial<BrandProfile>): BrandProfil
     ...base,
     ...input,
     colors: migrateColors(input.colors ?? base.colors),
+    content: migrateContent(input.content ?? base.content),
     cta: migrateCta(input.cta ?? base.cta),
     updatedAt: new Date().toISOString(),
   };
@@ -171,10 +202,15 @@ export function clearBrandProfileStorage(): void {
 export function isBrandProfileCustomized(profile: BrandProfile): boolean {
   const defaults = createDefaultBrandProfile();
   if (profile.logoDataUrl) return true;
-  if (profile.companyName !== defaults.companyName) return true;
+  if (profile.companyName.trim() && profile.companyName !== defaults.companyName) {
+    return true;
+  }
   if (profile.fontFamily !== defaults.fontFamily) return true;
   if (profile.cta.enabled) return true;
   if (profile.cta.links.some((l) => l.enabled && l.value.trim())) return true;
+  if (profile.content.presentationDescription.trim()) return true;
+  if (profile.content.audience.trim()) return true;
+  if (profile.content.contactEmail.trim()) return true;
 
   const c = profile.colors;
   const d = defaults.colors;
@@ -186,6 +222,16 @@ export function isBrandProfileCustomized(profile: BrandProfile): boolean {
     c.slide !== d.slide ||
     c.text !== d.text
   );
+}
+
+/**
+ * Profiles that should be applied on export — customized brands, or any
+ * profile that replaces Product Template chrome (company name set).
+ */
+export function shouldApplyBrandOnExport(profile: BrandProfile | undefined): boolean {
+  if (!profile) return false;
+  if (isBrandProfileCustomized(profile)) return true;
+  return Boolean(profile.companyName.trim());
 }
 
 export function parseBrandProfileJson(body: unknown): BrandProfile | null {
@@ -204,4 +250,11 @@ export function updateCtaLink(
       link.type === type ? { ...link, ...patch } : link
     ),
   };
+}
+
+export function buildContactHtml(email: string): string {
+  const clean = email.trim().replace(/^mailto:/i, "");
+  if (!clean) return "";
+  const safe = clean.replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  return `Contact us at <a href="mailto:${safe}">${safe}</a> to learn more and connect with one of our experts.`;
 }

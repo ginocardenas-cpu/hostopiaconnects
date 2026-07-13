@@ -44,6 +44,7 @@ export function BrandStudioPageClient() {
               ...prev,
               ...patch,
               colors: { ...prev.colors, ...(patch.colors ?? {}) },
+              content: { ...prev.content, ...(patch.content ?? {}) },
               cta: patch.cta
                 ? {
                     ...prev.cta,

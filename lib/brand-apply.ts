@@ -1,4 +1,5 @@
 import type { BrandCtaLink, BrandProfile } from "./brand-profile";
+import { buildContactHtml } from "./brand-profile";
 
 const CTA_LABELS: Record<BrandCtaLink["type"], string> = {
   website: "Website",
@@ -50,15 +51,33 @@ export function buildBrandStyleCss(profile: BrandProfile): string {
   const { colors, fontFamily, logoDataUrl } = profile;
   const logoRule = logoDataUrl
     ? `
-.brandmark .glyph {
+.chrome-top .brandmark .glyph,
+.chrome-bot .brandmark .glyph,
+.pchrome-top .brandmark .glyph,
+.page-chrome-top .brandmark .glyph {
   background-color: transparent !important;
   background-image: url(${JSON.stringify(logoDataUrl)}) !important;
   background-size: contain !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
+  width: 36px !important;
+  height: 36px !important;
 }
-.brandmark img[data-portal-logo="1"] {
+.brandmark .glyph::after {
+  display: none !important;
+}
+img[data-portal-logo="1"] {
   display: block !important;
+  max-height: 36px;
+  width: auto;
+  object-fit: contain;
+}
+[data-portal-chrome-logo="1"] {
+  display: flex !important;
+  align-items: center;
+  margin-right: 12px;
+}
+[data-portal-chrome-logo="1"] img {
   max-height: 28px;
   width: auto;
   object-fit: contain;
@@ -89,9 +108,6 @@ div.page,
 section.page {
   background-color: ${colors.slide} !important;
 }
-h1, h2, h3, h4, h5, h6, p, li, span, label {
-  color: inherit;
-}
 [data-portal-cta="1"] a {
   color: ${colors.primary} !important;
   text-decoration: none;
@@ -118,45 +134,70 @@ export function buildCtaHtml(links: BrandCtaLink[]): string {
     .join('<span aria-hidden="true"> · </span>');
 }
 
-/** Apply logo, company name, and CTA chrome to a loaded HTML bundle document. */
-export function applyBrandContentToDocument(
-  doc: Document,
-  profile: BrandProfile
-): void {
-  if (profile.companyName) {
-    doc.querySelectorAll('[data-i18n="brand"]').forEach((el) => {
-      el.textContent = profile.companyName;
-    });
-  }
+function setI18nText(doc: Document, key: string, text: string): void {
+  if (!text.trim()) return;
+  doc.querySelectorAll(`[data-i18n="${key}"]`).forEach((el) => {
+    el.textContent = text;
+  });
+}
 
-  if (profile.logoDataUrl) {
-    doc.querySelectorAll(".brandmark").forEach((mark) => {
-      const glyph = mark.querySelector(".glyph") as HTMLElement | null;
-      if (glyph) {
-        glyph.style.backgroundImage = `url(${profile.logoDataUrl})`;
-        glyph.style.backgroundSize = "contain";
-        glyph.style.backgroundRepeat = "no-repeat";
-        glyph.style.backgroundPosition = "center";
-        glyph.style.backgroundColor = "transparent";
-      }
-      let img = mark.querySelector(
-        'img[data-portal-logo="1"]'
-      ) as HTMLImageElement | null;
-      if (!img) {
-        img = doc.createElement("img");
-        img.setAttribute("data-portal-logo", "1");
+function setI18nHtml(doc: Document, key: string, html: string): void {
+  if (!html.trim()) return;
+  doc.querySelectorAll(`[data-i18n="${key}"]`).forEach((el) => {
+    el.innerHTML = html;
+  });
+}
+
+function applyLogoToBrandmarks(doc: Document, profile: BrandProfile): void {
+  if (!profile.logoDataUrl) return;
+
+  doc.querySelectorAll(".brandmark").forEach((mark) => {
+    const glyph = mark.querySelector(".glyph") as HTMLElement | null;
+    if (glyph) {
+      glyph.style.backgroundImage = `url(${profile.logoDataUrl})`;
+      glyph.style.backgroundSize = "contain";
+      glyph.style.backgroundRepeat = "no-repeat";
+      glyph.style.backgroundPosition = "center";
+      glyph.style.backgroundColor = "transparent";
+    }
+    let img = mark.querySelector(
+      'img[data-portal-logo="1"]'
+    ) as HTMLImageElement | null;
+    if (!img) {
+      img = doc.createElement("img");
+      img.setAttribute("data-portal-logo", "1");
+      img.alt = profile.companyName || "Logo";
+      mark.insertBefore(img, mark.firstChild);
+    }
+    img.src = profile.logoDataUrl ?? "";
+  });
+
+  // Fixed logo slot in bottom chrome (white/cream margin area)
+  doc
+    .querySelectorAll(".chrome-bot, .page-chrome-bottom, .pchrome-bot")
+    .forEach((bar) => {
+      let slot = bar.querySelector(
+        '[data-portal-chrome-logo="1"]'
+      ) as HTMLElement | null;
+      if (!slot) {
+        slot = doc.createElement("span");
+        slot.setAttribute("data-portal-chrome-logo", "1");
+        const img = doc.createElement("img");
         img.alt = profile.companyName || "Logo";
-        mark.appendChild(img);
+        img.src = profile.logoDataUrl ?? "";
+        slot.appendChild(img);
+        bar.insertBefore(slot, bar.firstChild);
+      } else {
+        const img = slot.querySelector("img");
+        if (img) img.src = profile.logoDataUrl ?? "";
       }
-      img.src = profile.logoDataUrl ?? "";
     });
-  }
+}
 
-  const ctaHtml =
-    profile.cta.enabled ? buildCtaHtml(profile.cta.links) : "";
-
+function applyFooterCtaLinks(doc: Document, profile: BrandProfile): void {
   doc.querySelectorAll('[data-portal-cta="1"]').forEach((node) => node.remove());
 
+  const ctaHtml = profile.cta.enabled ? buildCtaHtml(profile.cta.links) : "";
   if (!ctaHtml) return;
 
   const targets = doc.querySelectorAll(
@@ -199,15 +240,47 @@ export function applyBrandContentToDocument(
   });
 }
 
-/** Inline script for pinned HTML exports — CSS generated server-side. */
+/** Apply logo, company name, content fields, and CTA chrome to a loaded HTML bundle. */
+export function applyBrandContentToDocument(
+  doc: Document,
+  profile: BrandProfile
+): void {
+  const company = profile.companyName.trim();
+  if (company) {
+    // Always replace Product Template chrome labels
+    setI18nText(doc, "brand", company);
+    setI18nText(doc, "cta.brand", company);
+  }
+
+  const { presentationDescription, audience, contactEmail } = profile.content;
+  if (presentationDescription.trim()) {
+    setI18nText(doc, "cover.sub", presentationDescription.trim());
+  }
+  if (audience.trim()) {
+    setI18nText(doc, "meta.audience.v", audience.trim());
+  }
+  if (contactEmail.trim()) {
+    setI18nHtml(doc, "cta.contact", buildContactHtml(contactEmail));
+  }
+
+  applyLogoToBrandmarks(doc, profile);
+  applyFooterCtaLinks(doc, profile);
+}
+
+/** Inline script for pinned HTML exports — CSS + content overrides. */
 export function buildBrandPinScript(profile: BrandProfile): string {
   const css = buildBrandStyleCss(profile);
   const profileJson = JSON.stringify(profile);
+  const contactHtml = profile.content.contactEmail.trim()
+    ? buildContactHtml(profile.content.contactEmail)
+    : "";
+
   return `<!-- Hostopia Connects: brand profile pinned -->
 <script id="__hostopia_export_brand">
 (function(){
   var profile=${profileJson};
   var css=${JSON.stringify(css)};
+  var contactHtml=${JSON.stringify(contactHtml)};
   function ctaHref(link){
     var v=(link.value||"").trim();
     if(!v) return "";
@@ -227,6 +300,14 @@ export function buildBrandPinScript(profile: BrandProfile): string {
     });
     return out.join('<span aria-hidden="true"> · </span>');
   }
+  function setText(key, text){
+    if(!text) return;
+    document.querySelectorAll('[data-i18n="'+key+'"]').forEach(function(el){ el.textContent=text; });
+  }
+  function setHtml(key, html){
+    if(!html) return;
+    document.querySelectorAll('[data-i18n="'+key+'"]').forEach(function(el){ el.innerHTML=html; });
+  }
   function applyBrand(){
     try{
       var styleEl=document.getElementById("__portal_brand_override");
@@ -236,11 +317,15 @@ export function buildBrandPinScript(profile: BrandProfile): string {
         document.head.appendChild(styleEl);
       }
       styleEl.textContent=css;
-      if(profile.companyName){
-        document.querySelectorAll('[data-i18n="brand"]').forEach(function(el){
-          el.textContent=profile.companyName;
-        });
+      var company=(profile.companyName||"").trim();
+      if(company){
+        setText("brand", company);
+        setText("cta.brand", company);
       }
+      var content=profile.content||{};
+      if(content.presentationDescription) setText("cover.sub", content.presentationDescription);
+      if(content.audience) setText("meta.audience.v", content.audience);
+      if(contactHtml) setHtml("cta.contact", contactHtml);
       if(profile.logoDataUrl){
         document.querySelectorAll(".brandmark").forEach(function(mark){
           var glyph=mark.querySelector(".glyph");
@@ -250,6 +335,21 @@ export function buildBrandPinScript(profile: BrandProfile): string {
             glyph.style.backgroundRepeat="no-repeat";
             glyph.style.backgroundPosition="center";
             glyph.style.backgroundColor="transparent";
+          }
+        });
+        document.querySelectorAll(".chrome-bot, .page-chrome-bottom, .pchrome-bot").forEach(function(bar){
+          var slot=bar.querySelector('[data-portal-chrome-logo="1"]');
+          if(!slot){
+            slot=document.createElement("span");
+            slot.setAttribute("data-portal-chrome-logo","1");
+            var img=document.createElement("img");
+            img.alt=company||"Logo";
+            img.src=profile.logoDataUrl;
+            slot.appendChild(img);
+            bar.insertBefore(slot, bar.firstChild);
+          } else {
+            var existing=slot.querySelector("img");
+            if(existing) existing.src=profile.logoDataUrl;
           }
         });
       }
@@ -289,7 +389,13 @@ export function buildBrandPinScript(profile: BrandProfile): string {
   else applyBrand();
   var n=0;
   var iv=setInterval(function(){
-    if(document.querySelector("section.slide, div.page, section.page")||++n>120){ applyBrand(); clearInterval(iv); }
+    if(document.querySelector("section.slide, div.page, section.page")||++n>120){
+      applyBrand();
+      // Re-apply after applyLang may have run
+      setTimeout(applyBrand, 800);
+      setTimeout(applyBrand, 1800);
+      clearInterval(iv);
+    }
   },500);
 })();
 </script>`;
@@ -336,6 +442,11 @@ export function scheduleBrandApplyToIframe(
         doc?.querySelector("section.slide, div.page, section.page")
       );
     if (ready || count >= attempts) {
+      // One more pass after lang may have overwritten brand labels
+      if (ready) {
+        setTimeout(() => applyBrandToIframe(iframe, profile), 600);
+        setTimeout(() => applyBrandToIframe(iframe, profile), 1400);
+      }
       if (timer) clearInterval(timer);
     }
   };

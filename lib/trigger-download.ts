@@ -246,17 +246,16 @@ async function resolveFileBlob(
     try {
       return await postExportBlob(file, onProgress, meta);
     } catch (primaryError) {
-      // On Vercel, Playwright-backed branded export may fail — fall back to cached file.
-      if (file.assetId && file.exportFormat) {
-        const params = new URLSearchParams({
-          assetId: file.assetId,
-          deckLang: file.deckLang ?? "en",
-          format: file.exportFormat,
-        });
+      // Prefer branded HTML if PDF/render export fails (e.g. no Playwright on host).
+      if (
+        file.assetId &&
+        file.exportFormat &&
+        file.exportFormat !== "html" &&
+        file.brandProfile
+      ) {
         try {
-          return await getFetchBlob(
-            `/api/download?${params.toString()}`,
-            file,
+          return await postExportBlob(
+            { ...file, exportFormat: "html" },
             onProgress,
             meta
           );

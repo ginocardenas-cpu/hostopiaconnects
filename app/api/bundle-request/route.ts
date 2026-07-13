@@ -10,8 +10,7 @@ import {
   getAssetSourceFileName,
 } from "@/lib/assets";
 import { defaultExportFormat } from "@/lib/export/formats";
-import type { BrandProfile } from "@/lib/brand-profile";
-import { isBrandProfileCustomized } from "@/lib/brand-profile";
+import { shouldApplyBrandOnExport } from "@/lib/brand-profile";
 import { resolveDownloadForAsset } from "@/lib/export/resolve";
 
 export async function POST(request: Request) {

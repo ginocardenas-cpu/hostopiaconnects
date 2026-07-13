@@ -1,7 +1,7 @@
 import fs from "fs";
 import type { DeckLang } from "@/lib/html-deck-i18n";
 import type { BrandProfile } from "@/lib/brand-profile";
-import { isBrandProfileCustomized } from "@/lib/brand-profile";
+import { shouldApplyBrandOnExport } from "@/lib/brand-profile";
 import { buildBrandPinScript } from "@/lib/brand-apply";
 
 const PIN_SCRIPT = (lang: DeckLang) => `<!-- Hostopia Connects export: language pinned to ${lang} -->
@@ -39,7 +39,7 @@ export function generatePinnedHtmlBuffer(
 ): Buffer {
   const raw = fs.readFileSync(htmlPath, "utf8");
   const scripts = [PIN_SCRIPT(lang)];
-  if (brandProfile && isBrandProfileCustomized(brandProfile)) {
+  if (brandProfile && shouldApplyBrandOnExport(brandProfile)) {
     scripts.push(buildBrandPinScript(brandProfile));
   }
   const injection = scripts.join("\n");

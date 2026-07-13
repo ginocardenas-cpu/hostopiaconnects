@@ -1,7 +1,7 @@
 import type { Page } from "playwright";
 import type { DeckLang } from "@/lib/html-deck-i18n";
 import type { BrandProfile } from "@/lib/brand-profile";
-import { isBrandProfileCustomized } from "@/lib/brand-profile";
+import { shouldApplyBrandOnExport } from "@/lib/brand-profile";
 import { applyLangOnPage } from "./extract";
 import { applyBrandOnPage } from "./apply-brand";
 
@@ -20,7 +20,7 @@ export async function generatePdfBuffer(
   brandProfile?: BrandProfile
 ): Promise<Buffer> {
   await applyLangOnPage(page, lang);
-  if (brandProfile && isBrandProfileCustomized(brandProfile)) {
+  if (brandProfile && shouldApplyBrandOnExport(brandProfile)) {
     await applyBrandOnPage(page, brandProfile);
   }
   return generatePdfFromPage(page);
