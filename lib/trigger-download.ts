@@ -1,4 +1,3 @@
-import JSZip from "jszip";
 import type { BrandProfile } from "@/lib/brand-profile";
 import type { ExportFormat } from "@/lib/export/formats";
 import type { DeckLang } from "@/lib/html-deck-i18n";
@@ -14,25 +13,33 @@ export interface DownloadDescriptor {
   useExportPost?: boolean;
 }
 
+export type DownloadPhase =
+  | "idle"
+  | "preparing"
+  | "rendering"
+  | "downloading"
+  | "packaging"
+  | "complete"
+  | "error";
+
+export interface DownloadProgress {
+  phase: DownloadPhase;
+  /** 0–100 */
+  percent: number;
+  /** Estimated seconds remaining; null when unknown */
+  etaSeconds: number | null;
+  message?: string;
+  currentFile?: string;
+  fileIndex?: number;
+  fileCount?: number;
+}
+
+export type ProgressCallback = (progress: DownloadProgress) => void;
+
 function isFetchDownloadUrl(fileUrl: string): boolean {
   return (
     fileUrl.startsWith("/api/download") || fileUrl.startsWith("/api/export")
   );
-}
-
-/** Trigger a same-origin file download via a temporary anchor. */
-export function triggerFileDownload(fileUrl: string, fileName: string): void {
-  const url = fileUrl.startsWith("http")
-    ? fileUrl
-    : new URL(fileUrl, window.location.origin).href;
-
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = fileName;
-  anchor.rel = "noopener";
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
 }
 
 function triggerBlobDownload(blob: Blob, fileName: string): void {
@@ -50,84 +57,251 @@ function triggerBlobDownload(blob: Blob, fileName: string): void {
   }
 }
 
-async function fetchFileBlob(file: DownloadDescriptor): Promise<Blob> {
-  const url = file.fileUrl.startsWith("http")
-    ? file.fileUrl
-    : new URL(file.fileUrl, window.location.origin).href;
-
-  const response = await fetch(url, {
-    credentials: "same-origin",
-    redirect: "follow",
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${file.fileName} (${response.status})`);
+/** Soft progress ticker while waiting on server-side render (no Content-Length yet). */
+function startIndeterminateProgress(
+  onProgress: ProgressCallback | undefined,
+  phase: DownloadPhase,
+  opts: {
+    startPercent: number;
+    maxPercent: number;
+    estimatedTotalMs: number;
+    currentFile?: string;
+    fileIndex?: number;
+    fileCount?: number;
   }
+): () => void {
+  if (!onProgress) return () => undefined;
 
-  return response.blob();
+  const started = Date.now();
+  const tick = () => {
+    const elapsed = Date.now() - started;
+    const ratio = Math.min(1, elapsed / opts.estimatedTotalMs);
+    // Ease toward maxPercent without finishing
+    const percent =
+      opts.startPercent +
+      (opts.maxPercent - opts.startPercent) * (1 - Math.exp(-2.2 * ratio));
+    const remaining = Math.max(
+      0,
+      Math.ceil((opts.estimatedTotalMs - elapsed) / 1000)
+    );
+    onProgress({
+      phase,
+      percent: Math.min(opts.maxPercent, Math.round(percent)),
+      etaSeconds: remaining,
+      currentFile: opts.currentFile,
+      fileIndex: opts.fileIndex,
+      fileCount: opts.fileCount,
+    });
+  };
+
+  tick();
+  const id = setInterval(tick, 400);
+  return () => clearInterval(id);
 }
 
-async function postExportBlob(file: DownloadDescriptor): Promise<Blob> {
+async function readResponseBlob(
+  response: Response,
+  onProgress?: ProgressCallback,
+  meta?: { currentFile?: string; fileIndex?: number; fileCount?: number }
+): Promise<Blob> {
+  const total = Number(response.headers.get("content-length") || 0);
+  if (!response.body || !total || !onProgress) {
+    return response.blob();
+  }
+
+  const reader = response.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let received = 0;
+  const started = Date.now();
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (value) {
+      chunks.push(value);
+      received += value.length;
+      const percent = Math.min(99, Math.round((received / total) * 100));
+      const elapsed = Math.max(1, Date.now() - started);
+      const rate = received / elapsed;
+      const remainingBytes = Math.max(0, total - received);
+      const etaSeconds =
+        rate > 0 ? Math.max(1, Math.ceil(remainingBytes / rate / 1000)) : null;
+      onProgress({
+        phase: "downloading",
+        percent,
+        etaSeconds,
+        currentFile: meta?.currentFile,
+        fileIndex: meta?.fileIndex,
+        fileCount: meta?.fileCount,
+      });
+    }
+  }
+
+  return new Blob(chunks as BlobPart[]);
+}
+
+async function postExportBlob(
+  file: DownloadDescriptor,
+  onProgress?: ProgressCallback,
+  meta?: { fileIndex?: number; fileCount?: number }
+): Promise<Blob> {
   if (!file.assetId || !file.exportFormat) {
     throw new Error("Missing export metadata");
   }
 
-  const response = await fetch("/api/export", {
-    method: "POST",
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      assetId: file.assetId,
-      deckLang: file.deckLang ?? "en",
-      format: file.exportFormat,
-      ...(file.brandProfile ? { brandProfile: file.brandProfile } : {}),
-    }),
+  const stop = startIndeterminateProgress(onProgress, "rendering", {
+    startPercent: 5,
+    maxPercent: 88,
+    estimatedTotalMs: file.brandProfile ? 55_000 : 35_000,
+    currentFile: file.fileName,
+    fileIndex: meta?.fileIndex,
+    fileCount: meta?.fileCount,
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to export (${response.status})`);
-  }
+  try {
+    const response = await fetch("/api/export", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        assetId: file.assetId,
+        deckLang: file.deckLang ?? "en",
+        format: file.exportFormat,
+        ...(file.brandProfile ? { brandProfile: file.brandProfile } : {}),
+      }),
+    });
 
-  return response.blob();
+    stop();
+
+    if (!response.ok) {
+      const detail = await response.text().catch(() => "");
+      throw new Error(
+        `Export failed (${response.status})${detail ? `: ${detail.slice(0, 120)}` : ""}`
+      );
+    }
+
+    return readResponseBlob(response, onProgress, {
+      currentFile: file.fileName,
+      fileIndex: meta?.fileIndex,
+      fileCount: meta?.fileCount,
+    });
+  } catch (err) {
+    stop();
+    throw err;
+  }
 }
 
-async function resolveFileBlob(file: DownloadDescriptor): Promise<Blob> {
-  if (file.useExportPost) {
-    return postExportBlob(file);
-  }
+async function getFetchBlob(
+  url: string,
+  file: DownloadDescriptor,
+  onProgress?: ProgressCallback,
+  meta?: { fileIndex?: number; fileCount?: number }
+): Promise<Blob> {
+  const stop = startIndeterminateProgress(onProgress, "preparing", {
+    startPercent: 2,
+    maxPercent: 40,
+    estimatedTotalMs: 12_000,
+    currentFile: file.fileName,
+    fileIndex: meta?.fileIndex,
+    fileCount: meta?.fileCount,
+  });
 
-  const tryFetch = async (url: string) => {
+  try {
     const response = await fetch(new URL(url, window.location.origin).href, {
       credentials: "same-origin",
       redirect: "follow",
     });
+    stop();
+
     if (!response.ok) {
       throw new Error(`Failed to fetch (${response.status})`);
     }
-    return response.blob();
-  };
+
+    return readResponseBlob(response, onProgress, {
+      currentFile: file.fileName,
+      fileIndex: meta?.fileIndex,
+      fileCount: meta?.fileCount,
+    });
+  } catch (err) {
+    stop();
+    throw err;
+  }
+}
+
+async function resolveFileBlob(
+  file: DownloadDescriptor,
+  onProgress?: ProgressCallback,
+  meta?: { fileIndex?: number; fileCount?: number }
+): Promise<Blob> {
+  onProgress?.({
+    phase: "preparing",
+    percent: 1,
+    etaSeconds: null,
+    currentFile: file.fileName,
+    fileIndex: meta?.fileIndex,
+    fileCount: meta?.fileCount,
+  });
+
+  if (file.useExportPost) {
+    try {
+      return await postExportBlob(file, onProgress, meta);
+    } catch (primaryError) {
+      // On Vercel, Playwright-backed branded export may fail — fall back to cached file.
+      if (file.assetId && file.exportFormat) {
+        const params = new URLSearchParams({
+          assetId: file.assetId,
+          deckLang: file.deckLang ?? "en",
+          format: file.exportFormat,
+        });
+        try {
+          return await getFetchBlob(
+            `/api/download?${params.toString()}`,
+            file,
+            onProgress,
+            meta
+          );
+        } catch {
+          throw primaryError;
+        }
+      }
+      throw primaryError;
+    }
+  }
 
   if (file.requiresGeneration || isFetchDownloadUrl(file.fileUrl)) {
     try {
-      return await tryFetch(file.fileUrl);
+      return await getFetchBlob(file.fileUrl, file, onProgress, meta);
     } catch {
       if (file.assetId && file.exportFormat) {
-        return postExportBlob(file);
+        return postExportBlob(file, onProgress, meta);
       }
       throw new Error(`Failed to download ${file.fileName}`);
     }
   }
 
-  return fetchFileBlob(file);
+  return getFetchBlob(file.fileUrl, file, onProgress, meta);
 }
 
 /** Download a file via API or static URL. */
-export async function downloadFile(file: DownloadDescriptor): Promise<void> {
-  const blob = await resolveFileBlob(file);
+export async function downloadFile(
+  file: DownloadDescriptor,
+  onProgress?: ProgressCallback
+): Promise<void> {
+  const blob = await resolveFileBlob(file, onProgress, {
+    fileIndex: 1,
+    fileCount: 1,
+  });
+  onProgress?.({
+    phase: "complete",
+    percent: 100,
+    etaSeconds: 0,
+    currentFile: file.fileName,
+    fileIndex: 1,
+    fileCount: 1,
+  });
   triggerBlobDownload(blob, file.fileName);
 }
 
-/** Ensure every entry in the zip has a unique path. */
 function uniqueZipPaths(fileNames: string[]): string[] {
   const seen = new Map<string, number>();
   return fileNames.map((name) => {
@@ -142,27 +316,45 @@ function uniqueZipPaths(fileNames: string[]): string[] {
 
 export async function downloadFilesAsZip(
   files: DownloadDescriptor[],
-  zipFileName = "hostopia-connects-resources.zip"
+  zipFileName = "hostopia-connects-resources.zip",
+  onProgress?: ProgressCallback
 ): Promise<void> {
   if (files.length === 0) return;
 
   if (files.length === 1) {
-    await downloadFile(files[0]);
+    await downloadFile(files[0], onProgress);
     return;
   }
 
-  const zip = new JSZip();
+  const zip = await import("jszip").then((m) => new m.default());
   const paths = uniqueZipPaths(files.map((f) => f.fileName));
 
   for (let i = 0; i < files.length; i++) {
-    const blob = await resolveFileBlob(files[i]);
+    const blob = await resolveFileBlob(files[i], onProgress, {
+      fileIndex: i + 1,
+      fileCount: files.length,
+    });
     zip.file(paths[i], await blob.arrayBuffer());
   }
+
+  onProgress?.({
+    phase: "packaging",
+    percent: 92,
+    etaSeconds: 2,
+    fileCount: files.length,
+  });
 
   const blob = await zip.generateAsync({
     type: "blob",
     compression: "DEFLATE",
     compressionOptions: { level: 6 },
+  });
+
+  onProgress?.({
+    phase: "complete",
+    percent: 100,
+    etaSeconds: 0,
+    fileCount: files.length,
   });
 
   triggerBlobDownload(blob, zipFileName);

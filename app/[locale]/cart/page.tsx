@@ -4,10 +4,35 @@ import React from "react";
 import { Link } from "@/i18n/routing";
 import { useTranslations, useLocale } from "next-intl";
 import { useCart } from "@/components/CartProvider";
+import { DownloadProgressPanel } from "@/components/DownloadProgressPanel";
 import { getAssetDisplayForLocale } from "@/lib/assets";
 import { deckLangLabel } from "@/lib/html-deck-i18n";
 import type { BundleDownloadItem, BundleRequestResponse } from "@/lib/bundle-request";
-import { downloadFile, downloadFilesAsZip } from "@/lib/trigger-download";
+import {
+  downloadFile,
+  downloadFilesAsZip,
+  type DownloadDescriptor,
+  type DownloadProgress,
+} from "@/lib/trigger-download";
+
+const IDLE_PROGRESS: DownloadProgress = {
+  phase: "idle",
+  percent: 0,
+  etaSeconds: null,
+};
+
+function toDescriptor(item: BundleDownloadItem): DownloadDescriptor {
+  return {
+    fileUrl: item.fileUrl,
+    fileName: item.fileName,
+    requiresGeneration: item.requiresGeneration,
+    assetId: item.assetId,
+    deckLang: item.deckLang,
+    exportFormat: item.exportFormat,
+    brandProfile: item.brandProfile,
+    useExportPost: item.useExportPost,
+  };
+}
 
 export default function CartPage() {
   const t = useTranslations("cart");
@@ -20,10 +45,10 @@ export default function CartPage() {
   );
   const [submitting, setSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
-  const [zipping, setZipping] = React.useState(false);
-  const [zipError, setZipError] = React.useState<string | null>(null);
-  const [downloadingId, setDownloadingId] = React.useState<string | null>(null);
-  const [downloadError, setDownloadError] = React.useState<string | null>(null);
+  const [busy, setBusy] = React.useState(false);
+  const [activeId, setActiveId] = React.useState<string | null>(null);
+  const [progress, setProgress] = React.useState<DownloadProgress>(IDLE_PROGRESS);
+  const [actionError, setActionError] = React.useState<string | null>(null);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
     event
@@ -73,7 +98,42 @@ export default function CartPage() {
     }
   };
 
+  const runDownload = async (
+    action: (onProgress: (p: DownloadProgress) => void) => Promise<void>,
+    id: string | null
+  ) => {
+    setActionError(null);
+    setBusy(true);
+    setActiveId(id);
+    setProgress({
+      phase: "preparing",
+      percent: 2,
+      etaSeconds: null,
+    });
+    try {
+      await action(setProgress);
+      setProgress({
+        phase: "complete",
+        percent: 100,
+        etaSeconds: 0,
+      });
+    } catch {
+      setActionError(t("downloadError"));
+      setProgress({
+        phase: "error",
+        percent: 8,
+        etaSeconds: null,
+      });
+    } finally {
+      setBusy(false);
+      setActiveId(null);
+    }
+  };
+
   if (downloads && downloads.length > 0) {
+    const isSingle = downloads.length === 1;
+    const single = downloads[0];
+
     return (
       <section className="max-w-4xl mx-auto px-6 py-16">
         <div className="mb-8">
@@ -89,116 +149,156 @@ export default function CartPage() {
           >
             {t("successTitle")}
           </h1>
-          <p className="text-sm text-gray-600 font-raleway">{t("successBody")}</p>
+          <p className="text-sm text-gray-600 font-raleway">
+            {isSingle ? t("successBodySingle") : t("successBodyMulti")}
+          </p>
         </div>
 
-        <div className="rounded-2xl border border-teal/30 bg-teal-light p-5 mb-6">
-          <p className="text-sm font-semibold text-teal font-montserrat mb-1">
-            {t("downloadReady")}
-          </p>
-          <p className="text-xs text-gray-700 font-raleway">
-            {downloads.length > 1 ? t("downloadReadyHintZip") : t("downloadReadyHint")}
-          </p>
-          <button
-            type="button"
-            disabled={zipping}
-            onClick={async () => {
-              setZipError(null);
-              setZipping(true);
-              try {
-                await downloadFilesAsZip(
-                  downloads.map((d) => ({
-                    fileUrl: d.fileUrl,
-                    fileName: d.fileName,
-                    requiresGeneration: d.requiresGeneration,
-                    assetId: d.assetId,
-                    deckLang: d.deckLang,
-                    exportFormat: d.exportFormat,
-                    brandProfile: d.brandProfile,
-                    useExportPost: d.useExportPost,
-                  })),
-                  "hostopia-connects-resources.zip"
-                );
-              } catch {
-                setZipError(t("zipError"));
-              } finally {
-                setZipping(false);
+        {isSingle ? (
+          <div className="rounded-2xl border border-teal/30 bg-teal-light p-5 mb-8">
+            <p className="text-sm font-semibold text-charcoal font-montserrat">
+              {single.title}
+            </p>
+            <p className="text-[11px] text-gray-600 mt-1 font-raleway break-all">
+              {single.fileName}
+            </p>
+            {single.deckLang ? (
+              <p className="text-[11px] font-medium text-teal mt-2 font-raleway">
+                {t("requestedDocumentLanguage", {
+                  language: deckLangLabel(single.deckLang),
+                })}
+              </p>
+            ) : null}
+            {single.exportFormat ? (
+              <p className="text-[11px] font-medium text-teal mt-1 font-raleway">
+                {t("requestedExportFormat", {
+                  format: tAsset(`exportFormat_${single.exportFormat}`),
+                })}
+              </p>
+            ) : null}
+
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() =>
+                runDownload((onProgress) => downloadFile(toDescriptor(single), onProgress), single.assetId)
               }
-            }}
-            className="mt-4 inline-flex items-center justify-center rounded-full bg-gold px-5 py-2 font-montserrat text-xs font-bold text-charcoal shadow-sm hover:bg-gold-dark disabled:cursor-wait disabled:opacity-70"
-          >
-            {zipping
-              ? t("preparingZip")
-              : downloads.length > 1
-                ? t("downloadAllZip")
-                : t("downloadFile")}
-          </button>
-          {zipError && (
-            <p className="mt-2 text-[11px] text-red-600 font-raleway">{zipError}</p>
-          )}
-          {downloadError && (
-            <p className="mt-2 text-[11px] text-red-600 font-raleway">{downloadError}</p>
-          )}
-        </div>
-
-        <ul className="space-y-3 mb-8">
-          {downloads.map((item) => (
-            <li
-              key={item.assetId}
-              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border border-black/5 bg-white p-4"
+              className="mt-4 inline-flex items-center justify-center rounded-full bg-gold px-5 py-2.5 font-montserrat text-xs font-bold text-charcoal shadow-sm hover:bg-gold-dark disabled:cursor-wait disabled:opacity-70"
             >
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-charcoal font-montserrat truncate">
-                  {item.title}
-                </p>
-                <p className="text-[11px] text-gray-500 mt-1 font-raleway break-all">
-                  {item.fileName}
-                </p>
-                {item.deckLang && (
-                  <p className="text-[11px] font-medium text-teal mt-1 font-raleway">
-                    {t("requestedDocumentLanguage", {
-                      language: deckLangLabel(item.deckLang),
-                    })}
-                  </p>
-                )}
-                {item.exportFormat && (
-                  <p className="text-[11px] font-medium text-teal mt-1 font-raleway">
-                    {t("requestedExportFormat", {
-                      format: tAsset(`exportFormat_${item.exportFormat}`),
-                    })}
-                  </p>
-                )}
-              </div>
+              {busy ? t("preparingDownload") : t("downloadFile")}
+            </button>
+
+            <DownloadProgressPanel progress={progress} busy={busy} />
+
+            {actionError ? (
+              <p className="mt-3 text-[11px] text-red-600 font-raleway">{actionError}</p>
+            ) : null}
+          </div>
+        ) : (
+          <>
+            <div className="rounded-2xl border border-teal/30 bg-teal-light p-5 mb-6">
+              <p className="text-sm font-semibold text-teal font-montserrat mb-1">
+                {t("downloadReady")}
+              </p>
+              <p className="text-xs text-gray-700 font-raleway">
+                {t("downloadReadyHintZip")}
+              </p>
               <button
                 type="button"
-                disabled={downloadingId === item.assetId}
-                onClick={async () => {
-                  setDownloadError(null);
-                  setDownloadingId(item.assetId);
-                  try {
-                    await downloadFile({
-                      fileUrl: item.fileUrl,
-                      fileName: item.fileName,
-                      requiresGeneration: item.requiresGeneration,
-                      assetId: item.assetId,
-                      deckLang: item.deckLang,
-                      exportFormat: item.exportFormat,
-                      brandProfile: item.brandProfile,
-                      useExportPost: item.useExportPost,
-                    });
-                  } catch {
-                    setDownloadError(t("downloadError"));
-                  } finally {
-                    setDownloadingId(null);
-                  }
-                }}
-                className="shrink-0 inline-flex items-center justify-center rounded-full border border-teal/40 bg-white px-4 py-2 font-montserrat text-xs font-bold text-teal hover:bg-teal/10"
+                disabled={busy || downloads.length === 0}
+                onClick={() =>
+                  runDownload(
+                    (onProgress) =>
+                      downloadFilesAsZip(
+                        downloads.map(toDescriptor),
+                        "hostopia-connects-resources.zip",
+                        onProgress
+                      ),
+                    "zip"
+                  )
+                }
+                className="mt-4 inline-flex items-center justify-center rounded-full bg-gold px-5 py-2.5 font-montserrat text-xs font-bold text-charcoal shadow-sm hover:bg-gold-dark disabled:cursor-wait disabled:opacity-70"
               >
-                {downloadingId === item.assetId ? t("preparingDownload") : t("downloadFile")}
+                {busy && activeId === "zip"
+                  ? t("preparingZip")
+                  : t("downloadAllZip")}
               </button>
-            </li>
-          ))}
-        </ul>
+
+              <DownloadProgressPanel progress={progress} busy={busy} />
+
+              {actionError ? (
+                <p className="mt-3 text-[11px] text-red-600 font-raleway">
+                  {actionError}
+                </p>
+              ) : null}
+            </div>
+
+            <ul className="space-y-3 mb-8">
+              {downloads.map((item) => (
+                <li
+                  key={item.assetId}
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border border-black/5 bg-white p-4"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-charcoal font-montserrat truncate">
+                      {item.title}
+                    </p>
+                    <p className="text-[11px] text-gray-500 mt-1 font-raleway break-all">
+                      {item.fileName}
+                    </p>
+                    {item.deckLang ? (
+                      <p className="text-[11px] font-medium text-teal mt-1 font-raleway">
+                        {t("requestedDocumentLanguage", {
+                          language: deckLangLabel(item.deckLang),
+                        })}
+                      </p>
+                    ) : null}
+                    {item.exportFormat ? (
+                      <p className="text-[11px] font-medium text-teal mt-1 font-raleway">
+                        {t("requestedExportFormat", {
+                          format: tAsset(`exportFormat_${item.exportFormat}`),
+                        })}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() =>
+                        runDownload(
+                          (onProgress) =>
+                            downloadFile(toDescriptor(item), onProgress),
+                          item.assetId
+                        )
+                      }
+                      className="inline-flex items-center justify-center rounded-full border border-teal/40 bg-white px-4 py-2 font-montserrat text-xs font-bold text-teal hover:bg-teal/10 disabled:opacity-60"
+                    >
+                      {busy && activeId === item.assetId
+                        ? t("preparingDownload")
+                        : t("downloadFile")}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => {
+                        setDownloads((prev) =>
+                          prev
+                            ? prev.filter((d) => d.assetId !== item.assetId)
+                            : prev
+                        );
+                        setActionError(null);
+                      }}
+                      className="text-[11px] text-gray-500 hover:text-red-600 font-raleway px-2"
+                    >
+                      {t("remove")}
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
 
         <div className="flex flex-wrap gap-4 text-xs font-raleway">
           <Link href="/library" className="text-teal hover:underline">
