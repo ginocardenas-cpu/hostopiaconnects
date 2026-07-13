@@ -1,11 +1,38 @@
 /** Brand profile for in-platform customization before export. */
 
+export type CtaLinkType =
+  | "website"
+  | "email"
+  | "phone"
+  | "linkedin"
+  | "facebook"
+  | "instagram"
+  | "x";
+
+export interface BrandCtaLink {
+  type: CtaLinkType;
+  value: string;
+  enabled: boolean;
+}
+
 export interface BrandColors {
+  /** Main brand highlight (headings, icons, links) */
   primary: string;
-  primaryDeep: string;
+  /** Dark companion / secondary brand tone */
+  secondary: string;
+  /** Primary accent (CTA banners, highlights) */
   accent: string;
-  background: string;
+  /** Secondary accent (supporting highlights) */
+  accentSecondary: string;
+  /** Slide / page canvas background */
+  slide: string;
+  /** Body and heading font color */
   text: string;
+}
+
+export interface BrandCtaSettings {
+  enabled: boolean;
+  links: BrandCtaLink[];
 }
 
 export interface BrandProfile {
@@ -15,6 +42,7 @@ export interface BrandProfile {
   logoDataUrl?: string;
   colors: BrandColors;
   fontFamily: string;
+  cta: BrandCtaSettings;
   updatedAt: string;
 }
 
@@ -22,11 +50,22 @@ export const BRAND_PROFILE_STORAGE_KEY = "hostopia-connects-brand-profile";
 
 export const HOSTOPIA_DEFAULT_COLORS: BrandColors = {
   primary: "#2CADB2",
-  primaryDeep: "#1D8F93",
+  secondary: "#1D8F93",
   accent: "#F8CF41",
-  background: "#F5EFE3",
+  accentSecondary: "#E0EBEA",
+  slide: "#F5EFE3",
   text: "#1A1A1A",
 };
+
+export const DEFAULT_CTA_LINKS: BrandCtaLink[] = [
+  { type: "website", value: "", enabled: false },
+  { type: "email", value: "", enabled: false },
+  { type: "phone", value: "", enabled: false },
+  { type: "linkedin", value: "", enabled: false },
+  { type: "facebook", value: "", enabled: false },
+  { type: "instagram", value: "", enabled: false },
+  { type: "x", value: "", enabled: false },
+];
 
 export function createDefaultBrandProfile(): BrandProfile {
   const now = new Date().toISOString();
@@ -36,7 +75,40 @@ export function createDefaultBrandProfile(): BrandProfile {
     companyName: "Hostopia Connects",
     colors: { ...HOSTOPIA_DEFAULT_COLORS },
     fontFamily: "Montserrat",
+    cta: { enabled: false, links: DEFAULT_CTA_LINKS.map((l) => ({ ...l })) },
     updatedAt: now,
+  };
+}
+
+function migrateColors(raw: unknown): BrandColors {
+  const base = HOSTOPIA_DEFAULT_COLORS;
+  if (!raw || typeof raw !== "object") return { ...base };
+  const c = raw as Record<string, string>;
+  return {
+    primary: c.primary ?? base.primary,
+    secondary: c.secondary ?? c.primaryDeep ?? base.secondary,
+    accent: c.accent ?? base.accent,
+    accentSecondary: c.accentSecondary ?? base.accentSecondary,
+    slide: c.slide ?? c.background ?? base.slide,
+    text: c.text ?? base.text,
+  };
+}
+
+function migrateCta(raw: unknown): BrandCtaSettings {
+  const defaults = createDefaultBrandProfile().cta;
+  if (!raw || typeof raw !== "object") return defaults;
+  const c = raw as Partial<BrandCtaSettings>;
+  const byType = new Map(
+    (c.links ?? []).map((link) => [link.type, link] as const)
+  );
+  return {
+    enabled: Boolean(c.enabled),
+    links: DEFAULT_CTA_LINKS.map((template) => {
+      const existing = byType.get(template.type);
+      return existing
+        ? { ...template, value: existing.value ?? "", enabled: existing.enabled }
+        : { ...template };
+    }),
   };
 }
 
@@ -56,10 +128,8 @@ export function normalizeBrandProfile(input: Partial<BrandProfile>): BrandProfil
   return {
     ...base,
     ...input,
-    colors: {
-      ...base.colors,
-      ...(input.colors ?? {}),
-    },
+    colors: migrateColors(input.colors ?? base.colors),
+    cta: migrateCta(input.cta ?? base.cta),
     updatedAt: new Date().toISOString(),
   };
 }
@@ -98,21 +168,40 @@ export function clearBrandProfileStorage(): void {
   }
 }
 
-/** True when profile differs from Hostopia defaults (customization active). */
 export function isBrandProfileCustomized(profile: BrandProfile): boolean {
   const defaults = createDefaultBrandProfile();
   if (profile.logoDataUrl) return true;
   if (profile.companyName !== defaults.companyName) return true;
   if (profile.fontFamily !== defaults.fontFamily) return true;
+  if (profile.cta.enabled) return true;
+  if (profile.cta.links.some((l) => l.enabled && l.value.trim())) return true;
+
+  const c = profile.colors;
+  const d = defaults.colors;
   return (
-    profile.colors.primary !== defaults.colors.primary ||
-    profile.colors.primaryDeep !== defaults.colors.primaryDeep ||
-    profile.colors.accent !== defaults.colors.accent ||
-    profile.colors.background !== defaults.colors.background
+    c.primary !== d.primary ||
+    c.secondary !== d.secondary ||
+    c.accent !== d.accent ||
+    c.accentSecondary !== d.accentSecondary ||
+    c.slide !== d.slide ||
+    c.text !== d.text
   );
 }
 
 export function parseBrandProfileJson(body: unknown): BrandProfile | null {
   if (!isBrandProfile(body)) return null;
   return normalizeBrandProfile(body);
+}
+
+export function updateCtaLink(
+  profile: BrandProfile,
+  type: CtaLinkType,
+  patch: Partial<Pick<BrandCtaLink, "value" | "enabled">>
+): BrandCtaSettings {
+  return {
+    ...profile.cta,
+    links: profile.cta.links.map((link) =>
+      link.type === type ? { ...link, ...patch } : link
+    ),
+  };
 }

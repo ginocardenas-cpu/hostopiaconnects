@@ -1,7 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { BrandProfile } from "@/lib/brand-profile";
+import type { BrandColors, BrandCtaLink, BrandProfile, CtaLinkType } from "@/lib/brand-profile";
+import { updateCtaLink } from "@/lib/brand-profile";
 
 interface BrandStudioControlsProps {
   profile: BrandProfile;
@@ -14,10 +15,45 @@ interface BrandStudioControlsProps {
 const FONT_OPTIONS = [
   "Montserrat",
   "Inter",
+  "Raleway",
   "Arial",
   "Georgia",
   "Helvetica",
 ] as const;
+
+const BRAND_COLOR_FIELDS: {
+  key: keyof BrandColors;
+  labelKey: string;
+  hintKey: string;
+}[] = [
+  { key: "primary", labelKey: "colorPrimary", hintKey: "colorPrimaryHint" },
+  { key: "secondary", labelKey: "colorSecondary", hintKey: "colorSecondaryHint" },
+  { key: "accent", labelKey: "colorAccent1", hintKey: "colorAccent1Hint" },
+  {
+    key: "accentSecondary",
+    labelKey: "colorAccent2",
+    hintKey: "colorAccent2Hint",
+  },
+];
+
+const SURFACE_COLOR_FIELDS: {
+  key: keyof BrandColors;
+  labelKey: string;
+  hintKey: string;
+}[] = [
+  { key: "slide", labelKey: "colorSlide", hintKey: "colorSlideHint" },
+  { key: "text", labelKey: "colorText", hintKey: "colorTextHint" },
+];
+
+const CTA_FIELDS: { type: CtaLinkType; labelKey: string; placeholderKey: string }[] = [
+  { type: "website", labelKey: "ctaWebsite", placeholderKey: "ctaWebsitePlaceholder" },
+  { type: "email", labelKey: "ctaEmail", placeholderKey: "ctaEmailPlaceholder" },
+  { type: "phone", labelKey: "ctaPhone", placeholderKey: "ctaPhonePlaceholder" },
+  { type: "linkedin", labelKey: "ctaLinkedin", placeholderKey: "ctaSocialPlaceholder" },
+  { type: "facebook", labelKey: "ctaFacebook", placeholderKey: "ctaSocialPlaceholder" },
+  { type: "instagram", labelKey: "ctaInstagram", placeholderKey: "ctaSocialPlaceholder" },
+  { type: "x", labelKey: "ctaX", placeholderKey: "ctaSocialPlaceholder" },
+];
 
 export function BrandStudioControls({
   profile,
@@ -40,12 +76,22 @@ export function BrandStudioControls({
     reader.readAsDataURL(file);
   };
 
+  const patchColor = (key: keyof BrandColors, value: string) => {
+    onChange({ colors: { ...profile.colors, [key]: value } });
+  };
+
+  const patchCta = (type: CtaLinkType, patch: Partial<Pick<BrandCtaLink, "value" | "enabled">>) => {
+    onChange({ cta: updateCtaLink(profile, type, patch) });
+  };
+
   return (
-    <div className="space-y-6 font-raleway">
-      <div>
-        <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 font-montserrat mb-3">
+    <div className="space-y-8 font-raleway">
+      <section>
+        <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 font-montserrat mb-1">
           {t("brandSection")}
         </h2>
+        <p className="text-xs text-gray-500 mb-4">{t("brandSectionHint")}</p>
+
         <div className="space-y-4">
           <label className="block text-sm">
             <span className="mb-1 block text-gray-600">{t("profileName")}</span>
@@ -93,55 +139,145 @@ export function BrandStudioControls({
               </div>
             ) : null}
           </label>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-2 gap-3">
-            <ColorField
-              label={t("primaryColor")}
-              value={profile.colors.primary}
-              onChange={(primary) =>
-                onChange({ colors: { ...profile.colors, primary } })
-              }
-            />
-            <ColorField
-              label={t("accentColor")}
-              value={profile.colors.accent}
-              onChange={(accent) =>
-                onChange({ colors: { ...profile.colors, accent } })
-              }
-            />
-            <ColorField
-              label={t("backgroundColor")}
-              value={profile.colors.background}
-              onChange={(background) =>
-                onChange({ colors: { ...profile.colors, background } })
-              }
-            />
-            <ColorField
-              label={t("textColor")}
-              value={profile.colors.text}
-              onChange={(text) => onChange({ colors: { ...profile.colors, text } })}
-            />
+      <section>
+        <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 font-montserrat mb-1">
+          {t("colorsSection")}
+        </h2>
+        <p className="text-xs text-gray-500 mb-4">{t("colorsSectionHint")}</p>
+
+        <div className="rounded-xl border border-black/8 bg-cream/30 p-4 mb-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-600 mb-3">
+            {t("colorsBrandGroup")}
+          </p>
+          <div className="flex flex-wrap gap-4 mb-4">
+            {BRAND_COLOR_FIELDS.map(({ key, labelKey }) => (
+              <ColorSwatch
+                key={key}
+                label={t(labelKey)}
+                value={profile.colors[key]}
+                onChange={(value) => patchColor(key, value)}
+              />
+            ))}
           </div>
+          <div className="space-y-3">
+            {BRAND_COLOR_FIELDS.map(({ key, labelKey, hintKey }) => (
+              <ColorField
+                key={`detail-${key}`}
+                label={t(labelKey)}
+                hint={t(hintKey)}
+                value={profile.colors[key]}
+                onChange={(value) => patchColor(key, value)}
+              />
+            ))}
+          </div>
+        </div>
 
-          <label className="block text-sm">
-            <span className="mb-1 block text-gray-600">{t("fontFamily")}</span>
-            <select
-              value={profile.fontFamily}
-              onChange={(e) => onChange({ fontFamily: e.target.value })}
-              className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm"
-            >
-              {FONT_OPTIONS.map((font) => (
-                <option key={font} value={font}>
-                  {font}
-                </option>
-              ))}
-            </select>
+        <div className="rounded-xl border border-black/8 bg-cream/30 p-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-600 mb-3">
+            {t("colorsSurfaceGroup")}
+          </p>
+          <div className="flex flex-wrap gap-4 mb-4">
+            {SURFACE_COLOR_FIELDS.map(({ key, labelKey }) => (
+              <ColorSwatch
+                key={key}
+                label={t(labelKey)}
+                value={profile.colors[key]}
+                onChange={(value) => patchColor(key, value)}
+              />
+            ))}
+          </div>
+          <div className="space-y-3">
+            {SURFACE_COLOR_FIELDS.map(({ key, labelKey, hintKey }) => (
+              <ColorField
+                key={`detail-${key}`}
+                label={t(labelKey)}
+                hint={t(hintKey)}
+                value={profile.colors[key]}
+                onChange={(value) => patchColor(key, value)}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 font-montserrat mb-1">
+          {t("typographySection")}
+        </h2>
+        <label className="block text-sm mt-3">
+          <span className="mb-1 block text-gray-600">{t("fontFamily")}</span>
+          <select
+            value={profile.fontFamily}
+            onChange={(e) => onChange({ fontFamily: e.target.value })}
+            className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm"
+          >
+            {FONT_OPTIONS.map((font) => (
+              <option key={font} value={font}>
+                {font}
+              </option>
+            ))}
+          </select>
+        </label>
+      </section>
+
+      <section>
+        <div className="flex items-center justify-between gap-3 mb-1">
+          <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-gray-700 font-montserrat">
+            {t("ctaSection")}
+          </h2>
+          <label className="inline-flex items-center gap-2 text-xs text-gray-600">
+            <input
+              type="checkbox"
+              checked={profile.cta.enabled}
+              onChange={(e) =>
+                onChange({ cta: { ...profile.cta, enabled: e.target.checked } })
+              }
+              className="rounded border-gray-300 text-teal focus:ring-teal"
+            />
+            {t("ctaEnabled")}
           </label>
         </div>
-      </div>
+        <p className="text-xs text-gray-500 mb-4">{t("ctaSectionHint")}</p>
+
+        <div className="space-y-3">
+          {CTA_FIELDS.map(({ type, labelKey, placeholderKey }) => {
+            const link =
+              profile.cta.links.find((l) => l.type === type) ??
+              ({ type, value: "", enabled: false } as BrandCtaLink);
+            return (
+              <div
+                key={type}
+                className="rounded-xl border border-black/8 bg-cream/40 p-3 space-y-2"
+              >
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={link.enabled}
+                    disabled={!profile.cta.enabled}
+                    onChange={(e) => patchCta(type, { enabled: e.target.checked })}
+                    className="rounded border-gray-300 text-teal focus:ring-teal"
+                  />
+                  {t(labelKey)}
+                </label>
+                <input
+                  type="text"
+                  value={link.value}
+                  disabled={!profile.cta.enabled || !link.enabled}
+                  placeholder={t(placeholderKey)}
+                  onChange={(e) => patchCta(type, { value: e.target.value })}
+                  className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm disabled:opacity-50"
+                />
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       {!compact ? (
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 pt-2">
           <button
             type="button"
             onClick={onSave}
@@ -162,7 +298,7 @@ export function BrandStudioControls({
   );
 }
 
-function ColorField({
+function ColorSwatch({
   label,
   value,
   onChange,
@@ -172,8 +308,36 @@ function ColorField({
   onChange: (value: string) => void;
 }) {
   return (
+    <label className="flex flex-col items-center gap-1.5 text-center">
+      <input
+        type="color"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="h-10 w-10 cursor-pointer rounded-full border-2 border-white shadow-sm ring-1 ring-black/10 p-0"
+        title={label}
+      />
+      <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-600 max-w-[72px] leading-tight">
+        {label}
+      </span>
+    </label>
+  );
+}
+
+function ColorField({
+  label,
+  hint,
+  value,
+  onChange,
+}: {
+  label: string;
+  hint: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
     <label className="block text-sm">
-      <span className="mb-1 block text-gray-600">{label}</span>
+      <span className="mb-0.5 block font-medium text-gray-700">{label}</span>
+      <span className="mb-2 block text-[11px] text-gray-500">{hint}</span>
       <div className="flex items-center gap-2">
         <input
           type="color"

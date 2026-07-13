@@ -44,6 +44,13 @@ export function BrandStudioPageClient() {
               ...prev,
               ...patch,
               colors: { ...prev.colors, ...(patch.colors ?? {}) },
+              cta: patch.cta
+                ? {
+                    ...prev.cta,
+                    ...patch.cta,
+                    links: patch.cta.links ?? prev.cta.links,
+                  }
+                : prev.cta,
             }))
           }
           onSave={() => {
