@@ -95,7 +95,6 @@ export function resolveDownloadForAsset(
     };
   }
 
-  const manifestEntry = findManifestEntry(asset.id, deckLang, format, root);
   const { fileName: editableName } = editableOutputPath(
     asset,
     deckLang,
