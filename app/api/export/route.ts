@@ -35,17 +35,19 @@ async function generateBrandedBuffer(
   deckLang: ReturnType<typeof normalizeLang>,
   format: ExportFormat,
   brandProfile: NonNullable<ReturnType<typeof slimBrandProfileForExport>>,
-  requestUrl: string
+  request: Request
 ): Promise<{ buffer: Buffer; deliveredFormat: ExportFormat }> {
   const serverless = isServerlessExportHost();
   const requestFormat =
     serverless && format !== "html" ? ("html" as const) : format;
+  const loadOptions = {
+    origin: new URL(request.url).origin,
+    deckLang,
+    requestCookie: request.headers.get("cookie"),
+  };
 
   if (requestFormat === "html") {
-    const { raw } = await loadHtmlSourceForAsset(asset, {
-      origin: new URL(requestUrl).origin,
-      deckLang,
-    });
+    const { raw } = await loadHtmlSourceForAsset(asset, loadOptions);
     return {
       buffer: injectPinnedHtmlExport(raw, deckLang, brandProfile),
       deliveredFormat: "html",
@@ -68,10 +70,7 @@ async function generateBrandedBuffer(
       "failed, falling back to HTML:",
       primaryErr instanceof Error ? primaryErr.message : primaryErr
     );
-    const { raw } = await loadHtmlSourceForAsset(asset, {
-      origin: new URL(requestUrl).origin,
-      deckLang,
-    });
+    const { raw } = await loadHtmlSourceForAsset(asset, loadOptions);
     return {
       buffer: injectPinnedHtmlExport(raw, deckLang, brandProfile),
       deliveredFormat: "html",
@@ -154,7 +153,7 @@ async function handleExport(request: Request, body?: Record<string, unknown>) {
         deckLang,
         format,
         brandProfile,
-        request.url
+        request
       );
       buffer = branded.buffer;
       deliveredFormat = branded.deliveredFormat;
