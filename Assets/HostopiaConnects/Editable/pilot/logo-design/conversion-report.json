@@ -1,0 +1,154 @@
+{
+  "generatedAt": "2026-06-18T02:51:44.477Z",
+  "pilot": "logo-design",
+  "languages": [
+    "en",
+    "fr",
+    "es",
+    "de",
+    "pt"
+  ],
+  "assets": [
+    "presentation",
+    "sales-slick",
+    "overview"
+  ],
+  "results": [
+    {
+      "assetId": "presentation",
+      "lang": "en",
+      "format": "pptx",
+      "sourceHtml": "Professional Logo Design Presentation FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/en/Professional Logo Design Presentation - en.pptx",
+      "sections": 13,
+      "blocks": 3
+    },
+    {
+      "assetId": "presentation",
+      "lang": "fr",
+      "format": "pptx",
+      "sourceHtml": "Professional Logo Design Presentation FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/fr/Professional Logo Design Presentation - fr.pptx",
+      "sections": 13,
+      "blocks": 3
+    },
+    {
+      "assetId": "presentation",
+      "lang": "es",
+      "format": "pptx",
+      "sourceHtml": "Professional Logo Design Presentation FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/es/Professional Logo Design Presentation - es.pptx",
+      "sections": 13,
+      "blocks": 3
+    },
+    {
+      "assetId": "presentation",
+      "lang": "de",
+      "format": "pptx",
+      "sourceHtml": "Professional Logo Design Presentation FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/de/Professional Logo Design Presentation - de.pptx",
+      "sections": 13,
+      "blocks": 3
+    },
+    {
+      "assetId": "presentation",
+      "lang": "pt",
+      "format": "pptx",
+      "sourceHtml": "Professional Logo Design Presentation FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/pt/Professional Logo Design Presentation - pt.pptx",
+      "sections": 13,
+      "blocks": 3
+    },
+    {
+      "assetId": "sales-slick",
+      "lang": "en",
+      "format": "docx",
+      "sourceHtml": "Professional Logo Design Sales Slick FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/en/Professional Logo Design Sales Slick - en.docx",
+      "sections": 3,
+      "blocks": 55
+    },
+    {
+      "assetId": "sales-slick",
+      "lang": "fr",
+      "format": "docx",
+      "sourceHtml": "Professional Logo Design Sales Slick FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/fr/Professional Logo Design Sales Slick - fr.docx",
+      "sections": 3,
+      "blocks": 55
+    },
+    {
+      "assetId": "sales-slick",
+      "lang": "es",
+      "format": "docx",
+      "sourceHtml": "Professional Logo Design Sales Slick FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/es/Professional Logo Design Sales Slick - es.docx",
+      "sections": 3,
+      "blocks": 55
+    },
+    {
+      "assetId": "sales-slick",
+      "lang": "de",
+      "format": "docx",
+      "sourceHtml": "Professional Logo Design Sales Slick FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/de/Professional Logo Design Sales Slick - de.docx",
+      "sections": 3,
+      "blocks": 55
+    },
+    {
+      "assetId": "sales-slick",
+      "lang": "pt",
+      "format": "docx",
+      "sourceHtml": "Professional Logo Design Sales Slick FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/pt/Professional Logo Design Sales Slick - pt.docx",
+      "sections": 3,
+      "blocks": 55
+    },
+    {
+      "assetId": "overview",
+      "lang": "en",
+      "format": "docx",
+      "sourceHtml": "Professional Logo Design Overview FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/en/Professional Logo Design Overview - en.docx",
+      "sections": 10,
+      "blocks": 56
+    },
+    {
+      "assetId": "overview",
+      "lang": "fr",
+      "format": "docx",
+      "sourceHtml": "Professional Logo Design Overview FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/fr/Professional Logo Design Overview - fr.docx",
+      "sections": 10,
+      "blocks": 56
+    },
+    {
+      "assetId": "overview",
+      "lang": "es",
+      "format": "docx",
+      "sourceHtml": "Professional Logo Design Overview FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/es/Professional Logo Design Overview - es.docx",
+      "sections": 10,
+      "blocks": 56
+    },
+    {
+      "assetId": "overview",
+      "lang": "de",
+      "format": "docx",
+      "sourceHtml": "Professional Logo Design Overview FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/de/Professional Logo Design Overview - de.docx",
+      "sections": 10,
+      "blocks": 56
+    },
+    {
+      "assetId": "overview",
+      "lang": "pt",
+      "format": "docx",
+      "sourceHtml": "Professional Logo Design Overview FINAL 2026-05-18.html",
+      "outputFile": "Assets/HostopiaConnects/Editable/pilot/logo-design/pt/Professional Logo Design Overview - pt.docx",
+      "sections": 10,
+      "blocks": 56
+    }
+  ],
+  "errors": []
+}

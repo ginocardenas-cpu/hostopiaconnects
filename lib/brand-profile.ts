@@ -239,6 +239,30 @@ export function parseBrandProfileJson(body: unknown): BrandProfile | null {
   return normalizeBrandProfile(body);
 }
 
+/**
+ * Shrink a brand profile for API export bodies (drop unused CTA fields, cap logo).
+ * Logos larger than ~180KB are dropped so the request fits serverless limits;
+ * colors/copy still apply.
+ */
+export function slimBrandProfileForExport(profile: BrandProfile): BrandProfile {
+  const maxLogoChars = 240_000; // ~180KB binary
+  const logo =
+    profile.logoDataUrl && profile.logoDataUrl.length > maxLogoChars
+      ? undefined
+      : profile.logoDataUrl;
+
+  return {
+    ...profile,
+    logoDataUrl: logo,
+    cta: {
+      enabled: profile.cta.enabled,
+      links: profile.cta.links
+        .filter((l) => l.enabled && l.value.trim())
+        .map((l) => ({ ...l, value: l.value.trim() })),
+    },
+  };
+}
+
 export function updateCtaLink(
   profile: BrandProfile,
   type: CtaLinkType,

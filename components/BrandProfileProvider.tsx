@@ -22,7 +22,8 @@ interface BrandProfileContextValue {
   hydrated: boolean;
   updateProfile: (patch: Partial<BrandProfile>) => void;
   resetProfile: () => void;
-  saveProfile: () => void;
+  /** Persist current profile, or an explicit snapshot (avoids stale state after draft apply). */
+  saveProfile: (override?: BrandProfile) => void;
 }
 
 const BrandProfileContext = createContext<BrandProfileContextValue | undefined>(
@@ -48,9 +49,9 @@ export function BrandProfileProvider({ children }: { children: ReactNode }) {
     saveBrandProfileToStorage(defaults);
   }, []);
 
-  const saveProfile = useCallback(() => {
+  const saveProfile = useCallback((override?: BrandProfile) => {
     setProfile((prev) => {
-      const next = normalizeBrandProfile(prev);
+      const next = normalizeBrandProfile(override ?? prev);
       saveBrandProfileToStorage(next);
       return next;
     });

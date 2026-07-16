@@ -56,7 +56,7 @@ export function BrandStudioPageClient() {
           }
           onSave={() => {
             updateProfile(draft);
-            saveProfile();
+            saveProfile(draft);
           }}
           onReset={() => {
             const defaults = createDefaultBrandProfile();
