@@ -235,8 +235,12 @@ export function shouldApplyBrandOnExport(profile: BrandProfile | undefined): boo
 }
 
 export function parseBrandProfileJson(body: unknown): BrandProfile | null {
-  if (!isBrandProfile(body)) return null;
-  return normalizeBrandProfile(body);
+  if (!body || typeof body !== "object") return null;
+  try {
+    return normalizeBrandProfile(body as Partial<BrandProfile>);
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -245,7 +249,7 @@ export function parseBrandProfileJson(body: unknown): BrandProfile | null {
  * colors/copy still apply.
  */
 export function slimBrandProfileForExport(profile: BrandProfile): BrandProfile {
-  const maxLogoChars = 240_000; // ~180KB binary
+  const maxLogoChars = 96_000; // ~72KB binary — keeps POST/response under serverless limits
   const logo =
     profile.logoDataUrl && profile.logoDataUrl.length > maxLogoChars
       ? undefined

@@ -17,6 +17,12 @@ import { editableOutputPath, findCachedExport } from "@/lib/export/cache";
 import { generatePinnedHtmlBuffer } from "@/lib/export/generate-html";
 import { htmlSourcePath, isServerlessExportHost } from "@/lib/export/paths";
 
+function contentDispositionAttachment(fileName: string): string {
+  const safe = fileName.replace(/"/g, "");
+  const encoded = encodeURIComponent(safe);
+  return `attachment; filename="${safe}"; filename*=UTF-8''${encoded}`;
+}
+
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -160,7 +166,7 @@ async function handleExport(request: Request, body?: Record<string, unknown>) {
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": EXPORT_FORMAT_MIME[deliveredFormat],
-        "Content-Disposition": `attachment; filename="${downloadName.replace(/"/g, "")}"`,
+        "Content-Disposition": contentDispositionAttachment(downloadName),
         "Content-Length": String(buffer.length),
         "Cache-Control": brandProfile ? "private, no-store" : "private, max-age=3600",
         "X-Export-Format": deliveredFormat,

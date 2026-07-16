@@ -49,6 +49,7 @@ export default function CartPage() {
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const [progress, setProgress] = React.useState<DownloadProgress>(IDLE_PROGRESS);
   const [actionError, setActionError] = React.useState<string | null>(null);
+  const [deliveredHint, setDeliveredHint] = React.useState<string | null>(null);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
     event
@@ -99,10 +100,12 @@ export default function CartPage() {
   };
 
   const runDownload = async (
-    action: (onProgress: (p: DownloadProgress) => void) => Promise<void>,
-    id: string | null
+    action: (onProgress: (p: DownloadProgress) => void) => Promise<string | void>,
+    id: string | null,
+    item?: BundleDownloadItem
   ) => {
     setActionError(null);
+    setDeliveredHint(null);
     setBusy(true);
     setActiveId(id);
     setProgress({
@@ -111,12 +114,22 @@ export default function CartPage() {
       etaSeconds: null,
     });
     try {
-      await action(setProgress);
+      const deliveredName = await action(setProgress);
       setProgress({
         phase: "complete",
         percent: 100,
         etaSeconds: 0,
       });
+      if (
+        item?.brandProfile &&
+        item.exportFormat === "pdf" &&
+        typeof deliveredName === "string" &&
+        deliveredName.toLowerCase().endsWith(".html")
+      ) {
+        setDeliveredHint(
+          t("downloadDeliveredAsHtml", { fileName: deliveredName })
+        );
+      }
     } catch (err) {
       const detail =
         err instanceof Error && err.message
@@ -190,7 +203,11 @@ export default function CartPage() {
               type="button"
               disabled={busy}
               onClick={() =>
-                runDownload((onProgress) => downloadFile(toDescriptor(single), onProgress), single.assetId)
+                runDownload(
+                  (onProgress) => downloadFile(toDescriptor(single), onProgress),
+                  single.assetId,
+                  single
+                )
               }
               className="mt-4 inline-flex items-center justify-center rounded-full bg-gold px-5 py-2.5 font-montserrat text-xs font-bold text-charcoal shadow-sm hover:bg-gold-dark disabled:cursor-wait disabled:opacity-70"
             >
@@ -201,6 +218,9 @@ export default function CartPage() {
 
             {actionError ? (
               <p className="mt-3 text-[11px] text-red-600 font-raleway">{actionError}</p>
+            ) : null}
+            {deliveredHint ? (
+              <p className="mt-3 text-[11px] text-teal-dark font-raleway">{deliveredHint}</p>
             ) : null}
           </div>
         ) : (
@@ -222,7 +242,7 @@ export default function CartPage() {
                         downloads.map(toDescriptor),
                         "hostopia-connects-resources.zip",
                         onProgress
-                      ),
+                      ).then(() => undefined),
                     "zip"
                   )
                 }
@@ -278,7 +298,8 @@ export default function CartPage() {
                         runDownload(
                           (onProgress) =>
                             downloadFile(toDescriptor(item), onProgress),
-                          item.assetId
+                          item.assetId,
+                          item
                         )
                       }
                       className="inline-flex items-center justify-center rounded-full border border-teal/40 bg-white px-4 py-2 font-montserrat text-xs font-bold text-teal hover:bg-teal/10 disabled:opacity-60"

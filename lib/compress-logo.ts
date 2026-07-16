@@ -1,7 +1,7 @@
 /** Resize/compress a logo data URL so brand exports stay under serverless body limits. */
 
 const MAX_EDGE = 480;
-const MAX_BYTES = 120_000;
+const MAX_BYTES = 96_000;
 
 function dataUrlByteLength(dataUrl: string): number {
   const comma = dataUrl.indexOf(",");

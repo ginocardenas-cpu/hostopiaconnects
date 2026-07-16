@@ -270,7 +270,9 @@ export function applyBrandContentToDocument(
 /** Inline script for pinned HTML exports — CSS + content overrides. */
 export function buildBrandPinScript(profile: BrandProfile): string {
   const css = buildBrandStyleCss(profile);
-  const profileJson = JSON.stringify(profile);
+  const logoDataUrl = profile.logoDataUrl ?? "";
+  const profileForScript = { ...profile, logoDataUrl: undefined };
+  const profileJson = JSON.stringify(profileForScript);
   const contactHtml = profile.content.contactEmail.trim()
     ? buildContactHtml(profile.content.contactEmail)
     : "";
@@ -279,6 +281,7 @@ export function buildBrandPinScript(profile: BrandProfile): string {
 <script id="__hostopia_export_brand">
 (function(){
   var profile=${profileJson};
+  var logoDataUrl=${JSON.stringify(logoDataUrl)};
   var css=${JSON.stringify(css)};
   var contactHtml=${JSON.stringify(contactHtml)};
   function ctaHref(link){
@@ -326,11 +329,11 @@ export function buildBrandPinScript(profile: BrandProfile): string {
       if(content.presentationDescription) setText("cover.sub", content.presentationDescription);
       if(content.audience) setText("meta.audience.v", content.audience);
       if(contactHtml) setHtml("cta.contact", contactHtml);
-      if(profile.logoDataUrl){
+      if(logoDataUrl){
         document.querySelectorAll(".brandmark").forEach(function(mark){
           var glyph=mark.querySelector(".glyph");
           if(glyph){
-            glyph.style.backgroundImage="url("+profile.logoDataUrl+")";
+            glyph.style.backgroundImage="url("+logoDataUrl+")";
             glyph.style.backgroundSize="contain";
             glyph.style.backgroundRepeat="no-repeat";
             glyph.style.backgroundPosition="center";
@@ -344,12 +347,12 @@ export function buildBrandPinScript(profile: BrandProfile): string {
             slot.setAttribute("data-portal-chrome-logo","1");
             var img=document.createElement("img");
             img.alt=company||"Logo";
-            img.src=profile.logoDataUrl;
+            img.src=logoDataUrl;
             slot.appendChild(img);
             bar.insertBefore(slot, bar.firstChild);
           } else {
             var existing=slot.querySelector("img");
-            if(existing) existing.src=profile.logoDataUrl;
+            if(existing) existing.src=logoDataUrl;
           }
         });
       }

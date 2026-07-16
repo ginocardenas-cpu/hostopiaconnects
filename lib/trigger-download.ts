@@ -128,13 +128,30 @@ function startIndeterminateProgress(
   return () => clearInterval(id);
 }
 
+function exportFormatForRequest(file: DownloadDescriptor): ExportFormat {
+  // Branded exports on Vercel/serverless are HTML-only; request HTML up front.
+  if (file.brandProfile && file.exportFormat && file.exportFormat !== "html") {
+    return "html";
+  }
+  return file.exportFormat ?? "html";
+}
+
 async function readResponseBlob(
   response: Response,
   onProgress?: ProgressCallback,
   meta?: { currentFile?: string; fileIndex?: number; fileCount?: number }
 ): Promise<Blob> {
   const total = Number(response.headers.get("content-length") || 0);
-  if (!response.body || !total || !onProgress) {
+  // Large generated HTML decks — use a single blob read (more reliable than streaming).
+  if (!response.body || !total || !onProgress || total > 1_500_000) {
+    onProgress?.({
+      phase: "downloading",
+      percent: 90,
+      etaSeconds: null,
+      currentFile: meta?.currentFile,
+      fileIndex: meta?.fileIndex,
+      fileCount: meta?.fileCount,
+    });
     return response.blob();
   }
 
@@ -191,6 +208,7 @@ async function postExportBlob(
     const brandProfile = file.brandProfile
       ? slimBrandProfileForExport(file.brandProfile)
       : undefined;
+    const requestFormat = exportFormatForRequest(file);
 
     const response = await fetch("/api/export", {
       method: "POST",
@@ -199,7 +217,7 @@ async function postExportBlob(
       body: JSON.stringify({
         assetId: file.assetId,
         deckLang: file.deckLang ?? "en",
-        format: file.exportFormat,
+        format: requestFormat,
         ...(brandProfile ? { brandProfile } : {}),
       }),
     });
@@ -339,11 +357,11 @@ async function resolveFileBlob(
   return getFetchBlob(file.fileUrl, file, onProgress, meta);
 }
 
-/** Download a file via API or static URL. */
+/** Download a file via API or static URL. Returns delivered file name when known. */
 export async function downloadFile(
   file: DownloadDescriptor,
   onProgress?: ProgressCallback
-): Promise<void> {
+): Promise<string> {
   const { blob, fileName } = await resolveFileBlob(file, onProgress, {
     fileIndex: 1,
     fileCount: 1,
@@ -357,6 +375,7 @@ export async function downloadFile(
     fileCount: 1,
   });
   triggerBlobDownload(blob, fileName);
+  return fileName;
 }
 
 function uniqueZipPaths(fileNames: string[]): string[] {
