@@ -134,7 +134,23 @@ export interface Asset {
 /** Display name for the downloadable file (inventory Filename, or decoded from `fileUrl`). */
 export function getAssetSourceFileName(asset: Asset): string {
   const fromInventory = asset.fileName?.trim();
+  let fromUrl: string | null = null;
+  if (asset.fileUrl?.trim()) {
+    try {
+      const seg = asset.fileUrl.split("?")[0]?.split("#")[0]?.split("/").pop() ?? "";
+      fromUrl = decodeURIComponent(seg);
+    } catch {
+      fromUrl = asset.fileUrl.split("/").pop() ?? null;
+    }
+  }
+
+  // When catalog Filename drifts from the deployed public asset, trust fileUrl.
+  if (fromUrl && fromInventory && fromUrl !== fromInventory) {
+    return fromUrl;
+  }
   if (fromInventory) return fromInventory;
+  if (fromUrl) return fromUrl;
+
   const seg = asset.fileUrl.split("/").pop() ?? "";
   try {
     return decodeURIComponent(seg);

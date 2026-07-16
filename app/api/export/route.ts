@@ -14,8 +14,11 @@ import {
   type ExportFormat,
 } from "@/lib/export/formats";
 import { editableOutputPath, findCachedExport } from "@/lib/export/cache";
-import { generatePinnedHtmlBuffer } from "@/lib/export/generate-html";
-import { htmlSourcePath, isServerlessExportHost } from "@/lib/export/paths";
+import {
+  injectPinnedHtmlExport,
+} from "@/lib/export/generate-html";
+import { loadHtmlSourceForAsset } from "@/lib/export/load-html-source";
+import { isServerlessExportHost } from "@/lib/export/paths";
 
 function contentDispositionAttachment(fileName: string): string {
   const safe = fileName.replace(/"/g, "");
@@ -31,19 +34,20 @@ async function generateBrandedBuffer(
   asset: NonNullable<ReturnType<typeof getAssetById>>,
   deckLang: ReturnType<typeof normalizeLang>,
   format: ExportFormat,
-  brandProfile: NonNullable<ReturnType<typeof slimBrandProfileForExport>>
+  brandProfile: NonNullable<ReturnType<typeof slimBrandProfileForExport>>,
+  requestUrl: string
 ): Promise<{ buffer: Buffer; deliveredFormat: ExportFormat }> {
   const serverless = isServerlessExportHost();
   const requestFormat =
     serverless && format !== "html" ? ("html" as const) : format;
 
   if (requestFormat === "html") {
-    const htmlPath = htmlSourcePath(asset);
-    if (!fs.existsSync(htmlPath)) {
-      throw new Error(`HTML source not found: ${getAssetSourceFileName(asset)}`);
-    }
+    const { raw } = await loadHtmlSourceForAsset(asset, {
+      origin: new URL(requestUrl).origin,
+      deckLang,
+    });
     return {
-      buffer: generatePinnedHtmlBuffer(htmlPath, deckLang, brandProfile),
+      buffer: injectPinnedHtmlExport(raw, deckLang, brandProfile),
       deliveredFormat: "html",
     };
   }
@@ -64,12 +68,12 @@ async function generateBrandedBuffer(
       "failed, falling back to HTML:",
       primaryErr instanceof Error ? primaryErr.message : primaryErr
     );
-    const htmlPath = htmlSourcePath(asset);
-    if (!fs.existsSync(htmlPath)) {
-      throw primaryErr;
-    }
+    const { raw } = await loadHtmlSourceForAsset(asset, {
+      origin: new URL(requestUrl).origin,
+      deckLang,
+    });
     return {
-      buffer: generatePinnedHtmlBuffer(htmlPath, deckLang, brandProfile),
+      buffer: injectPinnedHtmlExport(raw, deckLang, brandProfile),
       deliveredFormat: "html",
     };
   }
@@ -149,7 +153,8 @@ async function handleExport(request: Request, body?: Record<string, unknown>) {
         asset,
         deckLang,
         format,
-        brandProfile
+        brandProfile,
+        request.url
       );
       buffer = branded.buffer;
       deliveredFormat = branded.deliveredFormat;

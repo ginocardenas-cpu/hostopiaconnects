@@ -31,13 +31,12 @@ const PIN_SCRIPT = (lang: DeckLang) => `<!-- Hostopia Connects export: language 
 })();
 </script>`;
 
-/** Read HTML bundle and inject language (+ optional brand) pin scripts before </body>. */
-export function generatePinnedHtmlBuffer(
-  htmlPath: string,
+/** Inject language (+ optional brand) pin scripts into HTML source. */
+export function injectPinnedHtmlExport(
+  raw: string,
   lang: DeckLang,
   brandProfile?: BrandProfile
 ): Buffer {
-  const raw = fs.readFileSync(htmlPath, "utf8");
   const scripts = [PIN_SCRIPT(lang)];
   if (brandProfile && shouldApplyBrandOnExport(brandProfile)) {
     scripts.push(buildBrandPinScript(brandProfile));
@@ -50,4 +49,14 @@ export function generatePinnedHtmlBuffer(
     html = `${html}\n${injection}`;
   }
   return Buffer.from(html, "utf8");
+}
+
+/** Read HTML bundle from disk and inject language (+ optional brand) pin scripts before </body>. */
+export function generatePinnedHtmlBuffer(
+  htmlPath: string,
+  lang: DeckLang,
+  brandProfile?: BrandProfile
+): Buffer {
+  const raw = fs.readFileSync(htmlPath, "utf8");
+  return injectPinnedHtmlExport(raw, lang, brandProfile);
 }
