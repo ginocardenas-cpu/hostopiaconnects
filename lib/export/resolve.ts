@@ -78,6 +78,15 @@ export function resolveDownloadForAsset(
 
   const deckLang = options.deckLang ?? "en";
 
+  const manifestEntry = findManifestEntry(asset.id, deckLang, format, root);
+  if (!applyBrand && manifestEntry) {
+    return {
+      fileUrl: manifestEntry.fileUrl,
+      fileName: manifestEntry.fileName,
+      requiresGeneration: false,
+    };
+  }
+
   if (!assetNeedsExport(asset, deckLang, format)) {
     return {
       fileUrl: asset.fileUrl,

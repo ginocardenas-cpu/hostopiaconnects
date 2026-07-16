@@ -11,7 +11,7 @@ import {
   defaultExportFormat,
   type ExportFormat,
 } from "@/lib/export/formats";
-import { shouldApplyBrandOnExport } from "@/lib/brand-profile";
+import { shouldApplyBrandOnExport, slimBrandProfileForExport } from "@/lib/brand-profile";
 import { useBrandProfile } from "@/components/BrandProfileProvider";
 import { useCart } from "@/components/CartProvider";
 import { BrandPreviewFrame } from "@/components/BrandPreviewFrame";
@@ -45,8 +45,9 @@ export function AssetCustomizeWorkspace({
   useEffect(() => {
     setDraftProfile(profile);
   }, [profile]);
+  // HTML is the reliable path for branded exports (no Playwright on serverless).
   const [exportFormat, setExportFormat] = useState<ExportFormat>(() =>
-    defaultExportFormat(asset.contentType, sourceFile)
+    supportsHtml ? "html" : defaultExportFormat(asset.contentType, sourceFile)
   );
 
   const formatOptions = useMemo(
@@ -59,7 +60,7 @@ export function AssetCustomizeWorkspace({
 
   const handleApplyDraft = () => {
     updateProfile(draftProfile);
-    saveProfile();
+    saveProfile(draftProfile);
   };
 
   const handleAddToCart = () => {
@@ -67,7 +68,7 @@ export function AssetCustomizeWorkspace({
     addItem(asset.id, {
       deckLang,
       exportFormat,
-      ...(applyBrand ? { brandProfile: draftProfile } : {}),
+      ...(applyBrand ? { brandProfile: slimBrandProfileForExport(draftProfile) } : {}),
     });
   };
 
@@ -147,6 +148,9 @@ export function AssetCustomizeWorkspace({
             <p className="mt-2 text-xs text-gray-500">
               {tAsset(`exportFormatHint_${exportFormat}`)}
             </p>
+            {applyBrand ? (
+              <p className="mt-2 text-xs text-teal font-medium">{t("brandedFormatHint")}</p>
+            ) : null}
           </label>
 
           <button

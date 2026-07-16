@@ -2,24 +2,94 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { getAssetById, getAssetSourceFileName } from "@/lib/assets";
-import { parseBrandProfileJson } from "@/lib/brand-profile";
+import {
+  parseBrandProfileJson,
+  slimBrandProfileForExport,
+} from "@/lib/brand-profile";
 import { normalizeLang } from "@/lib/html-deck-i18n";
 import {
   EXPORT_FORMAT_MIME,
   parseExportFormat,
   isHtmlExportable,
+  type ExportFormat,
 } from "@/lib/export/formats";
-import {
-  editableOutputPath,
-  findCachedExport,
-  generateExportBuffer,
-  readEditableManifest,
-  writeEditableManifest,
-  writeExportToCache,
-} from "@/lib/export/generate";
+import { editableOutputPath, findCachedExport } from "@/lib/export/cache";
+import { generatePinnedHtmlBuffer } from "@/lib/export/generate-html";
+import { htmlSourcePath, isServerlessExportHost } from "@/lib/export/paths";
 
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+async function generateBrandedBuffer(
+  asset: NonNullable<ReturnType<typeof getAssetById>>,
+  deckLang: ReturnType<typeof normalizeLang>,
+  format: ExportFormat,
+  brandProfile: NonNullable<ReturnType<typeof slimBrandProfileForExport>>
+): Promise<{ buffer: Buffer; deliveredFormat: ExportFormat }> {
+  const serverless = isServerlessExportHost();
+  const requestFormat =
+    serverless && format !== "html" ? ("html" as const) : format;
+
+  if (requestFormat === "html") {
+    const htmlPath = htmlSourcePath(asset);
+    if (!fs.existsSync(htmlPath)) {
+      throw new Error(`HTML source not found: ${getAssetSourceFileName(asset)}`);
+    }
+    return {
+      buffer: generatePinnedHtmlBuffer(htmlPath, deckLang, brandProfile),
+      deliveredFormat: "html",
+    };
+  }
+
+  try {
+    const { generateExportBuffer } = await import("@/lib/export/generate");
+    const buffer = await generateExportBuffer({
+      asset,
+      deckLang,
+      format: requestFormat,
+      brandProfile,
+    });
+    return { buffer, deliveredFormat: requestFormat };
+  } catch (primaryErr) {
+    console.warn(
+      "[api/export] branded",
+      requestFormat,
+      "failed, falling back to HTML:",
+      primaryErr instanceof Error ? primaryErr.message : primaryErr
+    );
+    const htmlPath = htmlSourcePath(asset);
+    if (!fs.existsSync(htmlPath)) {
+      throw primaryErr;
+    }
+    return {
+      buffer: generatePinnedHtmlBuffer(htmlPath, deckLang, brandProfile),
+      deliveredFormat: "html",
+    };
+  }
+}
+
+async function generateStandardBuffer(
+  asset: NonNullable<ReturnType<typeof getAssetById>>,
+  deckLang: ReturnType<typeof normalizeLang>,
+  format: ExportFormat
+): Promise<Buffer> {
+  const { writeExportToCache, readEditableManifest, writeEditableManifest } =
+    await import("@/lib/export/generate");
+  const entry = await writeExportToCache({ asset, deckLang, format });
+  const manifest = readEditableManifest();
+  const filtered =
+    manifest?.entries.filter(
+      (e) =>
+        !(
+          e.assetId === asset.id &&
+          e.lang === deckLang &&
+          e.format === format
+        )
+    ) ?? [];
+  writeEditableManifest([...filtered, entry]);
+  return fs.readFileSync(path.join(process.cwd(), entry.publicPath));
+}
 
 async function handleExport(request: Request, body?: Record<string, unknown>) {
   const url = new URL(request.url);
@@ -28,7 +98,8 @@ async function handleExport(request: Request, body?: Record<string, unknown>) {
   const assetId = String(record.assetId ?? "").trim();
   const deckLang = normalizeLang(String(record.deckLang ?? "en"));
   const format = parseExportFormat(record.format);
-  const brandProfile = parseBrandProfileJson(record.brandProfile);
+  const rawBrand = parseBrandProfileJson(record.brandProfile);
+  const brandProfile = rawBrand ? slimBrandProfileForExport(rawBrand) : null;
 
   if (!assetId || !format) {
     return NextResponse.json(
@@ -46,8 +117,6 @@ async function handleExport(request: Request, body?: Record<string, unknown>) {
   if (!isHtmlExportable(sourceName)) {
     return NextResponse.redirect(new URL(asset.fileUrl, request.url));
   }
-
-  const { fileName: downloadName } = editableOutputPath(asset, deckLang, format);
 
   if (!brandProfile) {
     const cached = findCachedExport(asset, deckLang, format);
@@ -67,35 +136,37 @@ async function handleExport(request: Request, body?: Record<string, unknown>) {
 
   try {
     let buffer: Buffer;
+    let deliveredFormat: ExportFormat = format;
 
     if (brandProfile) {
-      buffer = await generateExportBuffer({
+      const branded = await generateBrandedBuffer(
         asset,
         deckLang,
         format,
-        brandProfile,
-      });
+        brandProfile
+      );
+      buffer = branded.buffer;
+      deliveredFormat = branded.deliveredFormat;
     } else {
-      const entry = await writeExportToCache({ asset, deckLang, format });
-      const manifest = readEditableManifest();
-      const filtered =
-        manifest?.entries.filter(
-          (e) =>
-            !(
-              e.assetId === asset.id &&
-              e.lang === deckLang &&
-              e.format === format
-            )
-        ) ?? [];
-      writeEditableManifest([...filtered, entry]);
-      buffer = fs.readFileSync(path.join(process.cwd(), entry.publicPath));
+      buffer = await generateStandardBuffer(asset, deckLang, format);
     }
+
+    const { fileName: downloadName } = editableOutputPath(
+      asset,
+      deckLang,
+      deliveredFormat
+    );
 
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
-        "Content-Type": EXPORT_FORMAT_MIME[format],
+        "Content-Type": EXPORT_FORMAT_MIME[deliveredFormat],
         "Content-Disposition": `attachment; filename="${downloadName.replace(/"/g, "")}"`,
+        "Content-Length": String(buffer.length),
         "Cache-Control": brandProfile ? "private, no-store" : "private, max-age=3600",
+        "X-Export-Format": deliveredFormat,
+        ...(deliveredFormat !== format
+          ? { "X-Export-Fallback": deliveredFormat }
+          : {}),
       },
     });
   } catch (err) {

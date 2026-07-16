@@ -117,13 +117,17 @@ export default function CartPage() {
         percent: 100,
         etaSeconds: 0,
       });
-    } catch {
-      setActionError(t("downloadError"));
-      setProgress({
+    } catch (err) {
+      const detail =
+        err instanceof Error && err.message
+          ? err.message
+          : t("downloadError");
+      setActionError(detail);
+      setProgress((prev) => ({
         phase: "error",
-        percent: 8,
+        percent: Math.max(prev.percent, 8),
         etaSeconds: null,
-      });
+      }));
     } finally {
       setBusy(false);
       setActiveId(null);
@@ -174,6 +178,11 @@ export default function CartPage() {
                 {t("requestedExportFormat", {
                   format: tAsset(`exportFormat_${single.exportFormat}`),
                 })}
+              </p>
+            ) : null}
+            {single.brandProfile && single.exportFormat === "pdf" ? (
+              <p className="text-[11px] text-gray-600 mt-2 font-raleway">
+                {t("brandedPdfFallbackHint")}
               </p>
             ) : null}
 

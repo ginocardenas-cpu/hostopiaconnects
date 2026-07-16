@@ -45,9 +45,10 @@ export interface GenerateExportOptions {
   root?: string;
 }
 
+import { htmlSourcePath as resolveHtmlSourcePath } from "./paths";
+
 export function htmlSourcePath(asset: Asset, root = process.cwd()): string {
-  const fileName = getAssetSourceFileName(asset);
-  return path.join(root, "public", "assets", fileName);
+  return resolveHtmlSourcePath(asset, root);
 }
 
 export function buildExportMeta(

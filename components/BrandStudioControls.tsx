@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { BrandColors, BrandCtaLink, BrandProfile, CtaLinkType } from "@/lib/brand-profile";
 import { updateCtaLink } from "@/lib/brand-profile";
+import { compressLogoDataUrl } from "@/lib/compress-logo";
 
 interface BrandStudioControlsProps {
   profile: BrandProfile;
@@ -63,15 +65,27 @@ export function BrandStudioControls({
   compact = false,
 }: BrandStudioControlsProps) {
   const t = useTranslations("brandStudio");
+  const [justSaved, setJustSaved] = useState(false);
+
+  useEffect(() => {
+    if (!justSaved) return;
+    const id = window.setTimeout(() => setJustSaved(false), 2800);
+    return () => window.clearTimeout(id);
+  }, [justSaved]);
+
+  const handleSaveClick = () => {
+    onSave();
+    setJustSaved(true);
+  };
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        onChange({ logoDataUrl: reader.result });
-      }
+    reader.onload = async () => {
+      if (typeof reader.result !== "string") return;
+      const compressed = await compressLogoDataUrl(reader.result);
+      onChange({ logoDataUrl: compressed });
     };
     reader.readAsDataURL(file);
   };
@@ -335,18 +349,52 @@ export function BrandStudioControls({
       </section>
 
       {!compact ? (
-        <div className="flex flex-wrap gap-3 pt-2">
+        <div className="flex flex-col gap-3 pt-2">
           <button
             type="button"
-            onClick={onSave}
-            className="inline-flex items-center justify-center rounded-full bg-teal px-5 py-2.5 text-xs font-bold text-white font-montserrat hover:bg-teal-dark transition"
+            onClick={handleSaveClick}
+            className={`inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold font-montserrat transition ${
+              justSaved
+                ? "bg-teal-dark text-white"
+                : "bg-teal text-white hover:bg-teal-dark"
+            }`}
+            aria-live="polite"
           >
-            {t("saveProfile")}
+            {justSaved ? (
+              <>
+                <span
+                  className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-[11px]"
+                  aria-hidden
+                >
+                  ✓
+                </span>
+                {t("editsSaved")}
+              </>
+            ) : (
+              t("saveProfile")
+            )}
           </button>
+          {justSaved ? (
+            <div
+              role="status"
+              className="flex items-center gap-2 rounded-xl border border-teal/30 bg-teal-light px-4 py-3 text-sm text-teal-dark"
+            >
+              <span
+                className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal text-white text-xs font-bold"
+                aria-hidden
+              >
+                ✓
+              </span>
+              <span className="font-semibold font-montserrat">{t("editsSaved")}</span>
+            </div>
+          ) : null}
           <button
             type="button"
-            onClick={onReset}
-            className="inline-flex items-center justify-center rounded-full border border-black/10 bg-white px-5 py-2.5 text-xs font-bold text-gray-700 font-montserrat hover:bg-cream transition"
+            onClick={() => {
+              setJustSaved(false);
+              onReset();
+            }}
+            className="inline-flex w-full items-center justify-center rounded-full border border-black/10 bg-white px-5 py-2.5 text-xs font-bold text-gray-700 font-montserrat hover:bg-cream transition"
           >
             {t("resetProfile")}
           </button>

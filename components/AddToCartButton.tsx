@@ -9,7 +9,7 @@ import {
   defaultExportFormat,
   type ExportFormat,
 } from "@/lib/export/formats";
-import { shouldApplyBrandOnExport } from "@/lib/brand-profile";
+import { shouldApplyBrandOnExport, slimBrandProfileForExport } from "@/lib/brand-profile";
 import { useBrandProfile } from "./BrandProfileProvider";
 import { useCart } from "./CartProvider";
 import {
@@ -61,7 +61,7 @@ export function AddToCartButton({
     addItem(assetId, {
       ...(deckLang ? { deckLang } : {}),
       ...(exportFormat ? { exportFormat } : {}),
-      ...(attachBrand ? { brandProfile: profile } : {}),
+      ...(attachBrand ? { brandProfile: slimBrandProfileForExport(profile) } : {}),
     });
     setLangDialogOpen(false);
   };
