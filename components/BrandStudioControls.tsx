@@ -108,16 +108,6 @@ export function BrandStudioControls({
 
         <div className="space-y-4">
           <label className="block text-sm">
-            <span className="mb-1 block text-gray-600">{t("profileName")}</span>
-            <input
-              type="text"
-              value={profile.name}
-              onChange={(e) => onChange({ name: e.target.value })}
-              className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm"
-            />
-          </label>
-
-          <label className="block text-sm">
             <span className="mb-1 block text-gray-600">{t("companyName")}</span>
             <input
               type="text"
