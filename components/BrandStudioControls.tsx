@@ -228,6 +228,34 @@ export function BrandStudioControls({
         <p className="text-xs text-gray-500 mb-4">{t("contentSectionHint")}</p>
         <div className="space-y-4">
           <label className="block text-sm">
+            <span className="mb-1 block text-gray-600">{t("contentCoverTitle")}</span>
+            <input
+              type="text"
+              value={profile.content.coverTitle}
+              onChange={(e) =>
+                onChange({
+                  content: { ...profile.content, coverTitle: e.target.value },
+                })
+              }
+              placeholder={t("contentCoverTitlePlaceholder")}
+              className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-gray-600">{t("contentCoverSubtitle")}</span>
+            <input
+              type="text"
+              value={profile.content.coverSubtitle}
+              onChange={(e) =>
+                onChange({
+                  content: { ...profile.content, coverSubtitle: e.target.value },
+                })
+              }
+              placeholder={t("contentCoverSubtitlePlaceholder")}
+              className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="block text-sm">
             <span className="mb-1 block text-gray-600">{t("contentDescription")}</span>
             <textarea
               value={profile.content.presentationDescription}

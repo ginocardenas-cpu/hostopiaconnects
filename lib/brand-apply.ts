@@ -11,6 +11,9 @@ const CTA_LABELS: Record<BrandCtaLink["type"], string> = {
   x: "X",
 };
 
+/** Token replaced with the logo data URL at apply time (keeps pin script small). */
+const LOGO_TOKEN = "__PORTAL_LOGO_SRC__";
+
 function normalizeWebsite(value: string): string {
   const v = value.trim();
   if (!v) return "";
@@ -71,6 +74,11 @@ export function buildBrandStyleCss(
   width: 45px !important;
   height: 45px !important;
 }
+.pchrome-top .brandmark .glyph,
+.page-chrome-top .brandmark .glyph {
+  width: 32px !important;
+  height: 32px !important;
+}
 .brandmark .glyph::after {
   display: none !important;
 }
@@ -130,35 +138,13 @@ body {
   color: var(--ink);
 }
 section.slide:not(.ink):not(.teal):not(.dark),
-div.page,
-section.page {
+div.page:not(.cover):not(.ink):not(.dark),
+section.page:not(.cover):not(.ink):not(.dark) {
   background-color: ${colors.slide} !important;
-}
-[data-portal-cta="1"] a {
-  color: ${colors.primary} !important;
-  text-decoration: none;
-  font-weight: 600;
-}
-[data-portal-cta="1"] a:hover {
-  text-decoration: underline;
 }
 ${logoRule}
 ${exportChromeRule}
 `.trim();
-}
-
-export function buildCtaHtml(links: BrandCtaLink[]): string {
-  const active = links.filter((l) => l.enabled && l.value.trim());
-  if (active.length === 0) return "";
-
-  return active
-    .map((link) => {
-      const href = ctaHref(link);
-      const label = CTA_LABELS[link.type];
-      const text = ctaDisplay(link);
-      return `<a href="${href.replace(/"/g, "&quot;")}" target="_blank" rel="noopener noreferrer">${label}: ${text.replace(/</g, "&lt;")}</a>`;
-    })
-    .join('<span aria-hidden="true"> · </span>');
 }
 
 const SOCIAL_ICON_PATHS: Partial<Record<BrandCtaLink["type"], string>> = {
@@ -187,23 +173,70 @@ function activeCtaLink(
   );
 }
 
-/**
- * Standardized closing slide injected into every presentation deck:
- * centered logo, contact sentence (+ email), phone/website, social icons.
- */
-export function buildClosingSlideHtml(profile: BrandProfile): string {
+export type BrandDocVariant = "slide" | "page";
+
+interface LayoutSizes {
+  logoHeight: number;
+  logoMaxWidth: number;
+  titleSize: number;
+  sentenceSize: number;
+  detailSize: number;
+  iconSize: number;
+  gap: number;
+}
+
+const SIZES: Record<BrandDocVariant, LayoutSizes> = {
+  slide: {
+    logoHeight: 220,
+    logoMaxWidth: 620,
+    titleSize: 72,
+    sentenceSize: 32,
+    detailSize: 26,
+    iconSize: 52,
+    gap: 44,
+  },
+  page: {
+    logoHeight: 150,
+    logoMaxWidth: 420,
+    titleSize: 40,
+    sentenceSize: 20,
+    detailSize: 17,
+    iconSize: 36,
+    gap: 28,
+  },
+};
+
+function logoOrNameHtml(
+  profile: BrandProfile,
+  s: LayoutSizes,
+  logoSrc: string
+): string {
   const company = profile.companyName.trim();
+  if (profile.logoDataUrl) {
+    return `<img src="${logoSrc}" alt="${escapeHtml(company || "Logo")}" style="height:${s.logoHeight}px;max-width:${s.logoMaxWidth}px;object-fit:contain;" />`;
+  }
+  if (company) {
+    return `<div style="font-family:var(--sans);font-weight:800;font-size:${s.titleSize}px;letter-spacing:-0.02em;color:var(--ink);">${escapeHtml(company)}</div>`;
+  }
+  return "";
+}
+
+/**
+ * Standardized closing slide/page: centered logo, contact sentence (+ email),
+ * phone/website, black social icons linked to the brand's accounts.
+ */
+export function buildClosingSlideHtml(
+  profile: BrandProfile,
+  variant: BrandDocVariant = "slide",
+  opts: { logoSrc?: string } = {}
+): string {
+  const s = SIZES[variant];
+  const logoSrc = opts.logoSrc ?? profile.logoDataUrl ?? "";
   const email =
     profile.content.contactEmail.trim().replace(/^mailto:/i, "") ||
     (activeCtaLink(profile, "email")?.value.trim().replace(/^mailto:/i, "") ?? "");
   const phone = activeCtaLink(profile, "phone")?.value.trim() ?? "";
   const website = activeCtaLink(profile, "website");
-
-  const logoHtml = profile.logoDataUrl
-    ? `<img src="${profile.logoDataUrl}" alt="${escapeHtml(company || "Logo")}" style="height:220px;max-width:620px;object-fit:contain;" />`
-    : company
-      ? `<div style="font-family:var(--sans);font-weight:800;font-size:72px;letter-spacing:-0.02em;color:var(--ink);">${escapeHtml(company)}</div>`
-      : "";
 
   const sentence = email
     ? `For any questions, please don't hesitate to contact us at <a href="mailto:${escapeHtml(email)}" style="color:var(--teal);text-decoration:underline;">${escapeHtml(email)}</a>.`
@@ -213,12 +246,12 @@ export function buildClosingSlideHtml(profile: BrandProfile): string {
   if (phone) {
     const tel = phone.replace(/^tel:/i, "");
     detailRows.push(
-      `<a href="tel:${escapeHtml(tel.replace(/\s/g, ""))}" style="color:var(--ink);text-decoration:none;font-size:26px;">${escapeHtml(tel)}</a>`
+      `<a href="tel:${escapeHtml(tel.replace(/\s/g, ""))}" style="color:var(--ink);text-decoration:none;font-size:${s.detailSize}px;">${escapeHtml(tel)}</a>`
     );
   }
   if (website) {
     detailRows.push(
-      `<a href="${escapeHtml(ctaHref(website))}" target="_blank" rel="noopener noreferrer" style="color:var(--teal);text-decoration:underline;font-size:24px;">${escapeHtml(ctaDisplay(website))}</a>`
+      `<a href="${escapeHtml(ctaHref(website))}" target="_blank" rel="noopener noreferrer" style="color:var(--teal);text-decoration:underline;font-size:${s.detailSize - 2}px;">${escapeHtml(ctaDisplay(website))}</a>`
     );
   }
 
@@ -227,47 +260,47 @@ export function buildClosingSlideHtml(profile: BrandProfile): string {
       const link = activeCtaLink(profile, type);
       const path = SOCIAL_ICON_PATHS[type];
       if (!link || !path) return "";
-      return `<a href="${escapeHtml(ctaHref(link))}" target="_blank" rel="noopener noreferrer" aria-label="${CTA_LABELS[type]}" style="color:var(--ink);display:inline-flex;"><svg width="52" height="52" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${path}"/></svg></a>`;
+      return `<a href="${escapeHtml(ctaHref(link))}" target="_blank" rel="noopener noreferrer" aria-label="${CTA_LABELS[type]}" style="color:var(--ink);display:inline-flex;"><svg width="${s.iconSize}" height="${s.iconSize}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${path}"/></svg></a>`;
     })
     .filter(Boolean);
 
-  return `<div data-portal-closing="1" style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:44px;font-family:var(--sans);color:var(--ink);">
-${logoHtml}
-<p style="font-size:32px;line-height:1.45;max-width:1100px;margin:0;color:var(--ink);">${sentence}</p>
+  return `<div data-portal-closing="1" style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:${s.gap}px;font-family:var(--sans);color:var(--ink);">
+${logoOrNameHtml(profile, s, logoSrc)}
+<p style="font-size:${s.sentenceSize}px;line-height:1.45;max-width:${variant === "slide" ? 1100 : 620}px;margin:0;color:var(--ink);">${sentence}</p>
 ${detailRows.length ? `<div style="display:flex;flex-direction:column;gap:14px;align-items:center;">${detailRows.join("")}</div>` : ""}
-${socials.length ? `<div style="display:flex;gap:36px;align-items:center;justify-content:center;">${socials.join("")}</div>` : ""}
+${socials.length ? `<div style="display:flex;gap:${Math.round(s.gap * 0.8)}px;align-items:center;justify-content:center;">${socials.join("")}</div>` : ""}
 </div>`;
 }
 
 /**
- * Replace the last presentation slide with the standardized closing layout.
- * Applies only to slide decks (section.slide); one-pagers are left as-is.
+ * Standardized cover page (paged documents): big centered logo, title,
+ * subtitle, website URL. `data-portal-cover-eyebrow` is filled at apply time
+ * with the document's product name.
  */
-export function applyClosingSlideToDocument(
-  doc: Document,
-  closingHtml: string
-): void {
-  const slides = doc.querySelectorAll("section.slide");
-  if (slides.length < 2) return;
-  const last = slides[slides.length - 1] as HTMLElement;
+export function buildCoverPageHtml(
+  profile: BrandProfile,
+  opts: { logoSrc?: string } = {}
+): string {
+  const s = SIZES.page;
+  const logoSrc = opts.logoSrc ?? profile.logoDataUrl ?? "";
+  const company = profile.companyName.trim();
+  const title = profile.content.coverTitle.trim() || company;
+  const subtitle =
+    profile.content.coverSubtitle.trim() ||
+    profile.content.presentationDescription.trim();
+  const website = activeCtaLink(profile, "website");
 
-  last.classList.remove("ink", "teal", "cream", "dark");
-  last.style.setProperty("background", "var(--paper)", "important");
+  const logoHtml = profile.logoDataUrl
+    ? `<img src="${logoSrc}" alt="${escapeHtml(company || "Logo")}" style="height:${Math.round(s.logoHeight * 1.25)}px;max-width:${s.logoMaxWidth}px;object-fit:contain;" />`
+    : "";
 
-  // Chrome inline colors assumed the old dark background; reset them.
-  last.querySelectorAll(".chrome-top, .chrome-bot").forEach((bar) => {
-    (bar as HTMLElement).style.color = "";
-    bar.querySelectorAll("[style]").forEach((el) => {
-      (el as HTMLElement).style.color = "";
-    });
-    const glyph = bar.querySelector(".glyph") as HTMLElement | null;
-    if (glyph) glyph.style.background = "";
-  });
-
-  const content = last.querySelector(".slide-content") as HTMLElement | null;
-  if (content) {
-    content.innerHTML = closingHtml;
-  }
+  return `<div data-portal-cover="1" style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:26px;font-family:var(--sans);color:var(--ink);">
+<div data-portal-cover-eyebrow="1" style="font-family:var(--mono, monospace);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--teal);"></div>
+${logoHtml}
+${title ? `<h1 style="font-family:var(--sans);font-weight:800;font-size:${s.titleSize}px;line-height:1.1;letter-spacing:-0.02em;margin:0;max-width:640px;color:var(--ink);">${escapeHtml(title)}</h1>` : ""}
+${subtitle ? `<p style="font-size:18px;line-height:1.5;max-width:560px;margin:0;color:var(--ink-2, var(--ink));">${escapeHtml(subtitle)}</p>` : ""}
+${website ? `<a href="${escapeHtml(ctaHref(website))}" target="_blank" rel="noopener noreferrer" style="font-size:16px;color:var(--teal);text-decoration:underline;">${escapeHtml(ctaDisplay(website))}</a>` : ""}
+</div>`;
 }
 
 function setI18nText(doc: Document, key: string, text: string): void {
@@ -296,21 +329,11 @@ function applyLogoToBrandmarks(doc: Document, profile: BrandProfile): void {
       glyph.style.backgroundPosition = "center";
       glyph.style.backgroundColor = "transparent";
     }
-    let img = mark.querySelector(
-      'img[data-portal-logo="1"]'
-    ) as HTMLImageElement | null;
-    if (!img) {
-      img = doc.createElement("img");
-      img.setAttribute("data-portal-logo", "1");
-      img.alt = profile.companyName || "Logo";
-      mark.insertBefore(img, mark.firstChild);
-    }
-    img.src = profile.logoDataUrl ?? "";
   });
 
   // Fixed logo slot in bottom chrome (white/cream margin area)
   doc
-    .querySelectorAll(".chrome-bot, .page-chrome-bottom, .pchrome-bot")
+    .querySelectorAll(".chrome-bot, .page-chrome-bot, .pchrome-bot")
     .forEach((bar) => {
       let slot = bar.querySelector(
         '[data-portal-chrome-logo="1"]'
@@ -330,53 +353,112 @@ function applyLogoToBrandmarks(doc: Document, profile: BrandProfile): void {
     });
 }
 
-function applyFooterCtaLinks(doc: Document, profile: BrandProfile): void {
-  doc.querySelectorAll('[data-portal-cta="1"]').forEach((node) => node.remove());
-
-  const ctaHtml = profile.cta.enabled ? buildCtaHtml(profile.cta.links) : "";
-  if (!ctaHtml) return;
-
-  const targets = doc.querySelectorAll(
-    ".chrome-bot, .page-chrome-bottom, .pchrome-bot"
-  );
-
-  if (targets.length === 0) {
-    doc.querySelectorAll("section.slide, div.page, section.page").forEach(
-      (section) => {
-        let bar = section.querySelector(
-          '[data-portal-cta-bar="1"]'
-        ) as HTMLElement | null;
-        if (!bar) {
-          bar = doc.createElement("div");
-          bar.setAttribute("data-portal-cta-bar", "1");
-          bar.setAttribute("data-portal-cta", "1");
-          bar.style.cssText =
-            "position:absolute;left:0;right:0;bottom:0;padding:10px 24px;font-size:11px;line-height:1.4;z-index:5;";
-          const host = section as HTMLElement;
-          if (getComputedStyle(host).position === "static") {
-            host.style.position = "relative";
-          }
-          host.appendChild(bar);
-        }
-        bar.innerHTML = ctaHtml;
-      }
-    );
-    return;
-  }
-
-  targets.forEach((target) => {
-    let cta = target.querySelector('[data-portal-cta="1"]') as HTMLElement | null;
-    if (!cta) {
-      cta = doc.createElement("span");
-      cta.setAttribute("data-portal-cta", "1");
-      cta.style.marginLeft = "12px";
-      target.appendChild(cta);
+/** Move the plans table "Most popular" badge onto its own line under Silver. */
+function fixPlansBadge(doc: Document): void {
+  doc.querySelectorAll('[data-i18n="plans.tbl.silver"]').forEach((el) => {
+    const text = el.textContent ?? "";
+    if (/·/.test(text)) {
+      const [tier, ...rest] = text.split("·");
+      el.innerHTML = `${escapeHtml(tier.trim())}<br /><span style="font-size:0.85em;opacity:0.85;">${escapeHtml(rest.join("·").trim())}</span>`;
     }
-    cta.innerHTML = ctaHtml;
   });
 }
 
-/** Apply logo, company name, content fields, and CTA chrome to a loaded HTML bundle. */
+function resetChromeColors(section: Element): void {
+  section.querySelectorAll(
+    ".chrome-top, .chrome-bot, .pchrome-top, .pchrome-bot, .page-chrome-top, .page-chrome-bot"
+  ).forEach((bar) => {
+    (bar as HTMLElement).style.color = "";
+    bar.querySelectorAll("[style]").forEach((el) => {
+      (el as HTMLElement).style.color = "";
+    });
+    const glyph = bar.querySelector(".glyph") as HTMLElement | null;
+    if (glyph) glyph.style.background = "";
+  });
+}
+
+function contentContainer(section: Element): HTMLElement | null {
+  return section.querySelector(
+    ".slide-content, .pbody, .page-body"
+  ) as HTMLElement | null;
+}
+
+/**
+ * Standardized closing layout. Decks: the last slide is a dedicated CTA slide,
+ * so its content is replaced. Paged docs: a new closing page is appended (the
+ * last page carries real content) and the old inline CTA box is hidden.
+ */
+export function applyClosingToDocument(
+  doc: Document,
+  slideClosingHtml: string,
+  pageClosingHtml: string
+): void {
+  const slides = doc.querySelectorAll("section.slide");
+  if (slides.length >= 2) {
+    const last = slides[slides.length - 1] as HTMLElement;
+    last.classList.remove("ink", "teal", "cream", "dark", "cover");
+    last.style.setProperty("background", "var(--paper)", "important");
+    resetChromeColors(last);
+    const content = contentContainer(last);
+    if (content) content.innerHTML = slideClosingHtml;
+    return;
+  }
+
+  // One-pagers keep their single page; closing page applies to multi-page docs.
+  const pages = doc.querySelectorAll("div.page, section.page");
+  if (pages.length < 2) return;
+
+  // Hide the template's inline "Get Started" box; the closing page replaces it.
+  doc.querySelectorAll('[data-i18n="cta.title"]').forEach((el) => {
+    const box = el.parentElement;
+    if (box) box.style.display = "none";
+  });
+
+  let closingPage = doc.querySelector(
+    '[data-portal-closing-page="1"]'
+  ) as HTMLElement | null;
+  if (!closingPage) {
+    const last = pages[pages.length - 1] as HTMLElement;
+    const cont = contentContainer(last);
+    const contClass = cont?.className.split(" ")[0] ?? "pbody";
+    closingPage = doc.createElement(last.tagName.toLowerCase()) as HTMLElement;
+    closingPage.className = "page";
+    closingPage.setAttribute("data-portal-closing-page", "1");
+    last.parentElement?.insertBefore(closingPage, last.nextSibling);
+    closingPage.innerHTML = `<div class="${contClass}"></div>`;
+  }
+  const target = closingPage.firstElementChild as HTMLElement | null;
+  if (target) target.innerHTML = pageClosingHtml;
+}
+
+/** Replace a paged document's cover page with the standardized cover. */
+export function applyCoverToDocument(doc: Document, coverHtml: string): void {
+  if (!coverHtml) return;
+  const cover = doc.querySelector(
+    'div.page.cover, section.page.cover, [data-portal-cover-page="1"]'
+  ) as HTMLElement | null;
+  if (!cover) return;
+
+  const product =
+    cover.querySelector('[data-i18n="product"]')?.textContent?.trim() ?? "";
+
+  cover.setAttribute("data-portal-cover-page", "1");
+  cover.classList.remove("cover", "ink", "dark");
+  cover.style.setProperty("background", "var(--paper)", "important");
+  resetChromeColors(cover);
+
+  const content = contentContainer(cover);
+  if (content) {
+    content.innerHTML = coverHtml;
+    const eyebrow = content.querySelector('[data-portal-cover-eyebrow="1"]');
+    if (eyebrow) {
+      if (product) eyebrow.textContent = product;
+      else eyebrow.remove();
+    }
+  }
+}
+
+/** Apply logo, company name, content fields, and standardized pages to a loaded HTML bundle. */
 export function applyBrandContentToDocument(
   doc: Document,
   profile: BrandProfile
@@ -388,60 +470,75 @@ export function applyBrandContentToDocument(
     setI18nText(doc, "cta.brand", company);
   }
 
-  const { presentationDescription, audience, contactEmail } = profile.content;
-  if (presentationDescription.trim()) {
-    setI18nText(doc, "cover.sub", presentationDescription.trim());
+  const {
+    coverTitle,
+    coverSubtitle,
+    presentationDescription,
+    audience,
+    contactEmail,
+  } = profile.content;
+  if (coverTitle.trim()) {
+    setI18nText(doc, "cover.h1", coverTitle.trim());
+  }
+  const sub = coverSubtitle.trim() || presentationDescription.trim();
+  if (sub) {
+    setI18nText(doc, "cover.sub", sub);
   }
   if (audience.trim()) {
     setI18nText(doc, "meta.audience.v", audience.trim());
   }
   if (contactEmail.trim()) {
-    setI18nHtml(doc, "cta.contact", buildContactHtml(contactEmail));
+    const contact = buildContactHtml(contactEmail);
+    setI18nHtml(doc, "cta.contact", contact);
+    setI18nHtml(doc, "cta.contactfull", contact);
   }
 
   applyLogoToBrandmarks(doc, profile);
-  applyFooterCtaLinks(doc, profile);
-  applyClosingSlideToDocument(doc, buildClosingSlideHtml(profile));
+  fixPlansBadge(doc);
+  applyCoverToDocument(doc, buildCoverPageHtml(profile));
+  applyClosingToDocument(
+    doc,
+    buildClosingSlideHtml(profile, "slide"),
+    buildClosingSlideHtml(profile, "page")
+  );
 }
 
-/** Inline script for pinned HTML exports — CSS + content overrides. */
-export function buildBrandPinScript(profile: BrandProfile): string {
+/**
+ * Self-contained ES5 apply routine used by both the pinned HTML export and
+ * the Playwright PDF pipeline. Runs immediately and re-applies after the
+ * bundle's own language script may have overwritten text.
+ */
+export function buildBrandApplyScriptBody(profile: BrandProfile): string {
   const css = buildBrandStyleCss(profile, { exportMode: true });
   const logoDataUrl = profile.logoDataUrl ?? "";
-  const profileForScript = { ...profile, logoDataUrl: undefined };
-  const profileJson = JSON.stringify(profileForScript);
-  const contactHtml = profile.content.contactEmail.trim()
-    ? buildContactHtml(profile.content.contactEmail)
+  const company = profile.companyName.trim();
+  const content = profile.content;
+  const contactHtml = content.contactEmail.trim()
+    ? buildContactHtml(content.contactEmail)
     : "";
-  const closingHtml = buildClosingSlideHtml(profile);
+  const closingSlide = buildClosingSlideHtml(profile, "slide", {
+    logoSrc: LOGO_TOKEN,
+  });
+  const closingPage = buildClosingSlideHtml(profile, "page", {
+    logoSrc: LOGO_TOKEN,
+  });
+  const coverPage = buildCoverPageHtml(profile, { logoSrc: LOGO_TOKEN });
+  const coverSub =
+    content.coverSubtitle.trim() || content.presentationDescription.trim();
 
-  return `<!-- Hostopia Connects: brand profile pinned -->
-<script id="__hostopia_export_brand">
-(function(){
-  var profile=${profileJson};
-  var logoDataUrl=${JSON.stringify(logoDataUrl)};
+  return `(function(){
   var css=${JSON.stringify(css)};
+  var logoDataUrl=${JSON.stringify(logoDataUrl)};
+  var company=${JSON.stringify(company)};
+  var coverTitle=${JSON.stringify(content.coverTitle.trim())};
+  var coverSub=${JSON.stringify(coverSub)};
+  var audience=${JSON.stringify(content.audience.trim())};
   var contactHtml=${JSON.stringify(contactHtml)};
-  var closingHtml=${JSON.stringify(closingHtml)};
-  function ctaHref(link){
-    var v=(link.value||"").trim();
-    if(!v) return "";
-    if(link.type==="website") return /^https?:\\/\\//i.test(v)?v:"https://"+v;
-    if(link.type==="email") return v.indexOf("mailto:")===0?v:"mailto:"+v;
-    if(link.type==="phone") return v.indexOf("tel:")===0?v:"tel:"+v.replace(/\\s/g,"");
-    return /^https?:\\/\\//i.test(v)?v:"https://"+v;
-  }
-  function ctaHtml(links){
-    var labels={website:"Website",email:"Email",phone:"Phone",linkedin:"LinkedIn",facebook:"Facebook",instagram:"Instagram",x:"X"};
-    var out=[];
-    (links||[]).forEach(function(link){
-      if(!link.enabled||!(link.value||"").trim()) return;
-      var href=ctaHref(link);
-      var text=(link.value||"").trim().replace(/^mailto:/i,"").replace(/^tel:/i,"").replace(/^https?:\\/\\//i,"");
-      out.push('<a href="'+href.replace(/"/g,"&quot;")+'" target="_blank" rel="noopener noreferrer">'+labels[link.type]+": "+text.replace(/</g,"&lt;")+"</a>");
-    });
-    return out.join('<span aria-hidden="true"> · </span>');
-  }
+  var closingSlide=${JSON.stringify(closingSlide)};
+  var closingPage=${JSON.stringify(closingPage)};
+  var coverPage=${JSON.stringify(coverPage)};
+  var LOGO_TOKEN=${JSON.stringify(LOGO_TOKEN)};
+  function withLogo(html){ return html.split(LOGO_TOKEN).join(logoDataUrl); }
   function setText(key, text){
     if(!text) return;
     document.querySelectorAll('[data-i18n="'+key+'"]').forEach(function(el){ el.textContent=text; });
@@ -450,21 +547,80 @@ export function buildBrandPinScript(profile: BrandProfile): string {
     if(!html) return;
     document.querySelectorAll('[data-i18n="'+key+'"]').forEach(function(el){ el.innerHTML=html; });
   }
-  function applyClosingSlide(){
-    if(!closingHtml) return;
-    var slides=document.querySelectorAll("section.slide");
-    if(slides.length<2) return;
-    var last=slides[slides.length-1];
-    last.classList.remove("ink","teal","cream","dark");
-    last.style.setProperty("background","var(--paper)","important");
-    last.querySelectorAll(".chrome-top, .chrome-bot").forEach(function(bar){
+  function escapeHtml(v){
+    return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+  }
+  function resetChrome(section){
+    section.querySelectorAll(".chrome-top, .chrome-bot, .pchrome-top, .pchrome-bot, .page-chrome-top, .page-chrome-bot").forEach(function(bar){
       bar.style.color="";
       bar.querySelectorAll("[style]").forEach(function(el){ el.style.color=""; });
       var glyph=bar.querySelector(".glyph");
       if(glyph) glyph.style.background="";
     });
-    var content=last.querySelector(".slide-content");
-    if(content) content.innerHTML=closingHtml;
+  }
+  function container(section){
+    return section.querySelector(".slide-content, .pbody, .page-body");
+  }
+  function applyCover(){
+    if(!coverPage) return;
+    var cover=document.querySelector('div.page.cover, section.page.cover, [data-portal-cover-page="1"]');
+    if(!cover) return;
+    var productEl=cover.querySelector('[data-i18n="product"]');
+    var product=productEl&&productEl.textContent?productEl.textContent.trim():"";
+    cover.setAttribute("data-portal-cover-page","1");
+    cover.classList.remove("cover","ink","dark");
+    cover.style.setProperty("background","var(--paper)","important");
+    resetChrome(cover);
+    var content=container(cover);
+    if(content){
+      content.innerHTML=withLogo(coverPage);
+      var eyebrow=content.querySelector('[data-portal-cover-eyebrow="1"]');
+      if(eyebrow){
+        if(product) eyebrow.textContent=product;
+        else eyebrow.parentNode.removeChild(eyebrow);
+      }
+    }
+  }
+  function applyClosing(){
+    var slides=document.querySelectorAll("section.slide");
+    if(slides.length>=2){
+      var last=slides[slides.length-1];
+      last.classList.remove("ink","teal","cream","dark","cover");
+      last.style.setProperty("background","var(--paper)","important");
+      resetChrome(last);
+      var content=container(last);
+      if(content) content.innerHTML=withLogo(closingSlide);
+      return;
+    }
+    var pages=document.querySelectorAll("div.page, section.page");
+    if(pages.length<2) return;
+    document.querySelectorAll('[data-i18n="cta.title"]').forEach(function(el){
+      if(el.parentElement) el.parentElement.style.display="none";
+    });
+    var pg=document.querySelector('[data-portal-closing-page="1"]');
+    if(!pg){
+      var lastPage=pages[pages.length-1];
+      var cont=container(lastPage);
+      var contClass=cont?cont.className.split(" ")[0]:"pbody";
+      pg=document.createElement(lastPage.tagName.toLowerCase());
+      pg.className="page";
+      pg.setAttribute("data-portal-closing-page","1");
+      if(lastPage.parentElement) lastPage.parentElement.insertBefore(pg, lastPage.nextSibling);
+      pg.innerHTML='<div class="'+contClass+'"></div>';
+    }
+    var target=pg.firstElementChild;
+    if(target) target.innerHTML=withLogo(closingPage);
+  }
+  function fixPlansBadge(){
+    var DOT="\u00b7";
+    document.querySelectorAll('[data-i18n="plans.tbl.silver"]').forEach(function(el){
+      var text=el.textContent||"";
+      if(text.indexOf(DOT)!==-1){
+        var parts=text.split(DOT);
+        var tier=parts.shift();
+        el.innerHTML=escapeHtml(tier.trim())+'<br /><span style="font-size:0.85em;opacity:0.85;">'+escapeHtml(parts.join(DOT).trim())+"</span>";
+      }
+    });
   }
   function applyBrand(){
     try{
@@ -475,15 +631,17 @@ export function buildBrandPinScript(profile: BrandProfile): string {
         document.head.appendChild(styleEl);
       }
       styleEl.textContent=css;
-      var company=(profile.companyName||"").trim();
       if(company){
         setText("brand", company);
         setText("cta.brand", company);
       }
-      var content=profile.content||{};
-      if(content.presentationDescription) setText("cover.sub", content.presentationDescription);
-      if(content.audience) setText("meta.audience.v", content.audience);
-      if(contactHtml) setHtml("cta.contact", contactHtml);
+      if(coverTitle) setText("cover.h1", coverTitle);
+      if(coverSub) setText("cover.sub", coverSub);
+      if(audience) setText("meta.audience.v", audience);
+      if(contactHtml){
+        setHtml("cta.contact", contactHtml);
+        setHtml("cta.contactfull", contactHtml);
+      }
       if(logoDataUrl){
         document.querySelectorAll(".brandmark").forEach(function(mark){
           var glyph=mark.querySelector(".glyph");
@@ -495,7 +653,7 @@ export function buildBrandPinScript(profile: BrandProfile): string {
             glyph.style.backgroundColor="transparent";
           }
         });
-        document.querySelectorAll(".chrome-bot, .page-chrome-bottom, .pchrome-bot").forEach(function(bar){
+        document.querySelectorAll(".chrome-bot, .page-chrome-bot, .pchrome-bot").forEach(function(bar){
           var slot=bar.querySelector('[data-portal-chrome-logo="1"]');
           if(!slot){
             slot=document.createElement("span");
@@ -511,37 +669,10 @@ export function buildBrandPinScript(profile: BrandProfile): string {
           }
         });
       }
-      document.querySelectorAll('[data-portal-cta="1"]').forEach(function(node){ node.remove(); });
-      var html=(profile.cta&&profile.cta.enabled)?ctaHtml(profile.cta.links):"";
-      if(html){
-        var targets=document.querySelectorAll(".chrome-bot, .page-chrome-bottom, .pchrome-bot");
-        if(!targets.length){
-          document.querySelectorAll("section.slide, div.page, section.page").forEach(function(section){
-            var bar=section.querySelector('[data-portal-cta-bar="1"]');
-            if(!bar){
-              bar=document.createElement("div");
-              bar.setAttribute("data-portal-cta-bar","1");
-              bar.setAttribute("data-portal-cta","1");
-              bar.style.cssText="position:absolute;left:0;right:0;bottom:0;padding:10px 24px;font-size:11px;line-height:1.4;z-index:5;";
-              if(getComputedStyle(section).position==="static") section.style.position="relative";
-              section.appendChild(bar);
-            }
-            bar.innerHTML=html;
-          });
-        } else {
-          targets.forEach(function(target){
-            var cta=target.querySelector('[data-portal-cta="1"]');
-            if(!cta){
-              cta=document.createElement("span");
-              cta.setAttribute("data-portal-cta","1");
-              cta.style.marginLeft="12px";
-              target.appendChild(cta);
-            }
-            cta.innerHTML=html;
-          });
-        }
-      }
-      applyClosingSlide();
+      document.querySelectorAll('[data-portal-cta="1"], [data-portal-cta-bar="1"]').forEach(function(node){ node.parentNode&&node.parentNode.removeChild(node); });
+      fixPlansBadge();
+      applyCover();
+      applyClosing();
     }catch(e){}
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",applyBrand);
@@ -550,13 +681,19 @@ export function buildBrandPinScript(profile: BrandProfile): string {
   var iv=setInterval(function(){
     if(document.querySelector("section.slide, div.page, section.page")||++n>120){
       applyBrand();
-      // Re-apply after applyLang may have run
       setTimeout(applyBrand, 800);
       setTimeout(applyBrand, 1800);
       clearInterval(iv);
     }
   },500);
-})();
+})();`;
+}
+
+/** Inline script for pinned HTML exports — CSS + content overrides. */
+export function buildBrandPinScript(profile: BrandProfile): string {
+  return `<!-- Hostopia Connects: brand profile pinned -->
+<script id="__hostopia_export_brand">
+${buildBrandApplyScriptBody(profile)}
 </script>`;
 }
 

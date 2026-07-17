@@ -37,6 +37,10 @@ export interface BrandCtaSettings {
 
 /** Editable deck copy mapped onto HTML data-i18n keys. */
 export interface BrandContentFields {
+  /** Cover page headline (replaces cover.h1 / standardized cover title) */
+  coverTitle: string;
+  /** Cover page subtitle line under the title */
+  coverSubtitle: string;
   /** Replaces cover.sub (yellow presentation description) */
   presentationDescription: string;
   /** Replaces meta.audience.v */
@@ -80,6 +84,8 @@ export const DEFAULT_CTA_LINKS: BrandCtaLink[] = [
 ];
 
 export const DEFAULT_BRAND_CONTENT: BrandContentFields = {
+  coverTitle: "",
+  coverSubtitle: "",
   presentationDescription: "",
   audience: "",
   contactEmail: "",
@@ -118,6 +124,8 @@ function migrateContent(raw: unknown): BrandContentFields {
   if (!raw || typeof raw !== "object") return { ...base };
   const c = raw as Partial<BrandContentFields>;
   return {
+    coverTitle: String(c.coverTitle ?? "").trim(),
+    coverSubtitle: String(c.coverSubtitle ?? "").trim(),
     presentationDescription: String(c.presentationDescription ?? "").trim(),
     audience: String(c.audience ?? "").trim(),
     contactEmail: String(c.contactEmail ?? "").trim(),
@@ -208,6 +216,8 @@ export function isBrandProfileCustomized(profile: BrandProfile): boolean {
   if (profile.fontFamily !== defaults.fontFamily) return true;
   if (profile.cta.enabled) return true;
   if (profile.cta.links.some((l) => l.enabled && l.value.trim())) return true;
+  if (profile.content.coverTitle.trim()) return true;
+  if (profile.content.coverSubtitle.trim()) return true;
   if (profile.content.presentationDescription.trim()) return true;
   if (profile.content.audience.trim()) return true;
   if (profile.content.contactEmail.trim()) return true;
