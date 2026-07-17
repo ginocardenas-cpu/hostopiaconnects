@@ -1,20 +1,25 @@
 import type { Page } from "playwright";
 import type { BrandProfile } from "@/lib/brand-profile";
 import { buildContactHtml } from "@/lib/brand-profile";
-import { buildBrandStyleCss, buildCtaHtml } from "@/lib/brand-apply";
+import {
+  buildBrandStyleCss,
+  buildClosingSlideHtml,
+  buildCtaHtml,
+} from "@/lib/brand-apply";
 
 export async function applyBrandOnPage(
   page: Page,
   profile: BrandProfile
 ): Promise<void> {
-  const css = buildBrandStyleCss(profile);
+  const css = buildBrandStyleCss(profile, { exportMode: true });
   const ctaHtml = profile.cta.enabled ? buildCtaHtml(profile.cta.links) : "";
   const contactHtml = profile.content.contactEmail.trim()
     ? buildContactHtml(profile.content.contactEmail)
     : "";
+  const closingHtml = buildClosingSlideHtml(profile);
 
   await page.evaluate(
-    ({ css, p, ctaHtml: html, contactHtml: contact }) => {
+    ({ css, p, ctaHtml: html, contactHtml: contact, closingHtml: closing }) => {
       const styleEl = document.getElementById("__portal_brand_override");
       const el =
         styleEl ??
@@ -135,8 +140,29 @@ export async function applyBrandOnPage(
         }
         cta.innerHTML = html;
       });
+
+      if (closing) {
+        const slides = document.querySelectorAll("section.slide");
+        if (slides.length >= 2) {
+          const last = slides[slides.length - 1] as HTMLElement;
+          last.classList.remove("ink", "teal", "cream", "dark");
+          last.style.setProperty("background", "var(--paper)", "important");
+          last.querySelectorAll(".chrome-top, .chrome-bot").forEach((bar) => {
+            (bar as HTMLElement).style.color = "";
+            bar.querySelectorAll("[style]").forEach((el) => {
+              (el as HTMLElement).style.color = "";
+            });
+            const glyph = bar.querySelector(".glyph") as HTMLElement | null;
+            if (glyph) glyph.style.background = "";
+          });
+          const contentEl = last.querySelector(
+            ".slide-content"
+          ) as HTMLElement | null;
+          if (contentEl) contentEl.innerHTML = closing;
+        }
+      }
     },
-    { css, p: profile, ctaHtml, contactHtml }
+    { css, p: profile, ctaHtml, contactHtml, closingHtml }
   );
 
   // Re-apply after any delayed applyLang in the bundle
