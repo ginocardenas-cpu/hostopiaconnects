@@ -151,6 +151,36 @@ section.page:not(.cover):not(.ink):not(.dark) {
   align-items: center !important;
   column-gap: 24px !important;
   font-size: 11px !important;
+  z-index: 20 !important;
+}
+/* Keep content above the footer so images don't cover logo/copyright. */
+section.slide .slide-content,
+div.page .pbody,
+div.page .page-body,
+section.page .pbody,
+section.page .page-body {
+  padding-bottom: 72px !important;
+  box-sizing: border-box !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+section.slide .slide-content > *,
+div.page .pbody > *,
+div.page .page-body > *,
+section.page .pbody > *,
+section.page .page-body > * {
+  min-height: 0;
+}
+/* Large content photos (not logo tiles) shrink to clear the footer band. */
+section.slide .slide-content img[style*="aspect-ratio"],
+section.slide .slide-content img[style*="width: 100%"],
+section.slide .slide-content img[style*="width:100%"],
+div.page .pbody img[style*="aspect-ratio"],
+div.page .page-body img[style*="aspect-ratio"],
+section.page .pbody img[style*="aspect-ratio"],
+section.page .page-body img[style*="aspect-ratio"] {
+  max-height: 440px !important;
+  object-fit: cover !important;
 }
 [data-portal-footer-center="1"] {
   grid-column: 2;
@@ -181,6 +211,44 @@ section.page:not(.cover):not(.ink):not(.dark) {
   color: inherit;
   opacity: 0.75;
   white-space: nowrap;
+}
+/* Dark slides: white footer text + white logo so chrome stays readable. */
+section.slide.ink .chrome-bot,
+section.slide.teal .chrome-bot,
+section.slide.dark .chrome-bot,
+div.page.ink .page-chrome-bot,
+div.page.ink .pchrome-bot,
+div.page.dark .page-chrome-bot,
+div.page.dark .pchrome-bot,
+section.page.ink .page-chrome-bot,
+section.page.ink .pchrome-bot,
+section.page.dark .page-chrome-bot,
+section.page.dark .pchrome-bot,
+[data-portal-dark-chrome="1"] .chrome-bot,
+[data-portal-dark-chrome="1"] .page-chrome-bot,
+[data-portal-dark-chrome="1"] .pchrome-bot {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+section.slide.ink [data-portal-copyright="1"],
+section.slide.teal [data-portal-copyright="1"],
+section.slide.dark [data-portal-copyright="1"],
+div.page.ink [data-portal-copyright="1"],
+div.page.dark [data-portal-copyright="1"],
+section.page.ink [data-portal-copyright="1"],
+section.page.dark [data-portal-copyright="1"],
+[data-portal-dark-chrome="1"] [data-portal-copyright="1"] {
+  color: rgba(255, 255, 255, 0.85) !important;
+  opacity: 1 !important;
+}
+section.slide.ink [data-portal-chrome-logo="1"] img,
+section.slide.teal [data-portal-chrome-logo="1"] img,
+section.slide.dark [data-portal-chrome-logo="1"] img,
+div.page.ink [data-portal-chrome-logo="1"] img,
+div.page.dark [data-portal-chrome-logo="1"] img,
+section.page.ink [data-portal-chrome-logo="1"] img,
+section.page.dark [data-portal-chrome-logo="1"] img,
+[data-portal-dark-chrome="1"] [data-portal-chrome-logo="1"] img {
+  filter: brightness(0) invert(1) !important;
 }
 ${logoRule}
 ${exportChromeRule}
@@ -498,6 +566,29 @@ function copyrightLine(profile: BrandProfile): string {
   return `© ${year} ${company} | All Rights Reserved`;
 }
 
+/** Mark dark-background pages so footer chrome can switch to white. */
+function markDarkChromeSections(doc: Document): void {
+  doc
+    .querySelectorAll("section.slide, div.page, section.page")
+    .forEach((section) => {
+      const bg = getComputedStyle(section as Element).backgroundColor;
+      const m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+      if (!m) {
+        (section as HTMLElement).removeAttribute("data-portal-dark-chrome");
+        return;
+      }
+      const r = Number(m[1]);
+      const g = Number(m[2]);
+      const b = Number(m[3]);
+      const lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+      if (lum < 0.42) {
+        (section as HTMLElement).setAttribute("data-portal-dark-chrome", "1");
+      } else {
+        (section as HTMLElement).removeAttribute("data-portal-dark-chrome");
+      }
+    });
+}
+
 /** Move the plans table "Most popular" badge onto its own line under Silver. */
 function fixPlansBadge(doc: Document): void {
   doc.querySelectorAll('[data-i18n="plans.tbl.silver"]').forEach((el) => {
@@ -649,6 +740,7 @@ export function applyBrandContentToDocument(
     buildClosingSlideHtml(profile, "page")
   );
   applyChromeFooters(doc, profile);
+  markDarkChromeSections(doc);
   fixPlansBadge(doc);
 }
 
@@ -794,6 +886,16 @@ export function buildBrandApplyScriptBody(profile: BrandProfile): string {
       ensureFooterStructure(bar, false);
     });
   }
+  function markDarkChrome(){
+    document.querySelectorAll("section.slide, div.page, section.page").forEach(function(section){
+      var bg=getComputedStyle(section).backgroundColor;
+      var m=bg.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)/i);
+      if(!m){ section.removeAttribute("data-portal-dark-chrome"); return; }
+      var lum=(0.2126*Number(m[1])+0.7152*Number(m[2])+0.0722*Number(m[3]))/255;
+      if(lum<0.42) section.setAttribute("data-portal-dark-chrome","1");
+      else section.removeAttribute("data-portal-dark-chrome");
+    });
+  }
   function applyCover(){
     if(!coverPage) return;
     var cover=document.querySelector('div.page.cover, section.page.cover, [data-portal-cover-page="1"]');
@@ -882,6 +984,7 @@ export function buildBrandApplyScriptBody(profile: BrandProfile): string {
       applyCover();
       applyClosing();
       applyChromeFooters();
+      markDarkChrome();
     }catch(e){}
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",applyBrand);
