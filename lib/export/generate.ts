@@ -64,7 +64,7 @@ export function buildExportMeta(
 }
 
 export async function generateExportBufferFromPage(
-  options: GenerateExportOptions & { page: import("playwright").Page }
+  options: GenerateExportOptions & { page: import("playwright-core").Page }
 ): Promise<Buffer> {
   const { asset, deckLang, format, page, brandProfile, root = process.cwd() } = options;
   const htmlPath = htmlSourcePath(asset, root);

@@ -18,8 +18,6 @@ import {
   injectPinnedHtmlExport,
 } from "@/lib/export/generate-html";
 import { loadHtmlSourceForAsset } from "@/lib/export/load-html-source";
-import { isServerlessExportHost } from "@/lib/export/paths";
-
 function contentDispositionAttachment(fileName: string): string {
   const safe = fileName.replace(/"/g, "");
   const encoded = encodeURIComponent(safe);
@@ -37,16 +35,13 @@ async function generateBrandedBuffer(
   brandProfile: NonNullable<ReturnType<typeof slimBrandProfileForExport>>,
   request: Request
 ): Promise<{ buffer: Buffer; deliveredFormat: ExportFormat }> {
-  const serverless = isServerlessExportHost();
-  const requestFormat =
-    serverless && format !== "html" ? ("html" as const) : format;
   const loadOptions = {
     origin: new URL(request.url).origin,
     deckLang,
     requestCookie: request.headers.get("cookie"),
   };
 
-  if (requestFormat === "html") {
+  if (format === "html") {
     const { raw } = await loadHtmlSourceForAsset(asset, loadOptions);
     return {
       buffer: injectPinnedHtmlExport(raw, deckLang, brandProfile),
@@ -59,14 +54,16 @@ async function generateBrandedBuffer(
     const buffer = await generateExportBuffer({
       asset,
       deckLang,
-      format: requestFormat,
+      format,
       brandProfile,
     });
-    return { buffer, deliveredFormat: requestFormat };
+    return { buffer, deliveredFormat: format };
   } catch (primaryErr) {
+    // PDF/Office conversion can fail on constrained hosts; still try to deliver
+    // a branded HTML fallback so the user gets something downloadable.
     console.warn(
       "[api/export] branded",
-      requestFormat,
+      format,
       "failed, falling back to HTML:",
       primaryErr instanceof Error ? primaryErr.message : primaryErr
     );

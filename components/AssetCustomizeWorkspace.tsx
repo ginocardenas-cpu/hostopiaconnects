@@ -45,9 +45,9 @@ export function AssetCustomizeWorkspace({
   useEffect(() => {
     setDraftProfile(profile);
   }, [profile]);
-  // HTML is the reliable path for branded exports (no Playwright on serverless).
+  // PDF is the default for customized downloads.
   const [exportFormat, setExportFormat] = useState<ExportFormat>(() =>
-    supportsHtml ? "html" : defaultExportFormat(asset.contentType, sourceFile)
+    defaultExportFormat(asset.contentType, sourceFile)
   );
 
   const formatOptions = useMemo(

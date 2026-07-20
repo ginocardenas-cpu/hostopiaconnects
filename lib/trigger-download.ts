@@ -129,11 +129,7 @@ function startIndeterminateProgress(
 }
 
 function exportFormatForRequest(file: DownloadDescriptor): ExportFormat {
-  // Branded exports on Vercel/serverless are HTML-only; request HTML up front.
-  if (file.brandProfile && file.exportFormat && file.exportFormat !== "html") {
-    return "html";
-  }
-  return file.exportFormat ?? "html";
+  return file.exportFormat ?? "pdf";
 }
 
 async function readResponseBlob(

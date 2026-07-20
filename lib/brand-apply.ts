@@ -62,58 +62,49 @@ export function buildBrandStyleCss(
   const { colors, fontFamily, logoDataUrl } = profile;
   const logoRule = logoDataUrl
     ? `
-.chrome-top .brandmark .glyph,
-.chrome-bot .brandmark .glyph,
-.pchrome-top .brandmark .glyph,
-.page-chrome-top .brandmark .glyph {
-  background-color: transparent !important;
-  background-image: url(${JSON.stringify(logoDataUrl)}) !important;
-  background-size: contain !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  width: 45px !important;
-  height: 45px !important;
-}
-.pchrome-top .brandmark .glyph,
-.page-chrome-top .brandmark .glyph {
-  width: 32px !important;
-  height: 32px !important;
-}
 .brandmark .glyph::after {
   display: none !important;
-}
-img[data-portal-logo="1"] {
-  display: block !important;
-  max-height: 45px;
-  width: auto;
-  object-fit: contain;
 }
 [data-portal-chrome-logo="1"] {
   display: flex !important;
   align-items: center;
-  margin-right: 12px;
+  margin-right: 10px;
+  flex-shrink: 0;
 }
 [data-portal-chrome-logo="1"] img {
-  max-height: 35px;
+  max-height: 28px;
   width: auto;
   object-fit: contain;
-}`
-    : "";
-
-  // Exports: never show brand text in the chrome; logo-only when uploaded,
-  // nothing when not. Preview keeps the text so users see what they typed.
-  const exportChromeRule = options.exportMode
-    ? logoDataUrl
-      ? `
-.brandmark [data-i18n="brand"],
-.brandmark [data-i18n="cta.brand"] {
-  display: none !important;
-}`
-      : `
+}
+/* Middle pages only: logo lives in the bottom-left footer, never the top chrome. */
 .chrome-top .brandmark,
-.chrome-bot .brandmark,
 .pchrome-top .brandmark,
 .page-chrome-top .brandmark {
+  display: none !important;
+}
+/* First + last pages: no chrome logos — only the large centered logo in content. */
+section.slide:first-of-type .brandmark,
+section.slide:first-of-type [data-portal-chrome-logo="1"],
+section.slide[data-portal-closing-slide="1"] .brandmark,
+section.slide[data-portal-closing-slide="1"] [data-portal-chrome-logo="1"],
+[data-portal-cover-page="1"] .brandmark,
+[data-portal-cover-page="1"] [data-portal-chrome-logo="1"],
+[data-portal-closing-page="1"] .brandmark,
+[data-portal-closing-page="1"] [data-portal-chrome-logo="1"] {
+  display: none !important;
+}`
+    : `
+.chrome-top .brandmark,
+.pchrome-top .brandmark,
+.page-chrome-top .brandmark {
+  display: none !important;
+}`;
+
+  // Exports: never show company-name text in the chrome.
+  const exportChromeRule = options.exportMode
+    ? `
+.brandmark [data-i18n="brand"],
+.brandmark [data-i18n="cta.brand"] {
   display: none !important;
 }`
     : "";
@@ -141,6 +132,16 @@ section.slide:not(.ink):not(.teal):not(.dark),
 div.page:not(.cover):not(.ink):not(.dark),
 section.page:not(.cover):not(.ink):not(.dark) {
   background-color: ${colors.slide} !important;
+}
+[data-portal-copyright="1"] {
+  font-family: var(--mono, monospace);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: inherit;
+  opacity: 0.75;
+  margin-left: auto;
+  white-space: nowrap;
 }
 ${logoRule}
 ${exportChromeRule}
@@ -233,8 +234,9 @@ export function buildClosingSlideHtml(
   const s = SIZES[variant];
   const logoSrc = opts.logoSrc ?? profile.logoDataUrl ?? "";
   const email =
-    profile.content.contactEmail.trim().replace(/^mailto:/i, "") ||
-    (activeCtaLink(profile, "email")?.value.trim().replace(/^mailto:/i, "") ?? "");
+    (activeCtaLink(profile, "email")?.value.trim().replace(/^mailto:/i, "") ??
+      "") ||
+    profile.content.contactEmail.trim().replace(/^mailto:/i, "");
   const phone = activeCtaLink(profile, "phone")?.value.trim() ?? "";
   const website = activeCtaLink(profile, "website");
 
@@ -317,24 +319,34 @@ function setI18nHtml(doc: Document, key: string, html: string): void {
   });
 }
 
-function applyLogoToBrandmarks(doc: Document, profile: BrandProfile): void {
-  if (!profile.logoDataUrl) return;
+function applyFooterLogo(doc: Document, profile: BrandProfile): void {
+  if (!profile.logoDataUrl) {
+    doc
+      .querySelectorAll('[data-portal-chrome-logo="1"]')
+      .forEach((node) => node.remove());
+    return;
+  }
 
-  doc.querySelectorAll(".brandmark").forEach((mark) => {
-    const glyph = mark.querySelector(".glyph") as HTMLElement | null;
-    if (glyph) {
-      glyph.style.backgroundImage = `url(${profile.logoDataUrl})`;
-      glyph.style.backgroundSize = "contain";
-      glyph.style.backgroundRepeat = "no-repeat";
-      glyph.style.backgroundPosition = "center";
-      glyph.style.backgroundColor = "transparent";
-    }
-  });
-
-  // Fixed logo slot in bottom chrome (white/cream margin area)
+  // Bottom-left footer logo on middle pages only (first/last use center logo).
   doc
     .querySelectorAll(".chrome-bot, .page-chrome-bot, .pchrome-bot")
     .forEach((bar) => {
+      const section = bar.closest(
+        "section.slide, div.page, section.page"
+      ) as HTMLElement | null;
+      if (
+        section &&
+        (section.matches("[data-portal-cover-page='1']") ||
+          section.matches("[data-portal-closing-page='1']") ||
+          section.matches("[data-portal-closing-slide='1']") ||
+          section.matches("section.slide:first-of-type"))
+      ) {
+        bar
+          .querySelectorAll('[data-portal-chrome-logo="1"]')
+          .forEach((node) => node.remove());
+        return;
+      }
+
       let slot = bar.querySelector(
         '[data-portal-chrome-logo="1"]'
       ) as HTMLElement | null;
@@ -350,6 +362,62 @@ function applyLogoToBrandmarks(doc: Document, profile: BrandProfile): void {
         const img = slot.querySelector("img");
         if (img) img.src = profile.logoDataUrl ?? "";
       }
+    });
+}
+
+function copyrightLine(profile: BrandProfile): string {
+  const year = new Date().getFullYear();
+  const company = profile.companyName.trim() || "Hostopia Connects";
+  return `© ${year} ${company} | All Rights Reserved`;
+}
+
+/** Inject © YEAR COMPANY | All Rights Reserved into every bottom chrome bar. */
+function applyCopyrightFooter(doc: Document, profile: BrandProfile): void {
+  const text = copyrightLine(profile);
+  doc
+    .querySelectorAll(".chrome-bot, .page-chrome-bot, .pchrome-bot")
+    .forEach((bar) => {
+      let node = bar.querySelector(
+        '[data-portal-copyright="1"]'
+      ) as HTMLElement | null;
+      if (!node) {
+        node = doc.createElement("span");
+        node.setAttribute("data-portal-copyright", "1");
+        bar.appendChild(node);
+      }
+      node.textContent = text;
+    });
+
+  // Cover / closing pages that may not have a bottom chrome bar.
+  doc
+    .querySelectorAll(
+      "[data-portal-cover-page='1'], [data-portal-closing-page='1'], section.slide[data-portal-closing-slide='1'], section.slide:first-of-type"
+    )
+    .forEach((section) => {
+      let bar = section.querySelector(
+        ".chrome-bot, .page-chrome-bot, .pchrome-bot"
+      ) as HTMLElement | null;
+      if (!bar) {
+        bar = doc.createElement("div");
+        bar.className = "chrome-bot";
+        bar.setAttribute("data-portal-footer-bar", "1");
+        bar.style.cssText =
+          "position:absolute;left:56px;right:56px;bottom:36px;display:flex;align-items:center;gap:12px;font-family:var(--mono,monospace);font-size:9px;letter-spacing:0.08em;text-transform:uppercase;z-index:6;";
+        const host = section as HTMLElement;
+        if (getComputedStyle(host).position === "static") {
+          host.style.position = "relative";
+        }
+        host.appendChild(bar);
+      }
+      let node = bar.querySelector(
+        '[data-portal-copyright="1"]'
+      ) as HTMLElement | null;
+      if (!node) {
+        node = doc.createElement("span");
+        node.setAttribute("data-portal-copyright", "1");
+        bar.appendChild(node);
+      }
+      node.textContent = text;
     });
 }
 
@@ -396,6 +464,7 @@ export function applyClosingToDocument(
   const slides = doc.querySelectorAll("section.slide");
   if (slides.length >= 2) {
     const last = slides[slides.length - 1] as HTMLElement;
+    last.setAttribute("data-portal-closing-slide", "1");
     last.classList.remove("ink", "teal", "cream", "dark", "cover");
     last.style.setProperty("background", "var(--paper)", "important");
     resetChromeColors(last);
@@ -487,20 +556,24 @@ export function applyBrandContentToDocument(
   if (audience.trim()) {
     setI18nText(doc, "meta.audience.v", audience.trim());
   }
-  if (contactEmail.trim()) {
-    const contact = buildContactHtml(contactEmail);
+  const contactAddress =
+    activeCtaLink(profile, "email")?.value.trim().replace(/^mailto:/i, "") ||
+    contactEmail.trim().replace(/^mailto:/i, "");
+  if (contactAddress) {
+    const contact = buildContactHtml(contactAddress);
     setI18nHtml(doc, "cta.contact", contact);
     setI18nHtml(doc, "cta.contactfull", contact);
   }
 
-  applyLogoToBrandmarks(doc, profile);
-  fixPlansBadge(doc);
   applyCoverToDocument(doc, buildCoverPageHtml(profile));
   applyClosingToDocument(
     doc,
     buildClosingSlideHtml(profile, "slide"),
     buildClosingSlideHtml(profile, "page")
   );
+  applyFooterLogo(doc, profile);
+  applyCopyrightFooter(doc, profile);
+  fixPlansBadge(doc);
 }
 
 /**
@@ -513,9 +586,11 @@ export function buildBrandApplyScriptBody(profile: BrandProfile): string {
   const logoDataUrl = profile.logoDataUrl ?? "";
   const company = profile.companyName.trim();
   const content = profile.content;
-  const contactHtml = content.contactEmail.trim()
-    ? buildContactHtml(content.contactEmail)
-    : "";
+  const ctaEmail =
+    activeCtaLink(profile, "email")?.value.trim().replace(/^mailto:/i, "") ||
+    content.contactEmail.trim().replace(/^mailto:/i, "");
+  const contactHtml = ctaEmail ? buildContactHtml(ctaEmail) : "";
+  const copyright = copyrightLine(profile);
   const closingSlide = buildClosingSlideHtml(profile, "slide", {
     logoSrc: LOGO_TOKEN,
   });
@@ -530,6 +605,7 @@ export function buildBrandApplyScriptBody(profile: BrandProfile): string {
   var css=${JSON.stringify(css)};
   var logoDataUrl=${JSON.stringify(logoDataUrl)};
   var company=${JSON.stringify(company)};
+  var copyright=${JSON.stringify(copyright)};
   var coverTitle=${JSON.stringify(content.coverTitle.trim())};
   var coverSub=${JSON.stringify(coverSub)};
   var audience=${JSON.stringify(content.audience.trim())};
@@ -561,6 +637,56 @@ export function buildBrandApplyScriptBody(profile: BrandProfile): string {
   function container(section){
     return section.querySelector(".slide-content, .pbody, .page-body");
   }
+  function applyFooterLogo(){
+    if(!logoDataUrl){
+      document.querySelectorAll('[data-portal-chrome-logo="1"]').forEach(function(n){ n.parentNode&&n.parentNode.removeChild(n); });
+      return;
+    }
+    document.querySelectorAll(".chrome-bot, .page-chrome-bot, .pchrome-bot").forEach(function(bar){
+      var section=bar.closest("section.slide, div.page, section.page");
+      if(section&&(section.matches("[data-portal-cover-page='1']")||section.matches("[data-portal-closing-page='1']")||section.matches("[data-portal-closing-slide='1']")||section.matches("section.slide:first-of-type"))){
+        bar.querySelectorAll('[data-portal-chrome-logo="1"]').forEach(function(n){ n.parentNode&&n.parentNode.removeChild(n); });
+        return;
+      }
+      var slot=bar.querySelector('[data-portal-chrome-logo="1"]');
+      if(!slot){
+        slot=document.createElement("span");
+        slot.setAttribute("data-portal-chrome-logo","1");
+        var img=document.createElement("img");
+        img.alt=company||"Logo";
+        img.src=logoDataUrl;
+        slot.appendChild(img);
+        bar.insertBefore(slot, bar.firstChild);
+      } else {
+        var existing=slot.querySelector("img");
+        if(existing) existing.src=logoDataUrl;
+      }
+    });
+  }
+  function ensureCopyrightOn(bar){
+    var node=bar.querySelector('[data-portal-copyright="1"]');
+    if(!node){
+      node=document.createElement("span");
+      node.setAttribute("data-portal-copyright","1");
+      bar.appendChild(node);
+    }
+    node.textContent=copyright;
+  }
+  function applyCopyright(){
+    document.querySelectorAll(".chrome-bot, .page-chrome-bot, .pchrome-bot").forEach(ensureCopyrightOn);
+    document.querySelectorAll("[data-portal-cover-page='1'], [data-portal-closing-page='1'], section.slide[data-portal-closing-slide='1'], section.slide:first-of-type").forEach(function(section){
+      var bar=section.querySelector(".chrome-bot, .page-chrome-bot, .pchrome-bot");
+      if(!bar){
+        bar=document.createElement("div");
+        bar.className="chrome-bot";
+        bar.setAttribute("data-portal-footer-bar","1");
+        bar.style.cssText="position:absolute;left:56px;right:56px;bottom:36px;display:flex;align-items:center;gap:12px;font-family:var(--mono,monospace);font-size:9px;letter-spacing:0.08em;text-transform:uppercase;z-index:6;";
+        if(getComputedStyle(section).position==="static") section.style.position="relative";
+        section.appendChild(bar);
+      }
+      ensureCopyrightOn(bar);
+    });
+  }
   function applyCover(){
     if(!coverPage) return;
     var cover=document.querySelector('div.page.cover, section.page.cover, [data-portal-cover-page="1"]');
@@ -585,6 +711,7 @@ export function buildBrandApplyScriptBody(profile: BrandProfile): string {
     var slides=document.querySelectorAll("section.slide");
     if(slides.length>=2){
       var last=slides[slides.length-1];
+      last.setAttribute("data-portal-closing-slide","1");
       last.classList.remove("ink","teal","cream","dark","cover");
       last.style.setProperty("background","var(--paper)","important");
       resetChrome(last);
@@ -642,37 +769,13 @@ export function buildBrandApplyScriptBody(profile: BrandProfile): string {
         setHtml("cta.contact", contactHtml);
         setHtml("cta.contactfull", contactHtml);
       }
-      if(logoDataUrl){
-        document.querySelectorAll(".brandmark").forEach(function(mark){
-          var glyph=mark.querySelector(".glyph");
-          if(glyph){
-            glyph.style.backgroundImage="url("+logoDataUrl+")";
-            glyph.style.backgroundSize="contain";
-            glyph.style.backgroundRepeat="no-repeat";
-            glyph.style.backgroundPosition="center";
-            glyph.style.backgroundColor="transparent";
-          }
-        });
-        document.querySelectorAll(".chrome-bot, .page-chrome-bot, .pchrome-bot").forEach(function(bar){
-          var slot=bar.querySelector('[data-portal-chrome-logo="1"]');
-          if(!slot){
-            slot=document.createElement("span");
-            slot.setAttribute("data-portal-chrome-logo","1");
-            var img=document.createElement("img");
-            img.alt=company||"Logo";
-            img.src=logoDataUrl;
-            slot.appendChild(img);
-            bar.insertBefore(slot, bar.firstChild);
-          } else {
-            var existing=slot.querySelector("img");
-            if(existing) existing.src=logoDataUrl;
-          }
-        });
-      }
+      applyFooterLogo();
       document.querySelectorAll('[data-portal-cta="1"], [data-portal-cta-bar="1"]').forEach(function(node){ node.parentNode&&node.parentNode.removeChild(node); });
       fixPlansBadge();
       applyCover();
       applyClosing();
+      applyFooterLogo();
+      applyCopyright();
     }catch(e){}
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",applyBrand);

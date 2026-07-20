@@ -7,7 +7,7 @@ export function htmlSourcePath(asset: Asset, root = process.cwd()): string {
   return path.join(root, "public", "assets", fileName);
 }
 
-/** True on hosts where Playwright/Chromium is not available for PDF/Office export. */
+/** True on serverless hosts that need @sparticuz/chromium instead of full Playwright. */
 export function isServerlessExportHost(): boolean {
   return Boolean(
     process.env.VERCEL ||

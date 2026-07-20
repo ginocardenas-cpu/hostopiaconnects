@@ -1,4 +1,4 @@
-import type { Page } from "playwright";
+import type { Page } from "playwright-core";
 import type { BrandProfile } from "@/lib/brand-profile";
 import { buildBrandApplyScriptBody } from "@/lib/brand-apply";
 

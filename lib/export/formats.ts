@@ -48,8 +48,8 @@ export function availableExportFormats(
     const fmt = defaultExportFormat(contentType, fileName);
     return [fmt];
   }
-  // Brand Studio exports: PDF + HTML only. Word/PPTX need Playwright extraction
-  // and lose layout fidelity; on Vercel branded non-HTML formats fall back to HTML.
+  // PDF is the default; HTML is the alternate. Word/PPTX are not offered for
+  // Brand Studio HTML assets (layout fidelity + serverless PDF pipeline).
   return ["pdf", "html"];
 }
 

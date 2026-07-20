@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { pathToFileURL } from "url";
-import type { Page, Browser } from "playwright";
+import type { Page, Browser } from "playwright-core";
 import type { DeckLang } from "@/lib/html-deck-i18n";
 import type { BrandProfile } from "@/lib/brand-profile";
 import { shouldApplyBrandOnExport } from "@/lib/brand-profile";

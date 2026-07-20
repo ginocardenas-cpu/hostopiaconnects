@@ -276,20 +276,6 @@ export function BrandStudioControls({
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm"
             />
           </label>
-          <label className="block text-sm">
-            <span className="mb-1 block text-gray-600">{t("contentContact")}</span>
-            <input
-              type="email"
-              value={profile.content.contactEmail}
-              onChange={(e) =>
-                onChange({
-                  content: { ...profile.content, contactEmail: e.target.value },
-                })
-              }
-              placeholder={t("contentContactPlaceholder")}
-              className="w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-sm"
-            />
-          </label>
         </div>
       </section>
 

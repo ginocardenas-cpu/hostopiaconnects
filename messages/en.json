@@ -265,7 +265,7 @@
     "editsSaved": "Brand saved",
     "resetProfile": "Reset to Hostopia defaults",
     "exportSection": "Download settings",
-    "brandedFormatHint": "For customized branding, HTML is the most reliable download. PDF may fall back to HTML on hosted environments.",
+    "brandedFormatHint": "PDF matches your customized preview. Choose HTML for an offline interactive bundle.",
     "addCustomized": "Add customized to My Resources",
     "customizeTitle": "Customize: {title}",
     "customizeIntro": "Adjust your brand settings on the left and watch the preview update. Click Save edits when you’re happy, then add the customized asset to My Resources.",
