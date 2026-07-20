@@ -316,27 +316,7 @@ async function resolveFileBlob(
   });
 
   if (file.useExportPost) {
-    try {
-      return await postExportBlob(file, onProgress, meta);
-    } catch (primaryError) {
-      if (
-        file.assetId &&
-        file.exportFormat &&
-        file.exportFormat !== "html"
-      ) {
-        try {
-          const htmlFile = {
-            ...file,
-            exportFormat: "html" as const,
-            fileName: withExtension(file.fileName, "html"),
-          };
-          return await postExportBlob(htmlFile, onProgress, meta);
-        } catch {
-          throw primaryError;
-        }
-      }
-      throw primaryError;
-    }
+    return postExportBlob(file, onProgress, meta);
   }
 
   if (file.requiresGeneration || isFetchDownloadUrl(file.fileUrl)) {

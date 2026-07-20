@@ -68,11 +68,11 @@ export function buildBrandStyleCss(
 [data-portal-chrome-logo="1"] {
   display: flex !important;
   align-items: center;
-  margin-right: 10px;
   flex-shrink: 0;
+  justify-self: start;
 }
 [data-portal-chrome-logo="1"] img {
-  max-height: 28px;
+  max-height: 42px;
   width: auto;
   object-fit: contain;
 }
@@ -133,14 +133,53 @@ div.page:not(.cover):not(.ink):not(.dark),
 section.page:not(.cover):not(.ink):not(.dark) {
   background-color: ${colors.slide} !important;
 }
+/* Drop duplicate chrome section titles ("02 — Agenda"); keep content .eyebrow only. */
+.chrome-top > :not(.brandmark),
+.pchrome-top > :not(.brandmark),
+.page-chrome-top > :not(.brandmark) {
+  display: none !important;
+}
+.eyebrow {
+  font-size: 16.5px !important; /* 11px × 1.5 */
+  letter-spacing: 0.12em !important;
+}
+.chrome-bot,
+.page-chrome-bot,
+.pchrome-bot {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+  align-items: center !important;
+  column-gap: 24px !important;
+  font-size: 11px !important;
+}
+[data-portal-footer-center="1"] {
+  grid-column: 2;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+[data-portal-footer-center="1"] [data-portal-footer-pages] {
+  flex-shrink: 0;
+}
+[data-portal-footer-center="1"] [data-portal-footer-name] {
+  opacity: 0.9;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 [data-portal-copyright="1"] {
+  grid-column: 3;
+  justify-self: end;
   font-family: var(--mono, monospace);
   font-size: 9px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: inherit;
   opacity: 0.75;
-  margin-left: auto;
   white-space: nowrap;
 }
 ${logoRule}
@@ -319,73 +358,113 @@ function setI18nHtml(doc: Document, key: string, html: string): void {
   });
 }
 
-function applyFooterLogo(doc: Document, profile: BrandProfile): void {
-  if (!profile.logoDataUrl) {
-    doc
-      .querySelectorAll('[data-portal-chrome-logo="1"]')
-      .forEach((node) => node.remove());
-    return;
+function isEdgeSection(section: Element | null): boolean {
+  if (!section) return false;
+  return (
+    section.matches("[data-portal-cover-page='1']") ||
+    section.matches("[data-portal-closing-page='1']") ||
+    section.matches("[data-portal-closing-slide='1']") ||
+    section.matches("section.slide:first-of-type")
+  );
+}
+
+function collectFooterMeta(bar: Element): { pages: string; name: string } {
+  const texts: string[] = [];
+  bar.childNodes.forEach((node) => {
+    if (node.nodeType !== 1) return;
+    const el = node as Element;
+    if (
+      el.hasAttribute("data-portal-chrome-logo") ||
+      el.hasAttribute("data-portal-copyright") ||
+      el.hasAttribute("data-portal-footer-center")
+    ) {
+      return;
+    }
+    const t = (el.textContent || "").replace(/\s+/g, " ").trim();
+    if (t) texts.push(t);
+  });
+  const pages =
+    texts.find((t) => /^\d+\s*\/\s*\d+/.test(t)) ||
+    texts[0] ||
+    "";
+  const name =
+    texts.find((t) => t !== pages && !/^\d+\s*\/\s*\d+$/.test(t)) || "";
+  return { pages, name };
+}
+
+function ensureFooterStructure(
+  doc: Document,
+  bar: HTMLElement,
+  profile: BrandProfile,
+  opts: { withLogo: boolean }
+): void {
+  const copyright = copyrightLine(profile);
+  const existingCenter = bar.querySelector(
+    '[data-portal-footer-center="1"]'
+  ) as HTMLElement | null;
+  const meta = existingCenter
+    ? {
+        pages:
+          existingCenter
+            .querySelector("[data-portal-footer-pages]")
+            ?.textContent?.trim() || "",
+        name:
+          existingCenter
+            .querySelector("[data-portal-footer-name]")
+            ?.textContent?.trim() || "",
+      }
+    : collectFooterMeta(bar);
+
+  // Clear original chrome children; rebuild as logo | pages+name | copyright.
+  while (bar.firstChild) bar.removeChild(bar.firstChild);
+
+  if (opts.withLogo && profile.logoDataUrl) {
+    const slot = doc.createElement("span");
+    slot.setAttribute("data-portal-chrome-logo", "1");
+    const img = doc.createElement("img");
+    img.alt = profile.companyName || "Logo";
+    img.src = profile.logoDataUrl;
+    slot.appendChild(img);
+    bar.appendChild(slot);
+  } else {
+    const spacer = doc.createElement("span");
+    spacer.setAttribute("data-portal-footer-spacer", "1");
+    bar.appendChild(spacer);
   }
 
-  // Bottom-left footer logo on middle pages only (first/last use center logo).
+  const center = doc.createElement("span");
+  center.setAttribute("data-portal-footer-center", "1");
+  if (meta.pages) {
+    const pagesEl = doc.createElement("span");
+    pagesEl.setAttribute("data-portal-footer-pages", "1");
+    pagesEl.textContent = meta.pages;
+    center.appendChild(pagesEl);
+  }
+  if (meta.name) {
+    const nameEl = doc.createElement("span");
+    nameEl.setAttribute("data-portal-footer-name", "1");
+    nameEl.textContent = meta.name;
+    center.appendChild(nameEl);
+  }
+  bar.appendChild(center);
+
+  const copy = doc.createElement("span");
+  copy.setAttribute("data-portal-copyright", "1");
+  copy.textContent = copyright;
+  bar.appendChild(copy);
+}
+
+/** Bottom chrome: LOGO | pages + slide name | © YEAR COMPANY | All Rights Reserved */
+function applyChromeFooters(doc: Document, profile: BrandProfile): void {
   doc
     .querySelectorAll(".chrome-bot, .page-chrome-bot, .pchrome-bot")
     .forEach((bar) => {
       const section = bar.closest(
         "section.slide, div.page, section.page"
-      ) as HTMLElement | null;
-      if (
-        section &&
-        (section.matches("[data-portal-cover-page='1']") ||
-          section.matches("[data-portal-closing-page='1']") ||
-          section.matches("[data-portal-closing-slide='1']") ||
-          section.matches("section.slide:first-of-type"))
-      ) {
-        bar
-          .querySelectorAll('[data-portal-chrome-logo="1"]')
-          .forEach((node) => node.remove());
-        return;
-      }
-
-      let slot = bar.querySelector(
-        '[data-portal-chrome-logo="1"]'
-      ) as HTMLElement | null;
-      if (!slot) {
-        slot = doc.createElement("span");
-        slot.setAttribute("data-portal-chrome-logo", "1");
-        const img = doc.createElement("img");
-        img.alt = profile.companyName || "Logo";
-        img.src = profile.logoDataUrl ?? "";
-        slot.appendChild(img);
-        bar.insertBefore(slot, bar.firstChild);
-      } else {
-        const img = slot.querySelector("img");
-        if (img) img.src = profile.logoDataUrl ?? "";
-      }
-    });
-}
-
-function copyrightLine(profile: BrandProfile): string {
-  const year = new Date().getFullYear();
-  const company = profile.companyName.trim() || "Hostopia Connects";
-  return `© ${year} ${company} | All Rights Reserved`;
-}
-
-/** Inject © YEAR COMPANY | All Rights Reserved into every bottom chrome bar. */
-function applyCopyrightFooter(doc: Document, profile: BrandProfile): void {
-  const text = copyrightLine(profile);
-  doc
-    .querySelectorAll(".chrome-bot, .page-chrome-bot, .pchrome-bot")
-    .forEach((bar) => {
-      let node = bar.querySelector(
-        '[data-portal-copyright="1"]'
-      ) as HTMLElement | null;
-      if (!node) {
-        node = doc.createElement("span");
-        node.setAttribute("data-portal-copyright", "1");
-        bar.appendChild(node);
-      }
-      node.textContent = text;
+      );
+      ensureFooterStructure(doc, bar as HTMLElement, profile, {
+        withLogo: Boolean(profile.logoDataUrl) && !isEdgeSection(section),
+      });
     });
 
   // Cover / closing pages that may not have a bottom chrome bar.
@@ -402,23 +481,21 @@ function applyCopyrightFooter(doc: Document, profile: BrandProfile): void {
         bar.className = "chrome-bot";
         bar.setAttribute("data-portal-footer-bar", "1");
         bar.style.cssText =
-          "position:absolute;left:56px;right:56px;bottom:36px;display:flex;align-items:center;gap:12px;font-family:var(--mono,monospace);font-size:9px;letter-spacing:0.08em;text-transform:uppercase;z-index:6;";
+          "position:absolute;left:56px;right:56px;bottom:36px;z-index:6;";
         const host = section as HTMLElement;
         if (getComputedStyle(host).position === "static") {
           host.style.position = "relative";
         }
         host.appendChild(bar);
       }
-      let node = bar.querySelector(
-        '[data-portal-copyright="1"]'
-      ) as HTMLElement | null;
-      if (!node) {
-        node = doc.createElement("span");
-        node.setAttribute("data-portal-copyright", "1");
-        bar.appendChild(node);
-      }
-      node.textContent = text;
+      ensureFooterStructure(doc, bar, profile, { withLogo: false });
     });
+}
+
+function copyrightLine(profile: BrandProfile): string {
+  const year = new Date().getFullYear();
+  const company = profile.companyName.trim() || "Hostopia Connects";
+  return `© ${year} ${company} | All Rights Reserved`;
 }
 
 /** Move the plans table "Most popular" badge onto its own line under Silver. */
@@ -571,8 +648,7 @@ export function applyBrandContentToDocument(
     buildClosingSlideHtml(profile, "slide"),
     buildClosingSlideHtml(profile, "page")
   );
-  applyFooterLogo(doc, profile);
-  applyCopyrightFooter(doc, profile);
+  applyChromeFooters(doc, profile);
   fixPlansBadge(doc);
 }
 
@@ -637,54 +713,85 @@ export function buildBrandApplyScriptBody(profile: BrandProfile): string {
   function container(section){
     return section.querySelector(".slide-content, .pbody, .page-body");
   }
-  function applyFooterLogo(){
-    if(!logoDataUrl){
-      document.querySelectorAll('[data-portal-chrome-logo="1"]').forEach(function(n){ n.parentNode&&n.parentNode.removeChild(n); });
-      return;
+  function isEdgeSection(section){
+    if(!section) return false;
+    return section.matches("[data-portal-cover-page='1']")||section.matches("[data-portal-closing-page='1']")||section.matches("[data-portal-closing-slide='1']")||section.matches("section.slide:first-of-type");
+  }
+  function collectFooterMeta(bar){
+    var texts=[];
+    bar.childNodes.forEach(function(node){
+      if(node.nodeType!==1) return;
+      if(node.getAttribute("data-portal-chrome-logo")||node.getAttribute("data-portal-copyright")||node.getAttribute("data-portal-footer-center")) return;
+      var t=(node.textContent||"").replace(/\\s+/g," ").trim();
+      if(t) texts.push(t);
+    });
+    var pages="";
+    var name="";
+    for(var i=0;i<texts.length;i++){
+      if(/^\\d+\\s*\\/\\s*\\d+/.test(texts[i])){ pages=texts[i]; break; }
     }
+    if(!pages&&texts.length) pages=texts[0];
+    for(var j=0;j<texts.length;j++){
+      if(texts[j]!==pages&&!/^\\d+\\s*\\/\\s*\\d+$/.test(texts[j])){ name=texts[j]; break; }
+    }
+    return { pages: pages, name: name };
+  }
+  function ensureFooterStructure(bar, withLogo){
+    var existingCenter=bar.querySelector('[data-portal-footer-center="1"]');
+    var meta=existingCenter?{
+      pages:(existingCenter.querySelector("[data-portal-footer-pages]")&&existingCenter.querySelector("[data-portal-footer-pages]").textContent||"").trim(),
+      name:(existingCenter.querySelector("[data-portal-footer-name]")&&existingCenter.querySelector("[data-portal-footer-name]").textContent||"").trim()
+    }:collectFooterMeta(bar);
+    while(bar.firstChild) bar.removeChild(bar.firstChild);
+    if(withLogo&&logoDataUrl){
+      var slot=document.createElement("span");
+      slot.setAttribute("data-portal-chrome-logo","1");
+      var img=document.createElement("img");
+      img.alt=company||"Logo";
+      img.src=logoDataUrl;
+      slot.appendChild(img);
+      bar.appendChild(slot);
+    } else {
+      var spacer=document.createElement("span");
+      spacer.setAttribute("data-portal-footer-spacer","1");
+      bar.appendChild(spacer);
+    }
+    var center=document.createElement("span");
+    center.setAttribute("data-portal-footer-center","1");
+    if(meta.pages){
+      var pagesEl=document.createElement("span");
+      pagesEl.setAttribute("data-portal-footer-pages","1");
+      pagesEl.textContent=meta.pages;
+      center.appendChild(pagesEl);
+    }
+    if(meta.name){
+      var nameEl=document.createElement("span");
+      nameEl.setAttribute("data-portal-footer-name","1");
+      nameEl.textContent=meta.name;
+      center.appendChild(nameEl);
+    }
+    bar.appendChild(center);
+    var copy=document.createElement("span");
+    copy.setAttribute("data-portal-copyright","1");
+    copy.textContent=copyright;
+    bar.appendChild(copy);
+  }
+  function applyChromeFooters(){
     document.querySelectorAll(".chrome-bot, .page-chrome-bot, .pchrome-bot").forEach(function(bar){
       var section=bar.closest("section.slide, div.page, section.page");
-      if(section&&(section.matches("[data-portal-cover-page='1']")||section.matches("[data-portal-closing-page='1']")||section.matches("[data-portal-closing-slide='1']")||section.matches("section.slide:first-of-type"))){
-        bar.querySelectorAll('[data-portal-chrome-logo="1"]').forEach(function(n){ n.parentNode&&n.parentNode.removeChild(n); });
-        return;
-      }
-      var slot=bar.querySelector('[data-portal-chrome-logo="1"]');
-      if(!slot){
-        slot=document.createElement("span");
-        slot.setAttribute("data-portal-chrome-logo","1");
-        var img=document.createElement("img");
-        img.alt=company||"Logo";
-        img.src=logoDataUrl;
-        slot.appendChild(img);
-        bar.insertBefore(slot, bar.firstChild);
-      } else {
-        var existing=slot.querySelector("img");
-        if(existing) existing.src=logoDataUrl;
-      }
+      ensureFooterStructure(bar, !!logoDataUrl && !isEdgeSection(section));
     });
-  }
-  function ensureCopyrightOn(bar){
-    var node=bar.querySelector('[data-portal-copyright="1"]');
-    if(!node){
-      node=document.createElement("span");
-      node.setAttribute("data-portal-copyright","1");
-      bar.appendChild(node);
-    }
-    node.textContent=copyright;
-  }
-  function applyCopyright(){
-    document.querySelectorAll(".chrome-bot, .page-chrome-bot, .pchrome-bot").forEach(ensureCopyrightOn);
     document.querySelectorAll("[data-portal-cover-page='1'], [data-portal-closing-page='1'], section.slide[data-portal-closing-slide='1'], section.slide:first-of-type").forEach(function(section){
       var bar=section.querySelector(".chrome-bot, .page-chrome-bot, .pchrome-bot");
       if(!bar){
         bar=document.createElement("div");
         bar.className="chrome-bot";
         bar.setAttribute("data-portal-footer-bar","1");
-        bar.style.cssText="position:absolute;left:56px;right:56px;bottom:36px;display:flex;align-items:center;gap:12px;font-family:var(--mono,monospace);font-size:9px;letter-spacing:0.08em;text-transform:uppercase;z-index:6;";
+        bar.style.cssText="position:absolute;left:56px;right:56px;bottom:36px;z-index:6;";
         if(getComputedStyle(section).position==="static") section.style.position="relative";
         section.appendChild(bar);
       }
-      ensureCopyrightOn(bar);
+      ensureFooterStructure(bar, false);
     });
   }
   function applyCover(){
@@ -769,13 +876,12 @@ export function buildBrandApplyScriptBody(profile: BrandProfile): string {
         setHtml("cta.contact", contactHtml);
         setHtml("cta.contactfull", contactHtml);
       }
-      applyFooterLogo();
+      applyChromeFooters();
       document.querySelectorAll('[data-portal-cta="1"], [data-portal-cta-bar="1"]').forEach(function(node){ node.parentNode&&node.parentNode.removeChild(node); });
       fixPlansBadge();
       applyCover();
       applyClosing();
-      applyFooterLogo();
-      applyCopyright();
+      applyChromeFooters();
     }catch(e){}
   }
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",applyBrand);

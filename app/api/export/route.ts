@@ -49,30 +49,14 @@ async function generateBrandedBuffer(
     };
   }
 
-  try {
-    const { generateExportBuffer } = await import("@/lib/export/generate");
-    const buffer = await generateExportBuffer({
-      asset,
-      deckLang,
-      format,
-      brandProfile,
-    });
-    return { buffer, deliveredFormat: format };
-  } catch (primaryErr) {
-    // PDF/Office conversion can fail on constrained hosts; still try to deliver
-    // a branded HTML fallback so the user gets something downloadable.
-    console.warn(
-      "[api/export] branded",
-      format,
-      "failed, falling back to HTML:",
-      primaryErr instanceof Error ? primaryErr.message : primaryErr
-    );
-    const { raw } = await loadHtmlSourceForAsset(asset, loadOptions);
-    return {
-      buffer: injectPinnedHtmlExport(raw, deckLang, brandProfile),
-      deliveredFormat: "html",
-    };
-  }
+  const { generateExportBuffer } = await import("@/lib/export/generate");
+  const buffer = await generateExportBuffer({
+    asset,
+    deckLang,
+    format,
+    brandProfile,
+  });
+  return { buffer, deliveredFormat: format };
 }
 
 async function generateStandardBuffer(

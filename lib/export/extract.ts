@@ -23,7 +23,12 @@ function loadExtractFnSource(): string {
   throw new Error("extract-fn.browser.js not found");
 }
 
-const EXTRACT_FN_SOURCE = loadExtractFnSource();
+/** Lazy — PDF export only needs loadBundlePage, not the extract browser fn. */
+let extractFnSource: string | null = null;
+function getExtractFnSource(): string {
+  if (!extractFnSource) extractFnSource = loadExtractFnSource();
+  return extractFnSource;
+}
 export const LOAD_TIMEOUT_MS = 180_000;
 
 type DeckWindow = Window & { applyLang?: (lang: string) => void };
@@ -79,7 +84,7 @@ export async function extractFromPage(
     await applyBrandOnPage(page, brandProfile);
   }
   return page.evaluate(
-    `(${EXTRACT_FN_SOURCE})()`
+    `(${getExtractFnSource()})()`
   ) as Promise<ExportContentModel>;
 }
 

@@ -18,6 +18,7 @@ const nextConfig = {
       "/api/export": [
         "./public/assets/Professional Logo Design *.html",
         "./public/assets/editable/professional-logo-design-*/**/*",
+        "./lib/export/extract-fn.browser.js",
         "./node_modules/@sparticuz/chromium/**/*",
       ],
     },
