@@ -4,8 +4,27 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useBrandProfile } from "@/components/BrandProfileProvider";
-import { BrandStudioControls } from "@/components/BrandStudioControls";
-import { createDefaultBrandProfile } from "@/lib/brand-profile";
+import { BrandStudioShell } from "@/components/BrandStudioShell";
+import { createDefaultBrandProfile, type BrandProfile } from "@/lib/brand-profile";
+
+function mergeProfilePatch(
+  prev: BrandProfile,
+  patch: Partial<BrandProfile>
+): BrandProfile {
+  return {
+    ...prev,
+    ...patch,
+    colors: { ...prev.colors, ...(patch.colors ?? {}) },
+    content: { ...prev.content, ...(patch.content ?? {}) },
+    cta: patch.cta
+      ? {
+          ...prev.cta,
+          ...patch.cta,
+          links: patch.cta.links ?? prev.cta.links,
+        }
+      : prev.cta,
+  };
+}
 
 export function BrandStudioPageClient() {
   const t = useTranslations("brandStudio");
@@ -37,23 +56,10 @@ export function BrandStudioPageClient() {
       </div>
 
       <div className="rounded-2xl border border-black/6 bg-white p-6 shadow-sm">
-        <BrandStudioControls
+        <BrandStudioShell
           profile={draft}
-          onChange={(patch) =>
-            setDraft((prev) => ({
-              ...prev,
-              ...patch,
-              colors: { ...prev.colors, ...(patch.colors ?? {}) },
-              content: { ...prev.content, ...(patch.content ?? {}) },
-              cta: patch.cta
-                ? {
-                    ...prev.cta,
-                    ...patch.cta,
-                    links: patch.cta.links ?? prev.cta.links,
-                  }
-                : prev.cta,
-            }))
-          }
+          onChange={(patch) => setDraft((prev) => mergeProfilePatch(prev, patch))}
+          onReplaceProfile={setDraft}
           onSave={() => {
             updateProfile(draft);
             saveProfile(draft);

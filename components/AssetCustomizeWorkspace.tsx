@@ -11,14 +11,38 @@ import {
   defaultExportFormat,
   type ExportFormat,
 } from "@/lib/export/formats";
-import { shouldApplyBrandOnExport, slimBrandProfileForExport } from "@/lib/brand-profile";
+import {
+  createDefaultBrandProfile,
+  shouldApplyBrandOnExport,
+  slimBrandProfileForExport,
+  type BrandProfile,
+} from "@/lib/brand-profile";
 import { useBrandProfile } from "@/components/BrandProfileProvider";
 import { useCart } from "@/components/CartProvider";
 import { BrandPreviewFrame } from "@/components/BrandPreviewFrame";
-import { BrandStudioControls } from "@/components/BrandStudioControls";
+import { BrandStudioShell } from "@/components/BrandStudioShell";
 import type { DeckLang } from "@/lib/html-deck-i18n";
 import { appLocaleToDeckLang } from "@/lib/html-deck-i18n";
 import { useLocale } from "next-intl";
+
+function mergeProfilePatch(
+  prev: BrandProfile,
+  patch: Partial<BrandProfile>
+): BrandProfile {
+  return {
+    ...prev,
+    ...patch,
+    colors: { ...prev.colors, ...(patch.colors ?? {}) },
+    content: { ...prev.content, ...(patch.content ?? {}) },
+    cta: patch.cta
+      ? {
+          ...prev.cta,
+          ...patch.cta,
+          links: patch.cta.links ?? prev.cta.links,
+        }
+      : prev.cta,
+  };
+}
 
 interface AssetCustomizeWorkspaceProps {
   asset: Asset;
@@ -87,27 +111,17 @@ export function AssetCustomizeWorkspace({
     <div className="grid gap-8 xl:grid-cols-[360px_minmax(0,1fr)]">
       <aside className="space-y-6">
         <div className="rounded-2xl border border-black/6 bg-white p-5 shadow-sm">
-          <BrandStudioControls
+          <BrandStudioShell
+            compact
             profile={draftProfile}
             onChange={(patch) =>
-              setDraftProfile((prev) => ({
-                ...prev,
-                ...patch,
-                colors: { ...prev.colors, ...(patch.colors ?? {}) },
-                content: { ...prev.content, ...(patch.content ?? {}) },
-                cta: patch.cta
-                  ? {
-                      ...prev.cta,
-                      ...patch.cta,
-                      links: patch.cta.links ?? prev.cta.links,
-                    }
-                  : prev.cta,
-              }))
+              setDraftProfile((prev) => mergeProfilePatch(prev, patch))
             }
+            onReplaceProfile={setDraftProfile}
             onSave={handleApplyDraft}
             onReset={() => {
               resetProfile();
-              setDraftProfile(profile);
+              setDraftProfile(createDefaultBrandProfile());
             }}
           />
         </div>

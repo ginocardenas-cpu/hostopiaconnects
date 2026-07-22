@@ -29,3 +29,6 @@ _xlsx_unzip/
 .DS_Store
 *.pem
 .vercel
+
+.vercel
+.env*
