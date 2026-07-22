@@ -2,16 +2,49 @@ import * as cheerio from "cheerio";
 import type { BrandColors, CtaLinkType } from "@/lib/brand-profile";
 import type { BrandImportResult } from "./types";
 
-const FETCH_TIMEOUT_MS = 10_000;
-const MAX_HTML_BYTES = 1_500_000;
+const FETCH_TIMEOUT_MS = 12_000;
+const MAX_HTML_BYTES = 2_000_000;
 const MAX_IMAGE_BYTES = 400_000;
 const USER_AGENT =
-  "Mozilla/5.0 (compatible; HostopiaConnectsBrandBot/1.0; +https://hostopiaconnects-self.vercel.app)";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+
+/** Framework / OS chrome colors that are almost never the brand. */
+const FRAMEWORK_COLORS = new Set(
+  [
+    "#007AFF",
+    "#007BFF",
+    "#0D6EFD",
+    "#6610F2",
+    "#6F42C1",
+    "#D63384",
+    "#DC3545",
+    "#FD7E14",
+    "#FFC107",
+    "#198754",
+    "#20C997",
+    "#0DCAF0",
+    "#212529",
+    "#343A40",
+    "#6C757D",
+    "#ADB5BD",
+    "#CED4DA",
+    "#DEE2E6",
+    "#E9ECEF",
+    "#F8F9FA",
+    "#FFFFFF",
+    "#000000",
+    "#0090AD", // Hostopia teal — never treat as scraped brand
+    "#1D8F93",
+    "#2CADB2",
+  ].map((c) => c.toUpperCase())
+);
 
 function absolutize(base: URL, href: string | undefined | null): string | null {
   if (!href) return null;
   const cleaned = href.trim();
-  if (!cleaned || cleaned.startsWith("data:")) return cleaned.startsWith("data:") ? cleaned : null;
+  if (!cleaned) return null;
+  if (cleaned.startsWith("data:image/")) return cleaned;
+  if (cleaned.startsWith("data:")) return null;
   try {
     return new URL(cleaned, base).href;
   } catch {
@@ -25,52 +58,230 @@ function hostnameLabel(hostname: string): string {
   return base.charAt(0).toUpperCase() + base.slice(1);
 }
 
-function extractHexColors(text: string): string[] {
-  const found = new Set<string>();
-  const hexRe = /#([0-9a-fA-F]{6})\b/g;
-  let m: RegExpExecArray | null;
-  while ((m = hexRe.exec(text)) && found.size < 40) {
-    const hex = `#${m[1].toUpperCase()}`;
-    // Skip near-white / near-black noise
-    const r = parseInt(m[1].slice(0, 2), 16);
-    const g = parseInt(m[1].slice(2, 4), 16);
-    const b = parseInt(m[1].slice(4, 6), 16);
-    const lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-    if (lum > 0.92 || lum < 0.08) continue;
-    found.add(hex);
+function normalizeHex(raw: string): string | null {
+  let h = raw.trim();
+  if (h.startsWith("#")) h = h.slice(1);
+  if (/^[0-9a-fA-F]{3}$/.test(h)) {
+    h = h
+      .split("")
+      .map((c) => c + c)
+      .join("");
   }
-  return [...found];
+  if (!/^[0-9a-fA-F]{6}$/.test(h)) return null;
+  return `#${h.toUpperCase()}`;
 }
 
-function scoreColor(hex: string): number {
+function rgbToHex(r: number, g: number, b: number): string {
+  const clamp = (n: number) =>
+    Math.max(0, Math.min(255, Math.round(n)))
+      .toString(16)
+      .padStart(2, "0")
+      .toUpperCase();
+  return `#${clamp(r)}${clamp(g)}${clamp(b)}`;
+}
+
+function parseRgb(value: string): string | null {
+  const m = value.match(
+    /rgba?\(\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*[, ]\s*(\d{1,3})/i
+  );
+  if (!m) return null;
+  return rgbToHex(Number(m[1]), Number(m[2]), Number(m[3]));
+}
+
+function luminance(hex: string): number {
   const h = hex.slice(1);
   const r = parseInt(h.slice(0, 2), 16);
   const g = parseInt(h.slice(2, 4), 16);
   const b = parseInt(h.slice(4, 6), 16);
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  const sat = max === 0 ? 0 : (max - min) / max;
-  return sat * 2 + (1 - Math.abs(0.45 - (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255));
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
 }
 
-function pickBrandColors(candidates: string[]): Partial<BrandColors> {
-  const ranked = [...new Set(candidates)].sort(
-    (a, b) => scoreColor(b) - scoreColor(a)
-  );
+function saturation(hex: string): number {
+  const h = hex.slice(1);
+  const r = parseInt(h.slice(0, 2), 16) / 255;
+  const g = parseInt(h.slice(2, 4), 16) / 255;
+  const b = parseInt(h.slice(4, 6), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  return max === 0 ? 0 : (max - min) / max;
+}
+
+interface ColorHit {
+  hex: string;
+  weight: number;
+}
+
+function extractColorHits(text: string): ColorHit[] {
+  const hits: ColorHit[] = [];
+
+  const push = (hex: string | null, weight: number) => {
+    if (!hex || FRAMEWORK_COLORS.has(hex)) return;
+    hits.push({ hex, weight });
+  };
+
+  // Brand-ish CSS custom properties / class names near a color
+  const brandedProp =
+    /(?:--[\w-]*(?:brand|primary|accent|secondary|red|main|corporate|theme)[\w-]*\s*:\s*|(?:color|background(?:-color)?)\s*:\s*|ds-color-[\w-]+\s*\{[^}]*color:\s*)(#[0-9a-fA-F]{3,8}|rgba?\([^)]+\))/gi;
+  let m: RegExpExecArray | null;
+  while ((m = brandedProp.exec(text))) {
+    const raw = m[1];
+    push(raw.startsWith("#") ? normalizeHex(raw) : parseRgb(raw), 8);
+  }
+
+  // Named color tokens like .ds-color-red{color:#da291c}
+  const named =
+    /\.[\w-]*(?:color|bg|background)[\w-]*(?:red|primary|brand|accent)[\w-]*\s*\{[^}]{0,120}?(#[0-9a-fA-F]{6}|rgba?\([^)]+\))/gi;
+  while ((m = named.exec(text))) {
+    const raw = m[1];
+    push(raw.startsWith("#") ? normalizeHex(raw) : parseRgb(raw), 12);
+  }
+
+  // General hex / rgb frequency (lower weight)
+  const hexRe = /#([0-9a-fA-F]{6})\b/g;
+  while ((m = hexRe.exec(text))) {
+    push(normalizeHex(m[0]), 1);
+  }
+  const rgbRe = /rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}[^)]*\)/gi;
+  while ((m = rgbRe.exec(text))) {
+    push(parseRgb(m[0]), 1);
+  }
+
+  return hits;
+}
+
+function aggregateColors(hits: ColorHit[]): Map<string, number> {
+  const scores = new Map<string, number>();
+  for (const { hex, weight } of hits) {
+    const lum = luminance(hex);
+    const sat = saturation(hex);
+    // Soft-penalize near white/black for *primary* ranking, but keep them available
+    let w = weight;
+    if (lum > 0.92 || lum < 0.08) w *= 0.15;
+    else w *= 1 + sat * 2;
+    scores.set(hex, (scores.get(hex) || 0) + w);
+  }
+  return scores;
+}
+
+function hueDistance(a: string, b: string): number {
+  const toHue = (hex: string) => {
+    const h = hex.slice(1);
+    const r = parseInt(h.slice(0, 2), 16) / 255;
+    const g = parseInt(h.slice(2, 4), 16) / 255;
+    const bl = parseInt(h.slice(4, 6), 16) / 255;
+    const max = Math.max(r, g, bl);
+    const min = Math.min(r, g, bl);
+    if (max === min) return 0;
+    const d = max - min;
+    let hue = 0;
+    if (max === r) hue = ((g - bl) / d) % 6;
+    else if (max === g) hue = (bl - r) / d + 2;
+    else hue = (r - g) / d + 4;
+    return (hue * 60 + 360) % 360;
+  };
+  const diff = Math.abs(toHue(a) - toHue(b));
+  return Math.min(diff, 360 - diff);
+}
+
+function pickBrandColors(hits: ColorHit[]): Partial<BrandColors> {
+  const scores = aggregateColors(hits);
+  const ranked = [...scores.entries()].sort((a, b) => b[1] - a[1]);
+
+  const vivid = ranked.filter(([hex]) => {
+    const lum = luminance(hex);
+    const sat = saturation(hex);
+    return sat >= 0.28 && lum > 0.12 && lum < 0.85;
+  });
+
+  const neutralsDark = ranked
+    .filter(([hex]) => luminance(hex) < 0.2 && saturation(hex) < 0.25)
+    .sort((a, b) => luminance(a[0]) - luminance(b[0]));
+  const neutralsLight = ranked
+    .filter(([hex]) => luminance(hex) > 0.9 && saturation(hex) < 0.2)
+    .sort((a, b) => luminance(b[0]) - luminance(a[0]));
+
   const out: Partial<BrandColors> = {};
-  if (ranked[0]) out.primary = ranked[0];
-  if (ranked[1]) out.secondary = ranked[1];
-  if (ranked[2]) out.accent = ranked[2];
+  if (vivid[0]) out.primary = vivid[0][0];
+
+  // Secondary: dark companion (black/charcoal) when present — common for telecom brands
+  if (neutralsDark[0]) out.secondary = neutralsDark[0][0];
+  else if (vivid[1]) out.secondary = vivid[1][0];
+
+  // Accent: prefer another vivid near the primary hue; else light paper/white
+  if (out.primary) {
+    const related = vivid
+      .filter(([hex]) => hex !== out.primary && hex !== out.secondary)
+      .filter(([hex]) => hueDistance(hex, out.primary!) < 28)
+      .sort((a, b) => b[1] - a[1]);
+    if (related[0]) out.accent = related[0][0];
+  }
+  if (!out.accent) {
+    const otherVivid = vivid.find(
+      ([hex]) => hex !== out.primary && hex !== out.secondary
+    );
+    // Only take unrelated vivid if it's strongly present
+    if (otherVivid && otherVivid[1] >= (vivid[0]?.[1] ?? 0) * 0.45) {
+      out.accent = otherVivid[0];
+    } else if (neutralsLight[0]) {
+      out.accent = neutralsLight[0][0];
+    } else if (out.primary) {
+      // Derive a lighter tint of primary as accent fallback
+      out.accent = out.primary;
+    }
+  }
+
+  // Slide = light paper; text = dark ink when available
+  if (neutralsLight[0]) out.slide = neutralsLight[0][0];
+  else out.slide = "#FFFFFF";
+  if (neutralsDark[0]) out.text = neutralsDark[0][0];
+  else out.text = "#1A1A1A";
+
+  // Ensure true white/black preference when brand is clearly vivid + dark
+  // (many sites don't emit #FFFFFF in CSS — inject paper/ink defaults).
+  if (out.primary && out.secondary && luminance(out.secondary) < 0.2) {
+    out.slide = "#FFFFFF";
+    out.text = out.secondary;
+    if (out.accent && hueDistance(out.accent, out.primary) > 28) {
+      // Unrelated accent (e.g. teal/gold leftover from page CSS) → near-white
+      out.accent = "#F5F5F5";
+    }
+  }
+
   return out;
 }
 
 function detectSocialType(href: string): CtaLinkType | null {
-  const u = href.toLowerCase();
-  if (u.includes("linkedin.com")) return "linkedin";
-  if (u.includes("facebook.com") || u.includes("fb.com")) return "facebook";
-  if (u.includes("instagram.com")) return "instagram";
-  if (u.includes("twitter.com") || u.includes("x.com")) return "x";
+  try {
+    const u = new URL(href);
+    const host = u.hostname.replace(/^www\./i, "").toLowerCase();
+    if (host === "facebook.com" || host === "fb.com" || host.endsWith(".facebook.com"))
+      return "facebook";
+    if (host === "instagram.com" || host.endsWith(".instagram.com")) return "instagram";
+    if (host === "linkedin.com" || host.endsWith(".linkedin.com")) return "linkedin";
+    if (host === "twitter.com" || host === "x.com" || host.endsWith(".twitter.com"))
+      return "x";
+  } catch {
+    const u = href.toLowerCase();
+    if (u.includes("facebook.com") || u.includes("fb.com")) return "facebook";
+    if (u.includes("instagram.com")) return "instagram";
+    if (u.includes("linkedin.com")) return "linkedin";
+    if (u.includes("twitter.com") || u.includes("x.com/")) return "x";
+  }
   return null;
+}
+
+function isJunkSocialUrl(href: string): boolean {
+  const u = href.toLowerCase();
+  return (
+    u.includes("sharer") ||
+    u.includes("share?") ||
+    u.includes("intent/") ||
+    u.includes("/share/") ||
+    u.includes("googleapis") ||
+    u.includes("wikidata") ||
+    u.includes("wikipedia") ||
+    u.includes("google.com/search")
+  );
 }
 
 async function fetchText(
@@ -85,7 +296,8 @@ async function fetchText(
       signal: controller.signal,
       headers: {
         "User-Agent": USER_AGENT,
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       },
     });
     if (!res.ok) {
@@ -135,6 +347,22 @@ function collectLogoCandidates($: cheerio.CheerioAPI, base: URL): string[] {
     if (abs && !urls.includes(abs)) urls.push(abs);
   };
 
+  // Prefer explicit brand logos from JSON-LD later; icons/og next
+  $('script[type="application/ld+json"]').each((_, el) => {
+    try {
+      const data = JSON.parse($(el).text());
+      const nodes = Array.isArray(data) ? data : [data];
+      for (const node of nodes) {
+        if (node?.logo) {
+          if (typeof node.logo === "string") push(node.logo);
+          else if (node.logo?.url) push(node.logo.url);
+        }
+      }
+    } catch {
+      /* ignore bad json */
+    }
+  });
+
   push($('meta[property="og:image"]').attr("content"));
   push($('meta[name="twitter:image"]').attr("content"));
   push($('meta[name="twitter:image:src"]').attr("content"));
@@ -171,18 +399,143 @@ function collectLogoCandidates($: cheerio.CheerioAPI, base: URL): string[] {
 async function sampleStylesheetColors(
   $: cheerio.CheerioAPI,
   base: URL
-): Promise<string[]> {
-  const colors: string[] = [];
-  const href = $('link[rel="stylesheet"]').first().attr("href");
-  const abs = absolutize(base, href);
-  if (!abs) return colors;
-  try {
-    const { text } = await fetchText(abs, 200_000);
-    colors.push(...extractHexColors(text));
-  } catch {
-    /* ignore stylesheet failures */
+): Promise<ColorHit[]> {
+  const hits: ColorHit[] = [];
+  const hrefs: string[] = [];
+  $('link[rel="stylesheet"]').each((_, el) => {
+    const href = $(el).attr("href");
+    if (href) hrefs.push(href);
+  });
+
+  for (const href of hrefs.slice(0, 4)) {
+    const abs = absolutize(base, href);
+    if (!abs) continue;
+    try {
+      const { text } = await fetchText(abs, 400_000);
+      hits.push(...extractColorHits(text));
+    } catch {
+      /* ignore */
+    }
   }
-  return colors;
+  return hits;
+}
+
+function extractSocialsFromHtml(
+  html: string,
+  $: cheerio.CheerioAPI,
+  base: URL
+): Partial<Record<CtaLinkType, string>> {
+  const found: Partial<Record<CtaLinkType, string>> = {};
+
+  const consider = (hrefRaw: string | undefined | null) => {
+    const href = absolutize(base, hrefRaw) || hrefRaw?.trim();
+    if (!href || isJunkSocialUrl(href)) return;
+    const type = detectSocialType(href);
+    if (type && !found[type]) found[type] = href;
+  };
+
+  // 1) JSON-LD sameAs (Rogers etc.)
+  $('script[type="application/ld+json"]').each((_, el) => {
+    try {
+      const data = JSON.parse($(el).text());
+      const nodes = Array.isArray(data) ? data : [data, data?.["@graph"]].flat();
+      for (const node of nodes) {
+        if (!node || typeof node !== "object") continue;
+        const sameAs = (node as { sameAs?: unknown }).sameAs;
+        const list = Array.isArray(sameAs)
+          ? sameAs
+          : typeof sameAs === "string"
+            ? [sameAs]
+            : [];
+        for (const item of list) {
+          if (typeof item === "string") consider(item);
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+  });
+
+  // 2) Anchors
+  $("a[href]").each((_, el) => consider($(el).attr("href")));
+
+  // 3) Raw URL scan (footer often inlined as strings in JS bundles)
+  const socialRe =
+    /https?:\/\/(?:www\.)?(?:facebook\.com|fb\.com|instagram\.com|linkedin\.com|twitter\.com|x\.com)\/[^\s"'<>\\]+/gi;
+  for (const m of html.matchAll(socialRe)) {
+    consider(m[0].replace(/[.,);]+$/, ""));
+  }
+
+  return found;
+}
+
+function extractCompanyName(
+  $: cheerio.CheerioAPI,
+  base: URL
+): string {
+  let jsonLdName = "";
+  $('script[type="application/ld+json"]').each((_, el) => {
+    if (jsonLdName) return;
+    try {
+      const data = JSON.parse($(el).text());
+      const nodes = Array.isArray(data) ? data : [data, data?.["@graph"]].flat();
+      for (const node of nodes) {
+        if (!node || typeof node !== "object") continue;
+        const n = node as { "@type"?: string; name?: string };
+        const type = String(n["@type"] || "");
+        if (
+          /Organization|Corporation|Brand/i.test(type) &&
+          typeof n.name === "string" &&
+          n.name.trim()
+        ) {
+          jsonLdName = n.name.trim();
+          // Prefer short brand form: "Rogers Communications Inc" → still ok; hostname may be cleaner
+          break;
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+  });
+
+  const appName = $('meta[name="application-name"]').attr("content")?.trim();
+  const ogSite = $('meta[property="og:site_name"]').attr("content")?.trim();
+  const host = hostnameLabel(base.hostname);
+
+  // Prefer concise brand labels over marketing titles
+  if (ogSite && ogSite.length <= 40) return ogSite;
+  if (appName && appName.length <= 40) return appName;
+  if (jsonLdName) {
+    // "Rogers Communications Inc" → "Rogers" if hostname matches
+    if (jsonLdName.toLowerCase().includes(host.toLowerCase())) return host;
+    const short = jsonLdName.split(/[|,–—-]/)[0]?.trim();
+    if (short && short.length <= 32) return short;
+    return jsonLdName.length <= 48 ? jsonLdName : host;
+  }
+
+  const ogTitle = $('meta[property="og:title"]').attr("content")?.trim();
+  const title = $("title").first().text().trim();
+  const fromTitle = (ogTitle || title).split(/[|\-–—]/)[0]?.trim() || "";
+  // Marketing titles often have commas / multiple products
+  if (fromTitle && fromTitle.length <= 28 && !fromTitle.includes(",")) {
+    return fromTitle;
+  }
+  return host;
+}
+
+function extractThemeColor($: cheerio.CheerioAPI): string | null {
+  const candidates = [
+    $('meta[name="theme-color"]').attr("content"),
+    $('meta[name="msapplication-TileColor"]').attr("content"),
+  ];
+  for (const raw of candidates) {
+    if (!raw) continue;
+    // Avoid matching into adjacent minified CSS (rogers bug: theme-color: #007aff}:host)
+    const hex = raw.match(/#([0-9a-fA-F]{3,8})\b/)?.[0] || raw.trim();
+    const normalized = normalizeHex(hex);
+    if (normalized && !FRAMEWORK_COLORS.has(normalized)) return normalized;
+  }
+  return null;
 }
 
 /**
@@ -195,40 +548,23 @@ export async function scrapeBrandFromUrl(
   const base = new URL(finalUrl);
   const $ = cheerio.load(html);
 
-  const ogSite = $('meta[property="og:site_name"]').attr("content")?.trim();
-  const ogTitle = $('meta[property="og:title"]').attr("content")?.trim();
-  const title = $("title").first().text().trim();
-  const companyName =
-    ogSite ||
-    ogTitle?.split(/[|\-–—]/)[0]?.trim() ||
-    title.split(/[|\-–—]/)[0]?.trim() ||
-    hostnameLabel(base.hostname);
+  const companyName = extractCompanyName($, base);
 
-  const themeColor =
-    $('meta[name="theme-color"]').attr("content")?.trim() ||
-    $('meta[name="msapplication-TileColor"]').attr("content")?.trim();
-
-  const inlineColors = extractHexColors(html);
-  const sheetColors = await sampleStylesheetColors($, base);
-  const colorPool = [
-    ...(themeColor && /^#?[0-9a-fA-F]{6}$/.test(themeColor.replace("#", ""))
-      ? [themeColor.startsWith("#") ? themeColor.toUpperCase() : `#${themeColor.toUpperCase()}`]
-      : []),
-    ...inlineColors,
-    ...sheetColors,
+  const themeColor = extractThemeColor($);
+  const inlineHits = extractColorHits(html);
+  const sheetHits = await sampleStylesheetColors($, base);
+  const colorHits: ColorHit[] = [
+    ...(themeColor ? [{ hex: themeColor, weight: 6 }] : []),
+    ...inlineHits,
+    ...sheetHits,
   ];
-  const colors = pickBrandColors(colorPool);
+  const colors = pickBrandColors(colorHits);
 
+  const socials = extractSocialsFromHtml(html, $, base);
   const ctaLinks: Partial<Record<CtaLinkType, string>> = {
     website: base.origin,
+    ...socials,
   };
-
-  $("a[href]").each((_, el) => {
-    const href = absolutize(base, $(el).attr("href"));
-    if (!href) return;
-    const type = detectSocialType(href);
-    if (type && !ctaLinks[type]) ctaLinks[type] = href;
-  });
 
   let logoDataUrl: string | undefined;
   for (const candidate of collectLogoCandidates($, base)) {
