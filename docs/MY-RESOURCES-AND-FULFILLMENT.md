@@ -221,7 +221,7 @@ Steering users through **Add → Form → Download** records:
 - **Who** requested them  
 - **Which language / format** (and whether branding was applied)
 
-Asset catalog fields `viewCount` / `downloadCount` exist for future event increments.
+Asset catalog fields `viewCount` / `downloadCount` exist for rankings. **Homepage rules, interim seed data, and the tracking plan** are in [`HOME-HIGHLIGHTS-AND-TRACKING.md`](./HOME-HIGHLIGHTS-AND-TRACKING.md).
 
 ---
 
@@ -242,7 +242,7 @@ Asset catalog fields `viewCount` / `downloadCount` exist for future event increm
 | Branded / localized **HTML** pin export | Implemented |
 | Bundle request API (logging) | Implemented |
 | CRM / lead sync | **Not built** |
-| Server-side tracking counters | **Not built** |
+| Server-side preview / download counters | **Not built** (homepage uses seed rankings — see `HOME-HIGHLIGHTS-AND-TRACKING.md`) |
 | Signed / expiring download URLs | **Not built** (public URLs today) |
 | Word / PPTX branded export UI | **Removed** (engine code may still exist) |
 
@@ -254,6 +254,7 @@ When adding CRM, hook **`/api/bundle-request`** so every logged request also pos
 
 | Doc | Topic |
 |-----|--------|
+| [`HOME-HIGHLIGHTS-AND-TRACKING.md`](./HOME-HIGHLIGHTS-AND-TRACKING.md) | What’s New / Popular / Downloaded rules + tracking plan |
 | [`NEW-PRODUCT-DOCUMENT-PROCESS.md`](./NEW-PRODUCT-DOCUMENT-PROCESS.md) | Create / translate / publish Overview + Slick + Presentation |
 | [`ADDING-CONTENT.md`](../ADDING-CONTENT.md) | Inventory import, placing files in `public/assets/` |
 | [`docs/HTML-DECK-I18N.md`](./HTML-DECK-I18N.md) | Multi-language HTML decks |

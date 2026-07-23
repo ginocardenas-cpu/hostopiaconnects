@@ -1,3 +1,8 @@
+/** Catalog from inventory. Regenerate with `npm run assets:from-inventory` or `npm run assets:import`. See ADDING-CONTENT.md. */
+import assetsData from "./assets.data.json";
+/** Interim What’s New / Popular / Downloaded curation — see docs/HOME-HIGHLIGHTS-AND-TRACKING.md. */
+import homeHighlightsSeed from "./home-highlights-seed.json";
+
 export type ProductJourney =
   | "Build a Brand"
   | "Get Online"
@@ -331,10 +336,50 @@ export function getAssetsByProductCategory(category: ProductCategory): Asset[] {
   return sampleAssets.filter((asset) => asset.productCategory === category);
 }
 
+type HomeHighlightMetric = {
+  viewCount?: number;
+  downloadCount?: number;
+  lastUpdated?: string;
+};
 
-/** Catalog loaded from assets.data.json. Regenerate with `npm run assets:from-inventory` (XLSX, NEW Assets / Asset Inventory) or `npm run assets:import` (CSV). See ADDING-CONTENT.md. */
-import assetsData from "./assets.data.json";
-export const sampleAssets: Asset[] = assetsData as Asset[];
+type HomeHighlightsSeed = {
+  mode: "seed" | "live";
+  whatsNew?: string[];
+  mostPopular?: string[];
+  mostDownloaded?: string[];
+  metrics?: Record<string, HomeHighlightMetric>;
+};
+
+const highlightsSeed = homeHighlightsSeed as HomeHighlightsSeed;
+
+function applyEngagementSeed(assets: Asset[]): Asset[] {
+  const metrics = highlightsSeed.metrics;
+  if (!metrics) return assets;
+  return assets.map((asset) => {
+    const overlay = metrics[asset.id];
+    if (!overlay) return asset;
+    return {
+      ...asset,
+      viewCount: overlay.viewCount ?? asset.viewCount,
+      downloadCount: overlay.downloadCount ?? asset.downloadCount,
+      lastUpdated: overlay.lastUpdated ?? asset.lastUpdated,
+    };
+  });
+}
+
+/** Catalog from inventory JSON + optional home engagement seed overlays. */
+export const sampleAssets: Asset[] = applyEngagementSeed(assetsData as Asset[]);
+
+function assetsBySeedIds(ids: string[] | undefined, limit: number): Asset[] | null {
+  if (highlightsSeed.mode !== "seed" || !ids?.length) return null;
+  const found: Asset[] = [];
+  for (const id of ids) {
+    const asset = sampleAssets.find((a) => a.id === id || a.slug === id);
+    if (asset) found.push(asset);
+    if (found.length >= limit) break;
+  }
+  return found.length ? found : null;
+}
 
 export function getAssetBySlug(slug: string): Asset | undefined {
   return sampleAssets.find((asset) => asset.slug === slug);
@@ -464,18 +509,24 @@ export function getSearchSuggestions(query: string): {
 
 /** Latest assets by lastUpdated (newest first), for "What's New" / Featured. */
 export function getLatestAssets(limit = 8): Asset[] {
+  const seeded = assetsBySeedIds(highlightsSeed.whatsNew, limit);
+  if (seeded) return seeded;
   return [...sampleAssets]
     .sort((a, b) => (b.lastUpdated > a.lastUpdated ? 1 : -1))
     .slice(0, limit);
 }
 
 export function getMostViewedAssets(limit = 8): Asset[] {
+  const seeded = assetsBySeedIds(highlightsSeed.mostPopular, limit);
+  if (seeded) return seeded;
   return [...sampleAssets]
     .sort((a, b) => b.viewCount - a.viewCount)
     .slice(0, limit);
 }
 
 export function getMostDownloadedAssets(limit = 8): Asset[] {
+  const seeded = assetsBySeedIds(highlightsSeed.mostDownloaded, limit);
+  if (seeded) return seeded;
   return [...sampleAssets]
     .sort((a, b) => b.downloadCount - a.downloadCount)
     .slice(0, limit);

@@ -1,0 +1,60 @@
+{
+  "mode": "seed",
+  "notes": "Temporary curated home highlights until live preview/download tracking ships. Set mode to \"live\" to sort only by lastUpdated / viewCount / downloadCount.",
+  "whatsNew": [
+    "directory-listings-overview-51",
+    "hosting-sales-presentation-43",
+    "email-marketing-sales-slick-29"
+  ],
+  "mostPopular": [
+    "professional-logo-design-sales-presentation-2",
+    "domain-services-overview-4",
+    "website-builder-sales-presentation-31"
+  ],
+  "mostDownloaded": [
+    "ssl-services-sales-slick-15",
+    "marketing-360-overview-27",
+    "business-email-sales-presentation-40"
+  ],
+  "metrics": {
+    "professional-logo-design-sales-presentation-2": {
+      "viewCount": 1842,
+      "downloadCount": 311
+    },
+    "domain-services-overview-4": {
+      "viewCount": 1560,
+      "downloadCount": 274
+    },
+    "website-builder-sales-presentation-31": {
+      "viewCount": 1324,
+      "downloadCount": 198
+    },
+    "ssl-services-sales-slick-15": {
+      "viewCount": 890,
+      "downloadCount": 642
+    },
+    "marketing-360-overview-27": {
+      "viewCount": 760,
+      "downloadCount": 518
+    },
+    "business-email-sales-presentation-40": {
+      "viewCount": 940,
+      "downloadCount": 471
+    },
+    "directory-listings-overview-51": {
+      "viewCount": 210,
+      "downloadCount": 88,
+      "lastUpdated": "2026-07-21"
+    },
+    "hosting-sales-presentation-43": {
+      "viewCount": 340,
+      "downloadCount": 102,
+      "lastUpdated": "2026-07-18"
+    },
+    "email-marketing-sales-slick-29": {
+      "viewCount": 280,
+      "downloadCount": 95,
+      "lastUpdated": "2026-07-15"
+    }
+  }
+}
