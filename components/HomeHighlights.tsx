@@ -31,7 +31,7 @@ export function HomeHighlights() {
   const tabs: {
     key: TabKey;
     labelKey: "whatsNew" | "mostPopular" | "mostDownloaded";
-    icon: React.ComponentType<{ size?: number }>;
+    icon: typeof Star;
   }[] = [
     { key: "new", labelKey: "whatsNew", icon: Star },
     { key: "popular", labelKey: "mostPopular", icon: Flame },
