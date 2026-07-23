@@ -5,12 +5,21 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { formatDisplayDate } from "@/lib/format-date";
 import { Link } from "@/i18n/routing";
-import { Flame, Star, Download, ArrowRight, FileText, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Flame,
+  Star,
+  Download,
+  ArrowRight,
+  FileText,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import {
   getLatestAssets,
   getMostViewedAssets,
-  getMostDownloadedAssets
+  getMostDownloadedAssets,
 } from "@/lib/assets";
+import { FEATURED_HOME_ASSETS } from "@/lib/featured-home-assets";
 
 type TabKey = "new" | "popular" | "downloaded";
 
@@ -19,10 +28,14 @@ export function HomeHighlights() {
   const t = useTranslations("highlights");
   const [active, setActive] = useState<TabKey>("new");
 
-  const tabs: { key: TabKey; labelKey: "whatsNew" | "mostPopular" | "mostDownloaded"; icon: React.ComponentType<any> }[] = [
+  const tabs: {
+    key: TabKey;
+    labelKey: "whatsNew" | "mostPopular" | "mostDownloaded";
+    icon: React.ComponentType<{ size?: number }>;
+  }[] = [
     { key: "new", labelKey: "whatsNew", icon: Star },
     { key: "popular", labelKey: "mostPopular", icon: Flame },
-    { key: "downloaded", labelKey: "mostDownloaded", icon: Download }
+    { key: "downloaded", labelKey: "mostDownloaded", icon: Download },
   ];
 
   const latest = getLatestAssets(3);
@@ -32,7 +45,7 @@ export function HomeHighlights() {
   const list =
     active === "new" ? latest : active === "popular" ? popular : downloaded;
 
-  const featuredSlides = latest.slice(0, 2);
+  const featuredSlides = FEATURED_HOME_ASSETS;
   const [featuredIndex, setFeaturedIndex] = useState(0);
 
   useEffect(() => {
@@ -44,6 +57,8 @@ export function HomeHighlights() {
   }, [featuredSlides.length]);
 
   const featured = featuredSlides[featuredIndex];
+  const featuredHref =
+    featured?.href?.trim() || "/library";
 
   return (
     <section className="py-10 bg-cream">
@@ -87,9 +102,7 @@ export function HomeHighlights() {
                     className="flex items-start justify-between gap-3 rounded-xl px-3 py-2.5 hover:bg-cream-muted transition-colors cursor-pointer group"
                   >
                     <div className="flex items-start gap-3 min-w-0">
-                      <span
-                        className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-teal/20 text-teal group-hover:bg-teal group-hover:text-white transition-colors font-montserrat"
-                      >
+                      <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-teal/20 text-teal group-hover:bg-teal group-hover:text-white transition-colors font-montserrat">
                         {index + 1}
                       </span>
                       <div className="min-w-0">
@@ -118,7 +131,7 @@ export function HomeHighlights() {
               </div>
             </div>
 
-            {/* Right: featured asset carousel — site-aligned palette */}
+            {/* Right: curated featured carousel */}
             <div className="relative border-l border-teal/20 bg-gradient-to-br from-teal-light via-cream to-teal-light p-6 md:p-8">
               <div className="relative flex flex-col h-full">
                 <p className="text-[11px] uppercase tracking-[0.18em] mb-2 text-teal-dark font-semibold font-raleway">
@@ -127,34 +140,35 @@ export function HomeHighlights() {
                 {featured && (
                   <>
                     <div className="flex flex-col md:flex-row gap-4 mb-4">
-                      <div className="relative w-full md:w-40 h-40 rounded-2xl overflow-hidden bg-black/5 flex-shrink-0">
+                      <div className="relative w-full md:w-40 h-52 rounded-2xl overflow-hidden bg-black/5 flex-shrink-0">
                         <Image
-                          src="/product-guide-2026.png"
-                          alt="Hostopia Product Guide 2026"
+                          src={featured.imageSrc}
+                          alt={featured.imageAlt}
                           fill
                           sizes="160px"
                           className="object-contain"
-                          priority
+                          priority={featuredIndex === 0}
                         />
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <h2
                           className="font-black mb-2 text-charcoal"
                           style={{
                             fontFamily: "Montserrat, sans-serif",
-                            fontSize: "1.4rem",
+                            fontSize: "1.25rem",
+                            lineHeight: 1.2,
                           }}
                         >
                           {featured.title}
                         </h2>
                         <p
-                          className="text-sm text-charcoal/75 mb-3 line-clamp-3"
+                          className="text-sm text-charcoal/75 line-clamp-5"
                           style={{
                             fontFamily: "Raleway, sans-serif",
                             lineHeight: 1.625,
                           }}
                         >
-                          {featured.summaryWhat}
+                          {featured.description}
                         </p>
                       </div>
                     </div>
@@ -165,10 +179,10 @@ export function HomeHighlights() {
                       </div>
                       <div>
                         <p className="text-[11px] uppercase tracking-[0.18em] text-teal-dark font-semibold font-raleway">
-                          {featured.contentType}
+                          {featured.contentTypeLabel}
                         </p>
                         <p className="text-sm font-semibold text-charcoal font-montserrat">
-                          {featured.productCategory}
+                          {featured.categoryLabel}
                         </p>
                       </div>
                     </div>
@@ -177,7 +191,7 @@ export function HomeHighlights() {
                       <div className="flex items-center gap-2">
                         {featuredSlides.map((slide, idx) => (
                           <button
-                            key={slide.id ?? idx}
+                            key={slide.id}
                             type="button"
                             onClick={() => setFeaturedIndex(idx)}
                             className={`h-1.5 rounded-full transition-all ${
@@ -221,7 +235,7 @@ export function HomeHighlights() {
 
                     <div className="mt-3">
                       <Link
-                        href={`/assets/${featured.slug}`}
+                        href={featuredHref}
                         className="inline-flex items-center gap-2 rounded-full bg-teal text-white px-5 py-2.5 text-xs font-semibold shadow-md hover:bg-teal-dark hover:shadow-lg transition font-montserrat"
                       >
                         {t("viewAsset")}
@@ -238,4 +252,3 @@ export function HomeHighlights() {
     </section>
   );
 }
-

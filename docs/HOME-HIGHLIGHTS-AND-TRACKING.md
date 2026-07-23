@@ -72,7 +72,17 @@ Store in a durable store (DB / KV / analytics warehouse)—**not** only `assets.
 
 ---
 
-## 4. Related docs
+## 5. Featured Asset carousel (home)
+
+Curated in **`lib/featured-home-assets.ts`** — independent of What’s New / Popular / Downloaded.
+
+Until downloadable files are catalogued, `href` may be empty (UI links to Library). When you add the three files to Connects, set each `href` to `/assets/{slug}`.
+
+Cover images live under `public/` (`product-guide-2026.png`, `featured-world-cup-smb.png`, `featured-smb-ai-trends.png`). Preferred cover size ~800×1024 portrait; PNG or WebP.
+
+---
+
+## 6. Related docs
 
 | Doc | Topic |
 |-----|--------|
