@@ -2,6 +2,8 @@
 
 End-user flow (detail card, preview, **My Resources**, future email fulfillment, tracking): **[`docs/MY-RESOURCES-AND-FULFILLMENT.md`](./docs/MY-RESOURCES-AND-FULFILLMENT.md)**.
 
+**New product HTML set (Overview + Sales Slick + Presentation)** — create, translate, and publish with Brand Studio / PDF support: **[`docs/NEW-PRODUCT-DOCUMENT-PROCESS.md`](./docs/NEW-PRODUCT-DOCUMENT-PROCESS.md)**.
+
 ## Refresh from the Hostopia asset inventory (XLSX)
 
 **Multilingual tabs, column mapping, and locale URLs:** **[`docs/ASSET-INVENTORY-LOCALE.md`](./docs/ASSET-INVENTORY-LOCALE.md)**.

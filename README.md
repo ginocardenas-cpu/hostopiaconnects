@@ -8,6 +8,7 @@ This is a separate Next.js app that powers the **public-facing Hostopia Connects
 - **My Resources** flow: detail card + preview → customize / add to collection → header count → lead form → immediate download (**CRM sync still to be built**)
 
 **How the product works (full detail):** see **[`docs/MY-RESOURCES-AND-FULFILLMENT.md`](./docs/MY-RESOURCES-AND-FULFILLMENT.md)**.  
+**Adding a new product’s Overview / Slick / Presentation:** see **[`docs/NEW-PRODUCT-DOCUMENT-PROCESS.md`](./docs/NEW-PRODUCT-DOCUMENT-PROCESS.md)**.  
 Shorter end-user copy also lives under `howItWorks`, `cart`, and `brandStudio` in **`messages/en.json`**.
 
 **Production:** [https://hostopiaconnects-self.vercel.app](https://hostopiaconnects-self.vercel.app)

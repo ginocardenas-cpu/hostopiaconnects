@@ -254,6 +254,7 @@ When adding CRM, hook **`/api/bundle-request`** so every logged request also pos
 
 | Doc | Topic |
 |-----|--------|
+| [`NEW-PRODUCT-DOCUMENT-PROCESS.md`](./NEW-PRODUCT-DOCUMENT-PROCESS.md) | Create / translate / publish Overview + Slick + Presentation |
 | [`ADDING-CONTENT.md`](../ADDING-CONTENT.md) | Inventory import, placing files in `public/assets/` |
 | [`docs/HTML-DECK-I18N.md`](./HTML-DECK-I18N.md) | Multi-language HTML decks |
 | [`docs/ASSET-INVENTORY-LOCALE.md`](./ASSET-INVENTORY-LOCALE.md) | Localized inventory tabs |
