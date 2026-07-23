@@ -22,9 +22,9 @@ export default async function Home() {
         className="relative min-h-[50vh] flex flex-col justify-center items-center px-6 py-20 bg-cover bg-center"
         style={{ backgroundImage: "url('/hero-hands.png')" }}
       >
-        <div className="absolute inset-0 bg-[#2A2930]/80" aria-hidden />
+        <div className="absolute inset-0 bg-[#2A2930]/85" aria-hidden />
         <div className="relative z-10 max-w-4xl w-full text-center">
-          <p className="uppercase mb-3 text-white/60 font-heading text-[0.7rem] font-semibold tracking-[0.25em]">
+          <p className="uppercase mb-3 text-white/85 font-heading text-[0.7rem] font-semibold tracking-[0.25em]">
             {t("welcome")}
           </p>
           <h1
@@ -33,7 +33,7 @@ export default async function Home() {
           >
             <span className="text-teal">Hostopia</span>Connects
           </h1>
-          <p className="text-lg max-w-2xl mx-auto text-white/70 font-body leading-relaxed">
+          <p className="text-lg max-w-2xl mx-auto text-white/90 font-body leading-relaxed">
             {t("tagline")}
           </p>
         </div>
@@ -41,21 +41,21 @@ export default async function Home() {
 
       {/* Jump To – quick content type links */}
       <section className="py-5 bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <span className="text-xs text-gray-400 font-body mr-2 uppercase tracking-wider">
+            <span className="text-xs text-charcoal/70 font-body mr-2 uppercase tracking-wider font-medium">
               {tHome("jumpTo")}
             </span>
             {QUICK_LINKS.map((link) => (
               <Link key={link.labelKey} href={link.href}>
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-white text-xs font-semibold text-gray-600 hover:border-teal hover:text-teal transition-colors font-heading">
+                <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-gray-300 bg-white text-xs font-semibold text-charcoal hover:border-teal hover:text-teal transition-colors font-heading">
                   <i className={`${link.icon} text-[10px]`} />
                   {tHome(link.labelKey)}
                 </span>
               </Link>
             ))}
             <Link href="/library">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal text-white text-xs font-semibold hover:bg-teal-dark transition-colors font-heading">
+              <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-teal text-white text-xs font-semibold hover:bg-teal-dark transition-colors font-heading">
                 <i className="fa-solid fa-grid-2 text-[10px]" />
                 {tHome("quickBrowseAll")}
               </span>
@@ -69,21 +69,21 @@ export default async function Home() {
 
       {/* Explore Library + Request a Document */}
       <section className="py-16 bg-gray-50 border-t border-gray-100">
-        <div className="max-w-5xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Explore Library card */}
             <div className="group rounded-2xl bg-white border border-gray-200 p-8 shadow-sm hover:shadow-lg hover:border-teal/30 transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-teal/10 flex items-center justify-center mb-5">
+              <div className="w-12 h-12 rounded-xl bg-teal/20 flex items-center justify-center mb-5">
                 <i className="fa-solid fa-grid-2 text-xl text-teal" />
               </div>
               <h3 className="font-bold text-xl text-charcoal mb-2">
                 {tHome("ctaLibraryTitle")}
               </h3>
-              <p className="text-[#555A5E] text-sm leading-relaxed mb-6">
+              <p className="text-charcoal/75 text-sm leading-relaxed mb-6">
                 {tHome("ctaLibraryBody")}
               </p>
               <Link href="/library">
-                <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-teal text-white text-sm font-semibold hover:bg-teal-dark transition-colors shadow-sm">
+                <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-teal text-white text-sm font-semibold hover:bg-teal-dark transition-colors shadow-sm">
                   {tHome("ctaLibraryButton")}
                   <i className="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-0.5 transition-transform" />
                 </span>
@@ -92,17 +92,17 @@ export default async function Home() {
 
             {/* Request a Document card */}
             <div className="group rounded-2xl bg-white border border-gray-200 p-8 shadow-sm hover:shadow-lg hover:border-gold/40 transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-gold/15 flex items-center justify-center mb-5">
-                <i className="fa-solid fa-lightbulb text-xl text-[#e0b82a]" />
+              <div className="w-12 h-12 rounded-xl bg-gold/25 flex items-center justify-center mb-5">
+                <i className="fa-solid fa-lightbulb text-xl text-[#c9a422]" />
               </div>
               <h3 className="font-bold text-xl text-charcoal mb-2">
                 {tHome("ctaRequestTitle")}
               </h3>
-              <p className="text-[#555A5E] text-sm leading-relaxed mb-6">
+              <p className="text-charcoal/75 text-sm leading-relaxed mb-6">
                 {tHome("ctaRequestBody")}
               </p>
               <Link href="/request">
-                <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg border border-gray-200 text-charcoal text-sm font-semibold hover:border-teal hover:text-teal transition-colors">
+                <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-gray-300 text-charcoal text-sm font-semibold hover:border-teal hover:text-teal hover:bg-cream transition-colors">
                   <i className="fa-solid fa-paper-plane text-xs" />
                   {tHome("ctaRequestButton")}
                 </span>

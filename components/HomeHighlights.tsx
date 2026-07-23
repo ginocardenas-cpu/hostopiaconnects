@@ -47,11 +47,11 @@ export function HomeHighlights() {
 
   return (
     <section className="py-10 bg-cream">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="rounded-3xl bg-white shadow-[0_18px_60px_rgba(15,23,42,0.08)] border border-black/5 overflow-hidden">
-          <div className="grid md:grid-cols-[1.4fr_minmax(0,1fr)]">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="rounded-3xl bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05),0_18px_60px_rgba(15,23,42,0.06)] border border-gray-200 overflow-hidden">
+          <div className="grid md:grid-cols-[1.4fr_minmax(0,1fr)] md:items-stretch">
             {/* Left: tabs + list */}
-            <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-black/5">
+            <div className="p-6 md:p-8 border-b md:border-b-0 md:border-r border-gray-200">
               <div className="flex flex-wrap items-center gap-2 mb-4">
                 {tabs.map(({ key, labelKey, icon: Icon }) => {
                   const selected = active === key;
@@ -60,10 +60,10 @@ export function HomeHighlights() {
                       key={key}
                       type="button"
                       onClick={() => setActive(key)}
-                      className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold font-montserrat border transition ${
+                      className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold font-montserrat border transition ${
                         selected
                           ? "bg-teal text-white border-teal"
-                          : "bg-white text-gray-600 border-black/10 hover:border-teal/60 hover:text-teal"
+                          : "bg-white text-charcoal border-gray-300 hover:border-teal/60 hover:text-teal"
                       }`}
                     >
                       <Icon size={14} />
@@ -73,41 +73,33 @@ export function HomeHighlights() {
                 })}
               </div>
 
-              <div
-                className="mb-4 text-xs text-gray-500 font-raleway"
-              >
+              <div className="mb-4 text-xs text-charcoal/70 font-medium font-raleway">
                 {active === "new" && t("newDesc")}
                 {active === "popular" && t("popularDesc")}
                 {active === "downloaded" && t("downloadedDesc")}
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {list.map((asset, index) => (
                   <Link
                     key={asset.id}
                     href={`/assets/${asset.slug}`}
-                    className="flex items-start justify-between gap-3 rounded-xl px-3 py-2 hover:bg-cream transition group"
+                    className="flex items-start justify-between gap-3 rounded-xl px-3 py-2.5 hover:bg-cream-muted transition-colors cursor-pointer group"
                   >
                     <div className="flex items-start gap-3 min-w-0">
                       <span
-                        className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold bg-teal/10 text-teal group-hover:bg-teal group-hover:text-white transition-colors font-montserrat"
+                        className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-teal/20 text-teal group-hover:bg-teal group-hover:text-white transition-colors font-montserrat"
                       >
                         {index + 1}
                       </span>
                       <div className="min-w-0">
-                        <p
-                          className="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-1 font-raleway"
-                        >
+                        <p className="text-[11px] uppercase tracking-[0.18em] text-charcoal/65 mb-1 font-medium font-raleway">
                           {asset.productCategory} · {asset.contentType}
                         </p>
-                        <p
-                          className="text-sm font-semibold text-gray-900 truncate font-montserrat"
-                        >
+                        <p className="text-sm font-semibold text-charcoal truncate font-montserrat">
                           {asset.title}
                         </p>
-                        <p
-                          className="text-[11px] text-gray-500 truncate font-raleway"
-                        >
+                        <p className="text-[11px] text-charcoal/70 truncate font-raleway">
                           {active === "new" &&
                             `${t("updated")} ${formatDisplayDate(asset.lastUpdated, locale)}`}
                           {active === "popular" &&
@@ -119,7 +111,7 @@ export function HomeHighlights() {
                     </div>
                     <ArrowRight
                       size={14}
-                      className="mt-1 text-gray-300 group-hover:text-teal flex-shrink-0"
+                      className="mt-1 text-charcoal/40 group-hover:text-teal flex-shrink-0"
                     />
                   </Link>
                 ))}
@@ -129,9 +121,7 @@ export function HomeHighlights() {
             {/* Right: featured asset carousel — site-aligned palette */}
             <div className="relative border-l border-teal/20 bg-gradient-to-br from-teal-light via-cream to-teal-light p-6 md:p-8">
               <div className="relative flex flex-col h-full">
-                <p
-                  className="text-[11px] uppercase tracking-[0.18em] mb-2 text-teal font-raleway"
-                >
+                <p className="text-[11px] uppercase tracking-[0.18em] mb-2 text-teal-dark font-semibold font-raleway">
                   {t("featuredAsset")}
                 </p>
                 {featured && (
@@ -152,14 +142,17 @@ export function HomeHighlights() {
                           className="font-black mb-2 text-charcoal"
                           style={{
                             fontFamily: "Montserrat, sans-serif",
-                            fontSize: "1.4rem"
+                            fontSize: "1.4rem",
                           }}
                         >
                           {featured.title}
                         </h2>
                         <p
-                          className="text-sm text-[#555A5E] mb-3 line-clamp-3"
-                          style={{ fontFamily: "Raleway, sans-serif", lineHeight: 1.625 }}
+                          className="text-sm text-charcoal/75 mb-3 line-clamp-3"
+                          style={{
+                            fontFamily: "Raleway, sans-serif",
+                            lineHeight: 1.625,
+                          }}
                         >
                           {featured.summaryWhat}
                         </p>
@@ -167,18 +160,14 @@ export function HomeHighlights() {
                     </div>
 
                     <div className="relative mb-4 p-4 rounded-xl bg-white/80 border border-teal/15 shadow-sm flex items-center gap-4">
-                      <div className="rounded-xl bg-teal/10 p-3 flex-shrink-0">
+                      <div className="rounded-xl bg-teal/20 p-3 flex-shrink-0">
                         <FileText size={28} className="text-teal" />
                       </div>
                       <div>
-                        <p
-                          className="text-[11px] uppercase tracking-[0.18em] text-teal font-raleway"
-                        >
+                        <p className="text-[11px] uppercase tracking-[0.18em] text-teal-dark font-semibold font-raleway">
                           {featured.contentType}
                         </p>
-                        <p
-                          className="text-sm font-semibold text-charcoal font-montserrat"
-                        >
+                        <p className="text-sm font-semibold text-charcoal font-montserrat">
                           {featured.productCategory}
                         </p>
                       </div>
@@ -192,7 +181,9 @@ export function HomeHighlights() {
                             type="button"
                             onClick={() => setFeaturedIndex(idx)}
                             className={`h-1.5 rounded-full transition-all ${
-                              idx === featuredIndex ? "w-6 bg-teal" : "w-2 bg-gray-300"
+                              idx === featuredIndex
+                                ? "w-6 bg-teal"
+                                : "w-2 bg-charcoal/25"
                             }`}
                             aria-label={`Go to featured slide ${idx + 1}`}
                           />
@@ -202,11 +193,13 @@ export function HomeHighlights() {
                         <button
                           type="button"
                           onClick={() =>
-                            setFeaturedIndex((prev) =>
-                              (prev - 1 + featuredSlides.length) % featuredSlides.length
+                            setFeaturedIndex(
+                              (prev) =>
+                                (prev - 1 + featuredSlides.length) %
+                                featuredSlides.length
                             )
                           }
-                          className="inline-flex items-center justify-center rounded-full border border-black/10 bg-white/80 p-1.5 text-gray-600 hover:text-teal hover:border-teal/60 transition-colors"
+                          className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white/80 p-1.5 text-charcoal hover:text-teal hover:border-teal/60 transition-colors"
                           aria-label="Previous featured asset"
                         >
                           <ChevronLeft size={14} />
@@ -214,9 +207,11 @@ export function HomeHighlights() {
                         <button
                           type="button"
                           onClick={() =>
-                            setFeaturedIndex((prev) => (prev + 1) % featuredSlides.length)
+                            setFeaturedIndex(
+                              (prev) => (prev + 1) % featuredSlides.length
+                            )
                           }
-                          className="inline-flex items-center justify-center rounded-full border border-black/10 bg-white/80 p-1.5 text-gray-600 hover:text-teal hover:border-teal/60 transition-colors"
+                          className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white/80 p-1.5 text-charcoal hover:text-teal hover:border-teal/60 transition-colors"
                           aria-label="Next featured asset"
                         >
                           <ChevronRight size={14} />
@@ -227,7 +222,7 @@ export function HomeHighlights() {
                     <div className="mt-3">
                       <Link
                         href={`/assets/${featured.slug}`}
-                        className="inline-flex items-center gap-2 rounded-full bg-teal text-white px-5 py-2 text-xs font-bold shadow-md hover:bg-teal/90 hover:shadow-lg transition font-montserrat"
+                        className="inline-flex items-center gap-2 rounded-full bg-teal text-white px-5 py-2.5 text-xs font-semibold shadow-md hover:bg-teal-dark hover:shadow-lg transition font-montserrat"
                       >
                         {t("viewAsset")}
                         <ArrowRight size={14} />

@@ -44,22 +44,22 @@ export default async function LocaleLayout({
                     className="h-8 w-auto object-contain"
                   />
                 </Link>
-                <p className="text-[13px] text-gray-500 font-body leading-relaxed max-w-sm">
+                <p className="text-sm text-charcoal/70 font-body leading-relaxed max-w-sm">
                   {tFooter("tagline")}
                 </p>
                 <div className="flex items-center gap-5 mt-1">
-                  <a href="https://www.linkedin.com/company/hostopia" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal transition-colors" aria-label="LinkedIn">
+                  <a href="https://www.linkedin.com/company/hostopia" target="_blank" rel="noopener noreferrer" className="text-charcoal/55 hover:text-teal transition-colors" aria-label="LinkedIn">
                     <i className="fa-brands fa-linkedin-in text-base" />
                   </a>
-                  <a href="https://www.facebook.com/Hostopia-104896838563842" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal transition-colors" aria-label="Facebook">
+                  <a href="https://www.facebook.com/Hostopia-104896838563842" target="_blank" rel="noopener noreferrer" className="text-charcoal/55 hover:text-teal transition-colors" aria-label="Facebook">
                     <i className="fa-brands fa-facebook-f text-base" />
                   </a>
-                  <a href="https://twitter.com/Hostopia_Global" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-teal transition-colors" aria-label="X / Twitter">
+                  <a href="https://twitter.com/Hostopia_Global" target="_blank" rel="noopener noreferrer" className="text-charcoal/55 hover:text-teal transition-colors" aria-label="X / Twitter">
                     <i className="fa-brands fa-x-twitter text-base" />
                   </a>
                 </div>
                 <div className="border-t border-gray-100 w-full mt-4 pt-4">
-                  <p className="text-xs text-gray-400 font-body" suppressHydrationWarning>
+                  <p className="text-sm text-charcoal/65 font-body" suppressHydrationWarning>
                     {tFooter("copyright", { year })}
                   </p>
                 </div>
