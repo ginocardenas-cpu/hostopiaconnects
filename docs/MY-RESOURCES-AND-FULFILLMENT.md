@@ -77,7 +77,7 @@ Chosen direction is stored in **`sessionStorage`** (`hostopia-connects-brand-dir
 Implemented in **`lib/brand-from-url/`**:
 
 1. Normalize URL; block private/localhost hosts.
-2. **Scrape** HTML for `og:image` / icons / logo imgs, theme-color + CSS hex colors, and social `a[href]` links.
+2. **Scrape** HTML for `og:image` / icons / logo imgs, theme-color + CSS hex colors, and social `a[href]` / JSON-LD `sameAs` links. Uses browser-like headers; if the origin returns **401/403/429/503** (common for Akamai-protected sites like Telus from Vercel IPs), retries via a public HTML reader proxy, then falls back to Clearbit/favicon logo URLs when needed.
 3. If results are thin (no logo, &lt;2 colors, or no socials) and **`MICROLINK_API_KEY`** or **`BRAND_ENRICHMENT_API_KEY`** is set in Vercel env, enrich via Microlink and fill only missing fields.
 
 ### Profile fields (`BrandStudioControls`)

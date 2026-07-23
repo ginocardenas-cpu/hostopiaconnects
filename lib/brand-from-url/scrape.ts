@@ -3,10 +3,27 @@ import type { BrandColors, CtaLinkType } from "@/lib/brand-profile";
 import type { BrandImportResult } from "./types";
 
 const FETCH_TIMEOUT_MS = 12_000;
+const PROXY_FETCH_TIMEOUT_MS = 20_000;
 const MAX_HTML_BYTES = 2_000_000;
 const MAX_IMAGE_BYTES = 400_000;
 const USER_AGENT =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+
+/** Statuses that usually mean bot / WAF blocking (common on Vercel datacenter IPs). */
+const BLOCKED_FETCH_STATUSES = new Set([401, 403, 429, 503]);
+
+const BROWSER_HTML_HEADERS: Record<string, string> = {
+  "User-Agent": USER_AGENT,
+  Accept:
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+  "Accept-Language": "en-CA,en;q=0.9",
+  "Cache-Control": "no-cache",
+  "Sec-Fetch-Dest": "document",
+  "Sec-Fetch-Mode": "navigate",
+  "Sec-Fetch-Site": "none",
+  "Sec-Fetch-User": "?1",
+  "Upgrade-Insecure-Requests": "1",
+};
 
 /** Framework / OS chrome colors that are almost never the brand. */
 const FRAMEWORK_COLORS = new Set(
@@ -284,7 +301,12 @@ function isJunkSocialUrl(href: string): boolean {
   );
 }
 
-async function fetchText(
+function truncateToUtf8(buf: Buffer, maxBytes: number): string {
+  if (buf.length <= maxBytes) return buf.toString("utf8");
+  return buf.subarray(0, maxBytes).toString("utf8");
+}
+
+async function fetchTextDirect(
   url: string,
   maxBytes: number
 ): Promise<{ text: string; finalUrl: string }> {
@@ -294,49 +316,129 @@ async function fetchText(
     const res = await fetch(url, {
       redirect: "follow",
       signal: controller.signal,
-      headers: {
-        "User-Agent": USER_AGENT,
-        Accept:
-          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      },
+      headers: BROWSER_HTML_HEADERS,
     });
     if (!res.ok) {
       throw new Error(`Could not fetch site (${res.status}).`);
     }
     const buf = Buffer.from(await res.arrayBuffer());
-    if (buf.length > maxBytes) {
-      return {
-        text: buf.subarray(0, maxBytes).toString("utf8"),
-        finalUrl: res.url || url,
-      };
-    }
-    return { text: buf.toString("utf8"), finalUrl: res.url || url };
+    return { text: truncateToUtf8(buf, maxBytes), finalUrl: res.url || url };
   } finally {
     clearTimeout(timer);
   }
 }
 
-async function fetchImageDataUrl(imageUrl: string): Promise<string | undefined> {
-  if (imageUrl.startsWith("data:image/")) return imageUrl;
+/**
+ * Reader proxy for sites that block datacenter IPs (Akamai/Cloudflare WAF).
+ * Returns the page HTML when direct fetch is forbidden.
+ */
+async function fetchTextViaReaderProxy(
+  url: string,
+  maxBytes: number
+): Promise<{ text: string; finalUrl: string }> {
+  const proxyUrl = `https://r.jina.ai/${url}`;
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), PROXY_FETCH_TIMEOUT_MS);
   try {
-    const res = await fetch(imageUrl, {
+    const res = await fetch(proxyUrl, {
       redirect: "follow",
       signal: controller.signal,
-      headers: { "User-Agent": USER_AGENT, Accept: "image/*" },
+      headers: {
+        Accept: "text/html",
+        "X-Return-Format": "html",
+        "User-Agent": USER_AGENT,
+      },
     });
-    if (!res.ok) return undefined;
+    if (!res.ok) {
+      throw new Error(`Could not fetch site via proxy (${res.status}).`);
+    }
     const buf = Buffer.from(await res.arrayBuffer());
-    if (!buf.length || buf.length > MAX_IMAGE_BYTES) return undefined;
-    const contentType =
-      res.headers.get("content-type")?.split(";")[0]?.trim() || "image/png";
-    if (!contentType.startsWith("image/")) return undefined;
-    return `data:${contentType};base64,${buf.toString("base64")}`;
-  } catch {
-    return undefined;
+    const text = truncateToUtf8(buf, maxBytes);
+    if (text.length < 200 || !/<html|og:|title/i.test(text)) {
+      throw new Error("Proxy returned empty or non-HTML content.");
+    }
+    return { text, finalUrl: url };
   } finally {
     clearTimeout(timer);
+  }
+}
+
+function isBlockedFetchError(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err);
+  if (/Could not fetch site \((\d+)\)/.test(message)) {
+    const status = Number(message.match(/\((\d+)\)/)?.[1]);
+    return BLOCKED_FETCH_STATUSES.has(status);
+  }
+  return /aborted|timeout|fetch failed|network/i.test(message);
+}
+
+async function fetchText(
+  url: string,
+  maxBytes: number
+): Promise<{ text: string; finalUrl: string }> {
+  try {
+    return await fetchTextDirect(url, maxBytes);
+  } catch (err) {
+    if (!isBlockedFetchError(err)) throw err;
+    try {
+      return await fetchTextViaReaderProxy(url, maxBytes);
+    } catch {
+      const statusMatch =
+        err instanceof Error
+          ? err.message.match(/Could not fetch site \((\d+)\)/)
+          : null;
+      if (statusMatch && BLOCKED_FETCH_STATUSES.has(Number(statusMatch[1]))) {
+        throw new Error(
+          `This website blocks automated requests (${statusMatch[1]}). Try another URL, or enter branding manually.`
+        );
+      }
+      throw err;
+    }
+  }
+}
+
+async function readImageResponse(
+  res: Response
+): Promise<string | undefined> {
+  if (!res.ok) return undefined;
+  const buf = Buffer.from(await res.arrayBuffer());
+  if (!buf.length || buf.length > MAX_IMAGE_BYTES) return undefined;
+  const contentType =
+    res.headers.get("content-type")?.split(";")[0]?.trim() || "image/png";
+  if (!contentType.startsWith("image/")) return undefined;
+  return `data:${contentType};base64,${buf.toString("base64")}`;
+}
+
+async function fetchImageDataUrl(imageUrl: string): Promise<string | undefined> {
+  if (imageUrl.startsWith("data:image/")) return imageUrl;
+
+  const tryOnce = async (url: string): Promise<string | undefined> => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const res = await fetch(url, {
+        redirect: "follow",
+        signal: controller.signal,
+        headers: { "User-Agent": USER_AGENT, Accept: "image/*" },
+      });
+      return await readImageResponse(res);
+    } catch {
+      return undefined;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
+  const direct = await tryOnce(imageUrl);
+  if (direct) return direct;
+
+  // Some CDNs also block datacenter IPs — retry through a public image proxy.
+  try {
+    const stripped = imageUrl.replace(/^https?:\/\//i, "");
+    const proxied = `https://images.weserv.nl/?url=${encodeURIComponent(stripped)}&n=-1`;
+    return await tryOnce(proxied);
+  } catch {
+    return undefined;
   }
 }
 
@@ -393,6 +495,11 @@ function collectLogoCandidates($: cheerio.CheerioAPI, base: URL): string[] {
     }
   });
 
+  // Public logo APIs as last resorts when page assets are blocked.
+  const domain = base.hostname.replace(/^www\./i, "");
+  push(`https://logo.clearbit.com/${domain}`);
+  push(`https://www.google.com/s2/favicons?domain=${domain}&sz=128`);
+
   return urls;
 }
 
@@ -411,7 +518,8 @@ async function sampleStylesheetColors(
     const abs = absolutize(base, href);
     if (!abs) continue;
     try {
-      const { text } = await fetchText(abs, 400_000);
+      // Direct only — do not proxy CSS through the HTML reader.
+      const { text } = await fetchTextDirect(abs, 400_000);
       hits.push(...extractColorHits(text));
     } catch {
       /* ignore */

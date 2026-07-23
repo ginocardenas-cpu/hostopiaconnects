@@ -3,7 +3,7 @@ import { importBrandFromUrl } from "@/lib/brand-from-url";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 30;
+export const maxDuration = 45;
 
 export async function POST(request: Request) {
   let body: unknown;
