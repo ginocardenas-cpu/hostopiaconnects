@@ -12,6 +12,13 @@ const USER_AGENT =
 /** Statuses that usually mean bot / WAF blocking (common on Vercel datacenter IPs). */
 const BLOCKED_FETCH_STATUSES = new Set([401, 403, 429, 503]);
 
+/** Partner / promo marks that appear on telecom homepages but are not the site brand. */
+const PARTNER_LOGO_RE =
+  /\b(netflix|hbo|max\b|disney|prime\s*video|amazon|spotify|youtube|apple\s*tv|paramount|peacock|f1\b|formula\s*1|espn|mlb|nba|nfl|claro\s*video|movistar)\b/i;
+
+const BOT_WALL_RE =
+  /radware\s+bot\s+manager|bot\s+manager\s+captcha|cf-challenge|just\s+a\s+moment|attention\s+required|access\s+denied|verify\s+you\s+are\s+human|captcha/i;
+
 const BROWSER_HTML_HEADERS: Record<string, string> = {
   "User-Agent": USER_AGENT,
   Accept:
@@ -301,6 +308,15 @@ function isJunkSocialUrl(href: string): boolean {
   );
 }
 
+function isBotWallHtml(html: string): boolean {
+  if (!html || html.length < 80) return true;
+  const title = html.match(/<title[^>]*>([^<]*)/i)?.[1] || "";
+  if (BOT_WALL_RE.test(title)) return true;
+  // Short challenge pages often lack real site chrome.
+  if (html.length < 40_000 && BOT_WALL_RE.test(html.slice(0, 8_000))) return true;
+  return false;
+}
+
 function truncateToUtf8(buf: Buffer, maxBytes: number): string {
   if (buf.length <= maxBytes) return buf.toString("utf8");
   return buf.subarray(0, maxBytes).toString("utf8");
@@ -377,7 +393,9 @@ async function fetchText(
   maxBytes: number
 ): Promise<{ text: string; finalUrl: string }> {
   try {
-    return await fetchTextDirect(url, maxBytes);
+    const direct = await fetchTextDirect(url, maxBytes);
+    if (!isBotWallHtml(direct.text)) return direct;
+    // 200 OK with a captcha/challenge body — common for Telmex/Radware.
   } catch (err) {
     if (!isBlockedFetchError(err)) throw err;
     try {
@@ -394,6 +412,21 @@ async function fetchText(
       }
       throw err;
     }
+  }
+
+  try {
+    const proxied = await fetchTextViaReaderProxy(url, maxBytes);
+    if (isBotWallHtml(proxied.text)) {
+      throw new Error(
+        "This website showed a bot-protection page. Try another URL, or enter branding manually."
+      );
+    }
+    return proxied;
+  } catch (err) {
+    if (err instanceof Error && /bot-protection/i.test(err.message)) throw err;
+    throw new Error(
+      "This website showed a bot-protection page. Try another URL, or enter branding manually."
+    );
   }
 }
 
@@ -442,22 +475,59 @@ async function fetchImageDataUrl(imageUrl: string): Promise<string | undefined> 
   }
 }
 
+function isJunkCompanyName(name: string): boolean {
+  return BOT_WALL_RE.test(name) || /cloudflare|akamai|incapsula|access denied/i.test(name);
+}
+
+function logoCandidateScore(
+  url: string,
+  meta: { alt?: string; cls?: string; id?: string; source: string },
+  brandStem: string
+): number {
+  const hay = `${url} ${meta.alt || ""} ${meta.cls || ""} ${meta.id || ""}`.toLowerCase();
+  if (PARTNER_LOGO_RE.test(hay) || /prom[_-]?logo/i.test(hay)) return -1000;
+  if (meta.source === "clearbit" || meta.source === "favicon") return 5;
+  let score = 0;
+  if (meta.source === "jsonld") score += 50;
+  if (meta.source === "apple-icon") score += 40;
+  if (meta.source === "icon") score += 28;
+  if (meta.source === "img-brand") score += 45;
+  if (meta.source === "img-logo") score += 20;
+  if (meta.source === "og") score += 8; // often campaign art
+  if (brandStem && hay.includes(brandStem)) score += 60;
+  if (/\.svg(\?|$)/i.test(url)) score += 12;
+  if (/apple-touch|favicon|icon/i.test(hay)) score += 15;
+  if (/banner|hero|promo|campaign|selector/i.test(hay)) score -= 25;
+  return score;
+}
+
 function collectLogoCandidates($: cheerio.CheerioAPI, base: URL): string[] {
-  const urls: string[] = [];
-  const push = (href: string | undefined | null) => {
+  type Cand = { url: string; score: number };
+  const scored: Cand[] = [];
+  const seen = new Set<string>();
+  const brandStem = base.hostname.replace(/^www\./i, "").split(".")[0]?.toLowerCase() || "";
+
+  const push = (
+    href: string | undefined | null,
+    meta: { alt?: string; cls?: string; id?: string; source: string }
+  ) => {
     const abs = absolutize(base, href);
-    if (abs && !urls.includes(abs)) urls.push(abs);
+    if (!abs || seen.has(abs)) return;
+    const score = logoCandidateScore(abs, meta, brandStem);
+    if (score < 0) return;
+    seen.add(abs);
+    scored.push({ url: abs, score });
   };
 
-  // Prefer explicit brand logos from JSON-LD later; icons/og next
   $('script[type="application/ld+json"]').each((_, el) => {
     try {
       const data = JSON.parse($(el).text());
       const nodes = Array.isArray(data) ? data : [data];
       for (const node of nodes) {
         if (node?.logo) {
-          if (typeof node.logo === "string") push(node.logo);
-          else if (node.logo?.url) push(node.logo.url);
+          if (typeof node.logo === "string")
+            push(node.logo, { source: "jsonld" });
+          else if (node.logo?.url) push(node.logo.url, { source: "jsonld" });
         }
       }
     } catch {
@@ -465,18 +535,15 @@ function collectLogoCandidates($: cheerio.CheerioAPI, base: URL): string[] {
     }
   });
 
-  push($('meta[property="og:image"]').attr("content"));
-  push($('meta[name="twitter:image"]').attr("content"));
-  push($('meta[name="twitter:image:src"]').attr("content"));
-
   $('link[rel]').each((_, el) => {
     const rel = ($(el).attr("rel") || "").toLowerCase();
-    if (
+    if (rel.includes("apple-touch-icon")) {
+      push($(el).attr("href"), { source: "apple-icon" });
+    } else if (
       rel.includes("icon") ||
-      rel.includes("apple-touch-icon") ||
       rel.includes("shortcut")
     ) {
-      push($(el).attr("href"));
+      push($(el).attr("href"), { source: "icon" });
     }
   });
 
@@ -485,22 +552,37 @@ function collectLogoCandidates($: cheerio.CheerioAPI, base: URL): string[] {
     const cls = ($(el).attr("class") || "").toLowerCase();
     const id = ($(el).attr("id") || "").toLowerCase();
     const src = $(el).attr("src") || $(el).attr("data-src");
-    if (
+    const brandHit =
+      Boolean(brandStem) &&
+      (alt.includes(brandStem) ||
+        cls.includes(brandStem) ||
+        id.includes(brandStem) ||
+        (src || "").toLowerCase().includes(brandStem));
+    const logoHit =
       alt.includes("logo") ||
       cls.includes("logo") ||
       id.includes("logo") ||
-      (src || "").toLowerCase().includes("logo")
-    ) {
-      push(src);
+      (src || "").toLowerCase().includes("logo");
+    if (brandHit) {
+      push(src, { alt, cls, id, source: "img-brand" });
+    } else if (logoHit) {
+      push(src, { alt, cls, id, source: "img-logo" });
     }
   });
 
-  // Public logo APIs as last resorts when page assets are blocked.
-  const domain = base.hostname.replace(/^www\./i, "");
-  push(`https://logo.clearbit.com/${domain}`);
-  push(`https://www.google.com/s2/favicons?domain=${domain}&sz=128`);
+  // og/twitter images last — often partner campaign art (Netflix / F1 / HBO).
+  push($('meta[property="og:image"]').attr("content"), { source: "og" });
+  push($('meta[name="twitter:image"]').attr("content"), { source: "og" });
+  push($('meta[name="twitter:image:src"]').attr("content"), { source: "og" });
 
-  return urls;
+  const domain = base.hostname.replace(/^www\./i, "");
+  push(`https://logo.clearbit.com/${domain}`, { source: "clearbit" });
+  push(`https://www.google.com/s2/favicons?domain=${domain}&sz=128`, {
+    source: "favicon",
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.map((c) => c.url);
 }
 
 async function sampleStylesheetColors(
@@ -610,23 +692,44 @@ function extractCompanyName(
   const ogSite = $('meta[property="og:site_name"]').attr("content")?.trim();
   const host = hostnameLabel(base.hostname);
 
-  // Prefer concise brand labels over marketing titles
-  if (ogSite && ogSite.length <= 40) return ogSite;
-  if (appName && appName.length <= 40) return appName;
-  if (jsonLdName) {
+  // Prefer concise brand labels over marketing titles / captcha walls
+  if (ogSite && ogSite.length <= 40 && !isJunkCompanyName(ogSite)) return ogSite;
+  if (appName && appName.length <= 40 && !isJunkCompanyName(appName)) return appName;
+  if (jsonLdName && !isJunkCompanyName(jsonLdName)) {
     // "Rogers Communications Inc" → "Rogers" if hostname matches
     if (jsonLdName.toLowerCase().includes(host.toLowerCase())) return host;
     const short = jsonLdName.split(/[|,–—-]/)[0]?.trim();
-    if (short && short.length <= 32) return short;
+    if (short && short.length <= 32 && !isJunkCompanyName(short)) return short;
     return jsonLdName.length <= 48 ? jsonLdName : host;
   }
 
   const ogTitle = $('meta[property="og:title"]').attr("content")?.trim();
   const title = $("title").first().text().trim();
+  if (isJunkCompanyName(ogTitle || "") || isJunkCompanyName(title || "")) {
+    return host;
+  }
   const fromTitle = (ogTitle || title).split(/[|\-–—]/)[0]?.trim() || "";
   // Marketing titles often have commas / multiple products
-  if (fromTitle && fromTitle.length <= 28 && !fromTitle.includes(",")) {
+  if (
+    fromTitle &&
+    fromTitle.length <= 28 &&
+    !fromTitle.includes(",") &&
+    !isJunkCompanyName(fromTitle)
+  ) {
     return fromTitle;
+  }
+  // "… - Hogar - Telmex" → prefer last segment when it matches host
+  const segments = (ogTitle || title)
+    .split(/[|\-–—]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const last = segments[segments.length - 1];
+  if (
+    last &&
+    last.length <= 24 &&
+    last.toLowerCase().includes(host.toLowerCase().slice(0, 4))
+  ) {
+    return host;
   }
   return host;
 }
