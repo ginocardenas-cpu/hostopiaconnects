@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Globe2, Palette } from "lucide-react";
 import type { BrandProfile } from "@/lib/brand-profile";
 import {
   applyBrandImportToProfile,
@@ -61,6 +62,9 @@ export function BrandStudioShell({
     null
   );
   const [awaitingScrape, setAwaitingScrape] = useState(false);
+  const [hoveredMethod, setHoveredMethod] = useState<BrandStudioDirection | null>(
+    null
+  );
 
   useEffect(() => {
     setDirection(readStoredDirection());
@@ -123,48 +127,113 @@ export function BrandStudioShell({
 
   if (!hydrated) {
     return (
-      <div className="py-10 text-center text-sm text-gray-500 font-raleway">
+      <div className="py-10 text-center text-sm text-charcoal/60 font-raleway">
         {t("loadingStudio")}
       </div>
     );
   }
 
   if (!direction) {
+    const methods: {
+      id: BrandStudioDirection;
+      title: string;
+      desc: string;
+      badge?: string;
+      Icon: typeof Globe2;
+    }[] = [
+      {
+        id: "scrape",
+        title: t("directionScrapeTitle"),
+        desc: t("directionScrapeDesc"),
+        badge: t("directionScrapeBadge"),
+        Icon: Globe2,
+      },
+      {
+        id: "diy",
+        title: t("directionDiyTitle"),
+        desc: t("directionDiyDesc"),
+        Icon: Palette,
+      },
+    ];
+
     return (
-      <div className={`text-center ${compact ? "py-6 px-2" : "py-10 px-4"}`}>
-        <h2
-          className="font-black text-charcoal mb-2"
-          style={{
-            fontFamily: "Montserrat, sans-serif",
-            fontSize: compact ? "1.45rem" : "clamp(1.75rem, 3vw, 2.25rem)",
-          }}
-        >
-          {t("aiTitle")}
-        </h2>
-        <p className="text-sm text-gray-500 font-raleway mb-10 tracking-wide">
-          {t("gettingStarted")}
+      <div
+        className={`rounded-2xl border border-gray-200 bg-white shadow-sm ${
+          compact ? "p-4" : "p-6 max-w-xl mx-auto"
+        }`}
+      >
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-teal font-montserrat mb-1">
+          {t("step1Eyebrow")}
         </p>
+        <h2 className="text-base font-bold text-charcoal font-montserrat mb-1">
+          {t("chooseMethodTitle")}
+        </h2>
+        <p className="text-sm text-charcoal/70 font-raleway mb-4">
+          {t("chooseMethodHint")}
+        </p>
+
         <div
-          className={`grid gap-6 ${compact ? "grid-cols-1" : "sm:grid-cols-2 gap-10 max-w-2xl mx-auto"}`}
+          className="space-y-3"
+          role="radiogroup"
+          aria-label={t("chooseMethodTitle")}
         >
-          <button
-            type="button"
-            onClick={() => chooseDirection("diy")}
-            className="group rounded-xl border border-transparent px-4 py-6 text-left sm:text-center transition hover:border-teal/30 hover:bg-teal/5"
-          >
-            <span className="block text-base sm:text-lg font-medium text-gray-600 group-hover:text-teal font-raleway leading-snug">
-              {t("directionDiy")}
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => chooseDirection("scrape")}
-            className="group rounded-xl border border-transparent px-4 py-6 text-left sm:text-center transition hover:border-teal/30 hover:bg-teal/5"
-          >
-            <span className="block text-base sm:text-lg font-medium text-gray-600 group-hover:text-teal font-raleway leading-snug">
-              {t("directionScrape")}
-            </span>
-          </button>
+          {methods.map(({ id, title, desc, badge, Icon }) => {
+            const emphasized = hoveredMethod === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                role="radio"
+                aria-checked={false}
+                onClick={() => chooseDirection(id)}
+                onMouseEnter={() => setHoveredMethod(id)}
+                onMouseLeave={() => setHoveredMethod(null)}
+                onFocus={() => setHoveredMethod(id)}
+                onBlur={() => setHoveredMethod(null)}
+                className={`w-full text-left flex items-start gap-3 rounded-xl px-4 py-3.5 transition cursor-pointer border ${
+                  emphasized
+                    ? "border-teal bg-teal/10 shadow-sm ring-1 ring-teal"
+                    : "border-gray-200 bg-white hover:border-gray-300 hover:bg-cream"
+                }`}
+              >
+                <span
+                  className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border-2 ${
+                    emphasized
+                      ? "border-teal bg-teal"
+                      : "border-gray-300 bg-white"
+                  }`}
+                  aria-hidden
+                >
+                  {emphasized ? (
+                    <span className="h-2 w-2 rounded-full bg-white" />
+                  ) : null}
+                </span>
+                <span
+                  className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl ${
+                    emphasized ? "bg-teal/20 text-teal" : "bg-cream text-teal"
+                  }`}
+                  aria-hidden
+                >
+                  <Icon size={20} strokeWidth={2} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex flex-wrap items-center gap-2 mb-0.5">
+                    <span className="text-sm font-semibold text-charcoal font-montserrat">
+                      {title}
+                    </span>
+                    {badge ? (
+                      <span className="inline-flex rounded-full bg-teal/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-teal-dark font-montserrat">
+                        {badge}
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="block text-xs text-charcoal/65 font-raleway leading-relaxed">
+                    {desc}
+                  </span>
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
     );
@@ -172,8 +241,13 @@ export function BrandStudioShell({
 
   if (direction === "scrape" && awaitingScrape) {
     return (
-      <div className={`space-y-5 font-raleway ${compact ? "" : "max-w-xl mx-auto py-4"}`}>
-        <div className="text-center mb-2">
+      <div
+        className={`space-y-5 font-raleway ${compact ? "" : "max-w-xl mx-auto py-4"}`}
+      >
+        <div className="mb-2">
+          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-teal font-montserrat mb-1">
+            {t("step1Eyebrow")}
+          </p>
           <h2
             className="font-black text-charcoal mb-1"
             style={{
@@ -181,21 +255,19 @@ export function BrandStudioShell({
               fontSize: compact ? "1.25rem" : "1.5rem",
             }}
           >
-            {t("aiTitle")}
+            {t("directionScrapeTitle")}
           </h2>
-          <p className="text-xs uppercase tracking-[0.16em] text-gray-500">
-            {t("directionScrape")}
-          </p>
+          <p className="text-sm text-charcoal/70">{t("directionScrapeDesc")}</p>
         </div>
 
         <label className="block text-sm">
-          <span className="mb-1 block text-gray-600">{t("scrapeUrlLabel")}</span>
+          <span className="mb-1 block text-charcoal/75">{t("scrapeUrlLabel")}</span>
           <input
             type="url"
             value={websiteUrl}
             onChange={(e) => setWebsiteUrl(e.target.value)}
             placeholder={t("scrapeUrlPlaceholder")}
-            className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5 text-sm"
+            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
@@ -205,7 +277,7 @@ export function BrandStudioShell({
           />
         </label>
 
-        <p className="text-xs text-amber-800/90 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2.5 leading-relaxed">
+        <p className="text-xs text-amber-900/90 bg-amber-50 border border-amber-200/80 rounded-lg px-3 py-2.5 leading-relaxed">
           {t("scrapeDisclaimer")}
         </p>
 
@@ -220,7 +292,7 @@ export function BrandStudioShell({
             type="button"
             disabled={importing || !websiteUrl.trim()}
             onClick={() => void handleImport()}
-            className="inline-flex items-center justify-center rounded-full bg-teal px-5 py-2.5 text-xs font-bold text-white font-montserrat hover:bg-teal-dark transition disabled:opacity-60"
+            className="inline-flex items-center justify-center rounded-full bg-teal px-5 py-2.5 text-xs font-semibold text-white font-montserrat hover:bg-teal-dark transition disabled:opacity-60"
           >
             {importing ? t("scrapeImporting") : t("scrapeImport")}
           </button>
@@ -231,7 +303,7 @@ export function BrandStudioShell({
               setDirection(null);
               setAwaitingScrape(false);
             }}
-            className="inline-flex items-center justify-center rounded-full border border-black/15 bg-white px-5 py-2.5 text-xs font-bold text-gray-700 font-montserrat hover:bg-gray-50 transition"
+            className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white px-5 py-2.5 text-xs font-semibold text-charcoal font-montserrat hover:bg-cream transition"
           >
             {t("changeDirection")}
           </button>
@@ -243,7 +315,7 @@ export function BrandStudioShell({
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-[11px] uppercase tracking-[0.14em] text-gray-500 font-montserrat">
+        <p className="text-[11px] uppercase tracking-[0.14em] text-charcoal/65 font-montserrat font-medium">
           {direction === "diy" ? t("directionDiy") : t("directionScrape")}
         </p>
         <button
@@ -261,7 +333,7 @@ export function BrandStudioShell({
       </div>
 
       {importMeta ? (
-        <div className="rounded-lg border border-teal/20 bg-teal/5 px-3 py-2.5 text-xs text-gray-700 font-raleway space-y-1">
+        <div className="rounded-lg border border-teal/20 bg-teal/5 px-3 py-2.5 text-xs text-charcoal/80 font-raleway space-y-1">
           <p className="font-medium text-teal-dark">
             {t("scrapeImportedFrom", { url: importMeta.websiteUrl })}
           </p>
@@ -275,7 +347,7 @@ export function BrandStudioShell({
               {t("scrapeMissing")}: {importMeta.missing.join(", ")}
             </p>
           ) : null}
-          <p className="text-amber-800/90 pt-1">{t("scrapeDisclaimer")}</p>
+          <p className="text-amber-900/90 pt-1">{t("scrapeDisclaimer")}</p>
         </div>
       ) : null}
 
