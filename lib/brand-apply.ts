@@ -72,7 +72,7 @@ export function buildBrandStyleCss(
   justify-self: start;
 }
 [data-portal-chrome-logo="1"] img {
-  max-height: 42px;
+  max-height: 60px; /* was 42px; +~43% for footer readability */
   width: auto;
   object-fit: contain;
 }
@@ -159,7 +159,7 @@ div.page .pbody,
 div.page .page-body,
 section.page .pbody,
 section.page .page-body {
-  padding-bottom: 72px !important;
+  padding-bottom: 96px !important; /* clears taller footer logo (~60px) */
   box-sizing: border-box !important;
   min-height: 0 !important;
   overflow: hidden !important;

@@ -137,7 +137,7 @@ Evenly spaced three-column chrome:
 [LOGO]     04 / 13   SLIDE NAME     © 2026 [COMPANY] | All Rights Reserved
 ```
 
-- Logo is **50% larger** than the original chrome glyph (~42px).
+- Footer logo is ~**60px** tall (about 43% larger than the prior 42px chrome size).
 - Year is **automatic** (`new Date().getFullYear()`).
 - `[COMPANY]` comes from Brand Studio **company name**.
 - Large content photos get bottom clearance so they don’t cover the footer.
