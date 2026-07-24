@@ -254,6 +254,7 @@ When adding CRM, hook **`/api/bundle-request`** so every logged request also pos
 
 | Doc | Topic |
 |-----|--------|
+| [`VIDEO-ASSETS.md`](./VIDEO-ASSETS.md) | SundaySky preview + MP4 download for Video content type |
 | [`HOME-HIGHLIGHTS-AND-TRACKING.md`](./HOME-HIGHLIGHTS-AND-TRACKING.md) | What’s New / Popular / Downloaded rules + tracking plan |
 | [`NEW-PRODUCT-DOCUMENT-PROCESS.md`](./NEW-PRODUCT-DOCUMENT-PROCESS.md) | Create / translate / publish Overview + Slick + Presentation |
 | [`ADDING-CONTENT.md`](../ADDING-CONTENT.md) | Inventory import, placing files in `public/assets/` |

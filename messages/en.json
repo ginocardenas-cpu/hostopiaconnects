@@ -173,6 +173,7 @@
     "previewFileMissingTitle": "This file isn’t on the server yet",
     "previewFileMissingBody": "The catalog lists this asset, but the HTML file hasn’t been uploaded to Connects. Add the bundle under Assets/HostopiaConnects, run npm run assets:sync-public, and redeploy.",
     "previewPdfToolbarNote": "If your browser shows its own PDF controls, that’s separate from Hostopia Connects — we don’t add a Download button in this preview.",
+    "previewVideoPlayerHint": "Use the player’s language controls to switch languages. Add to My Resources to download the MP4 file.",
     "previewFooterHint": "To obtain files, add to My Resources, then complete the short form on the My Resources page to download.",
     "previewDocumentLanguage": "Preview language",
     "addChooseDocumentLanguage": "Choose document language",

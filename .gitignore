@@ -3,10 +3,12 @@ node_modules
 .next
 out
 
-# Large media (GitHub 100MB limit) – keep README and .gitkeep
+# Large media in the HTML catalog folder (GitHub 100MB limit)
 public/assets/*.mp4
 public/assets/*.mov
 public/assets/*.webm
+
+# Companion videos for Connects Video assets live under public/videos/ (tracked)
 
 # Env
 .env*.local

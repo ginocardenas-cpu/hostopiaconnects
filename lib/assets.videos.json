@@ -1,0 +1,24 @@
+[
+  {
+    "id": "hosting-white-label-video-52",
+    "slug": "hosting-white-label-video",
+    "title": "White Label Web Hosting Video",
+    "fileName": "white-label-web-hosting-en.mp4",
+    "journey": "Get Online",
+    "productCategory": "Website",
+    "contentType": "Video",
+    "useCases": ["Sales", "Training & Onboarding", "Marketing"],
+    "summaryWhat": "A white-label web hosting video that introduces Hostopia hosting for service providers—positioning shared, WordPress, VPS, and dedicated options for SMB customers.",
+    "summaryWhy": "Gives partners a ready-to-share explainer they can watch in multiple languages (via the embedded player) or download as an English MP4 for offline and campaign use.",
+    "summaryHow": "Preview in Connects to watch with in-player language options, or add to My Resources to download the English MP4 after the short form. Use in sales calls, onboarding, and partner enablement.",
+    "language": "English",
+    "region": "Global",
+    "gated": true,
+    "internalOnly": false,
+    "fileUrl": "/videos/white-label-web-hosting-en.mp4",
+    "previewUrl": "https://myvideo.sundaysky.com/?programId=312fc18e-26e4-462a-951b-c3bbf48912b4",
+    "lastUpdated": "2026-07-23",
+    "viewCount": 0,
+    "downloadCount": 0
+  }
+]

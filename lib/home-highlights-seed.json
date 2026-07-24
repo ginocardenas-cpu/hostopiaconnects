@@ -2,8 +2,8 @@
   "mode": "seed",
   "notes": "Temporary curated home highlights until live preview/download tracking ships. Set mode to \"live\" to sort only by lastUpdated / viewCount / downloadCount.",
   "whatsNew": [
+    "hosting-white-label-video-52",
     "directory-listings-overview-51",
-    "hosting-sales-presentation-43",
     "email-marketing-sales-slick-29"
   ],
   "mostPopular": [
@@ -40,6 +40,11 @@
     "business-email-sales-presentation-40": {
       "viewCount": 940,
       "downloadCount": 471
+    },
+    "hosting-white-label-video-52": {
+      "viewCount": 120,
+      "downloadCount": 40,
+      "lastUpdated": "2026-07-23"
     },
     "directory-listings-overview-51": {
       "viewCount": 210,

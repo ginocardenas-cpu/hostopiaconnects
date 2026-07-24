@@ -29,7 +29,7 @@ For a few assets, use the manual flow below.
 
 - **Documents:** PDF, Word (DOCX), etc. → e.g. `public/assets/my-doc.pdf`, `public/assets/playbook.docx`
 - **Presentations:** PowerPoint (PPT, PPTX) → e.g. `public/assets/sales-deck.pptx`
-- **Videos:** MP4, WebM, etc. → e.g. `public/assets/product-demo.mp4`
+- **Videos:** Prefer a multi-language player URL (`previewUrl`) + MP4 download under `public/videos/`. See **[`docs/VIDEO-ASSETS.md`](./docs/VIDEO-ASSETS.md)**. Do not put large MP4s in `public/assets/` (gitignored).
 
 The site will serve them at `/assets/your-filename` (e.g. `/assets/playbook.docx`). Use URL encoding for spaces: `My Report.docx` → `fileUrl: "/assets/My%20Report.docx"`.
 

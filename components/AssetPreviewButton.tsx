@@ -19,32 +19,67 @@ function fileExtensionFromUrl(url: string): string {
   }
 }
 
-type PreviewMode = "iframe" | "image" | "video" | "none";
+function isExternalPlayerUrl(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return (
+      host.includes("sundaysky.com") ||
+      host.includes("youtube.com") ||
+      host.includes("youtu.be") ||
+      host.includes("vimeo.com")
+    );
+  } catch {
+    return false;
+  }
+}
 
-function previewModeForExt(ext: string): PreviewMode {
-  if (["html", "htm", "pdf"].includes(ext)) return "iframe";
-  if (["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(ext)) return "image";
-  if (["mp4", "webm", "ogg"].includes(ext)) return "video";
-  return "none";
+type PreviewMode = "iframe" | "image" | "video" | "embed" | "none";
+
+function previewModeFor(
+  fileUrl: string,
+  previewUrl?: string
+): { mode: PreviewMode; src: string; ext: string } {
+  if (previewUrl?.trim()) {
+    return { mode: "embed", src: previewUrl.trim(), ext: "" };
+  }
+  const ext = fileExtensionFromUrl(fileUrl);
+  if (isExternalPlayerUrl(fileUrl)) {
+    return { mode: "embed", src: fileUrl, ext };
+  }
+  if (["html", "htm", "pdf"].includes(ext)) {
+    return { mode: "iframe", src: fileUrl, ext };
+  }
+  if (["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(ext)) {
+    return { mode: "image", src: fileUrl, ext };
+  }
+  if (["mp4", "webm", "ogg"].includes(ext)) {
+    return { mode: "video", src: fileUrl, ext };
+  }
+  return { mode: "none", src: fileUrl, ext };
 }
 
 export function AssetPreviewButton({
   fileUrl,
   title,
   fileName,
+  previewUrl,
   className,
 }: {
   fileUrl: string;
   title: string;
   /** Inventory Filename; wires preview-mode applyLang for HTML bundles. */
   fileName?: string;
+  /** Optional multi-language player (e.g. SundaySky). Preferred over fileUrl for Preview. */
+  previewUrl?: string;
   /** Tailwind + layout classes for the trigger (match surrounding buttons). */
   className?: string;
 }) {
   const t = useTranslations("asset");
   const [open, setOpen] = useState(false);
-  const ext = useMemo(() => fileExtensionFromUrl(fileUrl), [fileUrl]);
-  const mode = useMemo(() => previewModeForExt(ext), [ext]);
+  const { mode, src, ext } = useMemo(
+    () => previewModeFor(fileUrl, previewUrl),
+    [fileUrl, previewUrl]
+  );
   const sourceName = useMemo(() => {
     if (fileName?.trim()) return fileName.trim();
     try {
@@ -99,9 +134,24 @@ export function AssetPreviewButton({
           </div>
 
           <div className="min-h-0 flex-1 overflow-hidden bg-[#f4f4f2]">
+            {mode === "embed" && (
+              <div className="flex h-[min(72vh,640px)] flex-col bg-black">
+                <iframe
+                  title={title}
+                  src={src}
+                  className="h-full w-full flex-1 border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                  allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+                <p className="shrink-0 border-t border-white/10 bg-charcoal px-4 py-2 text-xs text-white/80 font-raleway">
+                  {t("previewVideoPlayerHint")}
+                </p>
+              </div>
+            )}
             {mode === "iframe" && ext === "html" && (
               <HtmlDeckPreviewFrame
-                fileUrl={fileUrl}
+                fileUrl={src}
                 title={title}
                 fileName={sourceName}
               />
@@ -110,7 +160,7 @@ export function AssetPreviewButton({
               <div className="flex h-[min(72vh,640px)] flex-col">
                 <iframe
                   title={title}
-                  src={fileUrl}
+                  src={src}
                   className="h-full w-full flex-1 border-0 bg-white"
                   sandbox="allow-scripts allow-same-origin allow-popups-to-escape-sandbox"
                 />
@@ -125,8 +175,11 @@ export function AssetPreviewButton({
             )}
             {mode === "image" && (
               <div className="flex max-h-[min(72vh,640px)] justify-center overflow-auto p-4">
-                {/* Same-origin catalog files under /assets — img is appropriate for modal preview. */}
-                <img src={fileUrl} alt="" className="max-h-full max-w-full object-contain shadow-sm" />
+                <img
+                  src={src}
+                  alt=""
+                  className="max-h-full max-w-full object-contain shadow-sm"
+                />
               </div>
             )}
             {mode === "video" && (
@@ -135,7 +188,7 @@ export function AssetPreviewButton({
                   controls
                   controlsList="nodownload noplaybackrate"
                   className="max-h-full max-w-full"
-                  src={fileUrl}
+                  src={src}
                 />
               </div>
             )}

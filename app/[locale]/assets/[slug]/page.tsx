@@ -103,6 +103,7 @@ export default async function AssetDetailPage({ params }: AssetDetailPageProps) 
             fileUrl={asset.fileUrl}
             title={display.title}
             fileName={sourceFile}
+            previewUrl={asset.previewUrl}
           />
           {supportsCustomize ? (
             <Link

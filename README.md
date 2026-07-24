@@ -10,6 +10,7 @@ This is a separate Next.js app that powers the **public-facing Hostopia Connects
 **How the product works (full detail):** see **[`docs/MY-RESOURCES-AND-FULFILLMENT.md`](./docs/MY-RESOURCES-AND-FULFILLMENT.md)**.  
 **Adding a new product’s Overview / Slick / Presentation:** see **[`docs/NEW-PRODUCT-DOCUMENT-PROCESS.md`](./docs/NEW-PRODUCT-DOCUMENT-PROCESS.md)**.  
 **Homepage What’s New / Popular / Downloaded:** see **[`docs/HOME-HIGHLIGHTS-AND-TRACKING.md`](./docs/HOME-HIGHLIGHTS-AND-TRACKING.md)**.  
+**Video (SundaySky preview + MP4 download):** see **[`docs/VIDEO-ASSETS.md`](./docs/VIDEO-ASSETS.md)**.  
 Shorter end-user copy also lives under `howItWorks`, `cart`, and `brandStudio` in **`messages/en.json`**.
 
 **Production:** [https://hostopiaconnects-self.vercel.app](https://hostopiaconnects-self.vercel.app)

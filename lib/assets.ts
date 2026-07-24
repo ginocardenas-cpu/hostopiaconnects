@@ -1,5 +1,7 @@
 /** Catalog from inventory. Regenerate with `npm run assets:from-inventory` or `npm run assets:import`. See ADDING-CONTENT.md. */
 import assetsData from "./assets.data.json";
+/** Supplemental Video assets (not wiped by inventory import). See docs/VIDEO-ASSETS.md. */
+import assetsVideos from "./assets.videos.json";
 /** Interim What’s New / Popular / Downloaded curation — see docs/HOME-HIGHLIGHTS-AND-TRACKING.md. */
 import homeHighlightsSeed from "./home-highlights-seed.json";
 
@@ -129,6 +131,11 @@ export interface Asset {
   gated: boolean; // Download Gate Status: true = gated, false = free/direct
   internalOnly: boolean;
   fileUrl: string;
+  /**
+   * Optional embed URL for in-modal preview (e.g. SundaySky multi-language player).
+   * When set, Preview uses this URL; `fileUrl` remains the downloadable file (MP4).
+   */
+  previewUrl?: string;
   lastUpdated: string; // ISO date
   viewCount: number;
   downloadCount: number;
@@ -367,8 +374,11 @@ function applyEngagementSeed(assets: Asset[]): Asset[] {
   });
 }
 
-/** Catalog from inventory JSON + optional home engagement seed overlays. */
-export const sampleAssets: Asset[] = applyEngagementSeed(assetsData as Asset[]);
+/** Catalog from inventory JSON + video supplements + optional home engagement seed overlays. */
+export const sampleAssets: Asset[] = applyEngagementSeed([
+  ...(assetsData as Asset[]),
+  ...(assetsVideos as Asset[]),
+]);
 
 function assetsBySeedIds(ids: string[] | undefined, limit: number): Asset[] | null {
   if (highlightsSeed.mode !== "seed" || !ids?.length) return null;
